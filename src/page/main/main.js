@@ -38,10 +38,10 @@ export default class Main extends Component {
   cards(){
     let {modules} = this.state;
     return modules.map((module, index) => {
-      return (<div key={index}>
+      return (<Col span={6} key={index}>
         <strong>{module.title}</strong>
         <span>{module.rfc_Asunto}</span>
-      </div>)
+      </Col>)
     })
   }
 
@@ -57,17 +57,7 @@ export default class Main extends Component {
             <Col span={12}>col-12</Col>
           </Row>
           <Row>
-            <Col span={8}>col-8</Col>
-            <Col span={8}>
-              {this.cards()}
-            </Col>
-            <Col span={8}>col-8</Col>
-          </Row>
-          <Row>
-            <Col span={6}>col-6</Col>
-            <Col span={6}>col-6</Col>
-            <Col span={6}>col-6</Col>
-            <Col span={6}>col-6</Col>
+            {this.cards()}
           </Row>
         </div>
     );
