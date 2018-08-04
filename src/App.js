@@ -8,6 +8,7 @@ import './App.css';
 class App extends Component {
 
   render() {
+      console.log("soy weon")
     return (
         <Router>
           <Route exact path="/main" component={Main}/>
