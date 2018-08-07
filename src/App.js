@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
-import Main from './page/main/main.js'
+import Main from './page/main/main'
+import Change from './layout/change/change'
 
 import './App.css';
 
@@ -10,7 +11,10 @@ class App extends Component {
   render() {
     return (
         <Router>
-          <Route exact path="/main" component={Main}/>
+          <Switch>
+            <Route exact path="/main" component={Main}/>
+            <Route path="/change" component={Change}/>
+          </Switch>
         </Router>
     );
   }
