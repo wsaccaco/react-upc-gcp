@@ -5,6 +5,7 @@ import Main from './page/main/main'
 import Change from './layout/change/change'
 
 import './App.css';
+import NdWAp from "./page/NdWAp/NdWAp";
 
 class App extends Component {
 
@@ -12,7 +13,7 @@ class App extends Component {
     return (
         <Router>
           <Switch>
-            <Route exact path="/main" component={Main}/>
+            <Route exact path="/main" component={NdWAp}/>
             <Route path="/change" component={Change}/>
           </Switch>
         </Router>

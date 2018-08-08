@@ -3,7 +3,7 @@ import {Button, Table, Icon, Divider} from 'antd'
 
 import FormRequestChange from '../../components/formRequestChange/formRequestChange'
 
-import './michael.css'
+import './NdWAp.css'
 
 const columns = [{
   title: 'Código',
@@ -36,22 +36,22 @@ const columns = [{
 
 const data = [{
   key: '1',
-  name: 'John Brown',
+  name: 'Negro Cebolla',
   age: 32,
-  address: 'New York No. 1 Lake Park',
+  address: 'Chincha',
 }, {
   key: '2',
   name: 'Negro de whatsapp',
   age: 42,
-  address: 'London No. 1 Lake Park',
+  address: 'Africa',
 }, {
   key: '3',
-  name: 'Joe Black',
+  name: 'Negro Tres Leches',
   age: 32,
-  address: 'Sidney No. 1 Lake Park',
+  address: 'El ayudante de su capi',
 }];
 
-export default class Michael extends Component {
+export default class NdWAp extends Component {
 
   constructor(props) {
     super(props);
@@ -79,7 +79,7 @@ export default class Michael extends Component {
   titleTable(){
     return (
         <div className="title-table">
-          <strong> Maracas colgando </strong>
+          <strong> Lista de negros que le encantan a Juan Montes </strong>
           <Button type="primary" icon="plus" onClick={() => this.openNewRequest()}>Nuevo</Button>
         </div>
     )
