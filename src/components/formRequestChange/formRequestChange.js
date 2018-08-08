@@ -25,12 +25,13 @@ function formRequestChange(props) {
 
   return (
       <Modal
-          title="Basic Modal"
+          title="Formulario de RFC"
           visible={visible}
           onOk={onOk}
           onCancel={onCancel}
       >
         <Form onSubmit={() => {}} className="gcp-form">
+
           <FormItem
               label={"Portafolio"}
               {...formItemLayout}
@@ -42,13 +43,14 @@ function formRequestChange(props) {
                 required: true, message: 'Por favor seleccione un portafolio',
               }],
             })(
-                <Select placeholder="probando">
+                <Select placeholder="Seleccione Portafolio">
                   <Option value="jack">Jack</Option>
                   <Option value="lucy">Lucy</Option>
                   <Option value="Yiminghe">yiminghe</Option>
                 </Select>
             )}
           </FormItem>
+
           <FormItem
               label={"Proyecto"}
               {...formItemLayout}
@@ -59,13 +61,50 @@ function formRequestChange(props) {
                 required: true, message: 'Por favor seleccione un portafolio',
               }],
             })(
-                <Select placeholder="probando">
+                <Select placeholder="Seleccione Proyecto">
                   <Option value="jack">Jack</Option>
                   <Option value="lucy">Lucy</Option>
                   <Option value="Yiminghe">yiminghe</Option>
                 </Select>
             )}
           </FormItem>
+
+          <FormItem
+              label={"Solicitante"}
+              {...formItemLayout}
+              validateStatus={userNameError ? 'error' : ''}
+              help={userNameError || ''}>
+            {getFieldDecorator('applicant', {
+              rules: [{
+                required: true, message: 'Por favor seleccione un solicitante',
+              }],
+            })(
+                <Select placeholder="Seleccione Solicitante">
+                  <Option value="jack">Jack</Option>
+                  <Option value="lucy">Lucy</Option>
+                  <Option value="Yiminghe">yiminghe</Option>
+                </Select>
+            )}
+          </FormItem>
+
+          <FormItem
+              label={"Responsable"}
+              {...formItemLayout}
+              validateStatus={userNameError ? 'error' : ''}
+              help={userNameError || ''}>
+            {getFieldDecorator('applicant', {
+              rules: [{
+                required: true, message: 'Por favor seleccione un Responsable',
+              }],
+            })(
+                <Select placeholder="Seleccione Responsable">
+                  <Option value="jack">Jack</Option>
+                  <Option value="lucy">Lucy</Option>
+                  <Option value="Yiminghe">yiminghe</Option>
+                </Select>
+            )}
+          </FormItem>
+
           <FormItem
               label={"Fecha"}
               {...formItemLayout}
