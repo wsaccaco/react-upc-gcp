@@ -96,8 +96,8 @@ export default class Michael extends Component {
               bordered
               title={this.titleTable}/>
           <FormRequestChange visible={visible} onOk={()=>{}} onCancel={this.closeNewRequest} />
+            <Button type="primary" shape="circle" icon="search" />
         </div>
     );
   }
-
 }
