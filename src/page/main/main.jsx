@@ -13,7 +13,7 @@ export default class Main extends Component {
       {
         urlImage: url,
         title: 'Gestión de Portafolio',
-        rfc_Asunto: 'Es el modulo qye permite la gestion eficaz del prortafolio de proyectos mediante monitoreo',
+        rfc_Asunto: 'Es el modulo que permite la gestion eficaz del prortafolio de proyectos mediante monitoreo',
         link : ''
       },
       {
