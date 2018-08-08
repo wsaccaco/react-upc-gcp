@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col,Card} from 'antd';
 import './main.css';
+
 
 export default class Main extends Component {
 
@@ -39,8 +40,12 @@ export default class Main extends Component {
     let {modules} = this.state;
     return modules.map((module, index) => {
       return (<Col span={6} key={index}>
-        <strong>{module.title}</strong>
-        <span>{module.rfc_Asunto}</span>
+
+          <Card title= {module.title}>
+              <p>{module.rfc_Asunto}</p>
+
+          </Card>
+
       </Col>)
     })
   }
@@ -50,16 +55,21 @@ export default class Main extends Component {
   }
 
   render() {
+
     return (
         <div className="Main">
+
+
           <Row>
             <Col span={12}>col-12</Col>
             <Col span={12}>col-12</Col>
           </Row>
-          <Row>
+          <Row gutter={16}>
             {this.cards()}
           </Row>
         </div>
+
+
     );
   }
 
