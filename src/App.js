@@ -13,7 +13,7 @@ class App extends Component {
     return (
         <Router>
           <Switch>
-            <Route exact path="/main" component={NdWAp}/>
+            <Route exact path="/main" component={Main}/>
             <Route path="/change" component={Change}/>
           </Switch>
         </Router>
