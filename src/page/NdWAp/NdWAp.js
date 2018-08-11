@@ -74,7 +74,7 @@ export default class NdWAp extends Component {
     this.setState({
       visible : false
     });
-  }
+  } 
 
   titleTable(){
     return (
