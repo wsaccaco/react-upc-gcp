@@ -18,9 +18,9 @@ const http = ( pathName, method = 'GET', body = {}, callback, callbackError ) =>
     body: method === "POST" && JSON.stringify( body )
   };
 
-  let myRequest = new Request( _url, myInit );
+  // let myRequest = new Request( _url, myInit );
 
-  fetch( myRequest )
+  fetch(_url, myInit )
   .then( function ( response ) {
     return response.json()
   } )
