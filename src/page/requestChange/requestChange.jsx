@@ -9,7 +9,7 @@ import './requestChange.css';
 import http from '../../service/http';
 
 export default class RequestChange extends Component {
-  rfc_FechaSolicitud;
+
   columns = [
     {
       title: 'Código',
@@ -80,7 +80,7 @@ export default class RequestChange extends Component {
     );
   }
 
-  componentDidMount() {
+  fetchListRFC(){
     http('C0001G0001', 'GET', {}, (data) => {
       this.setState({
         data,
@@ -88,6 +88,15 @@ export default class RequestChange extends Component {
       });
     });
   }
+
+  componentDidMount() {
+    this.fetchListRFC();
+  }
+
+  onOk = (response) =>{
+    this.fetchListRFC();
+    this.closeNewRequest();
+  };
 
   render() {
     let {visible, data, loading} = this.state;
@@ -101,7 +110,7 @@ export default class RequestChange extends Component {
               bordered
               scroll={{ x: 1300 }}
               title={this.titleTable}/>
-          <FormRequestChange visible={visible} onOk={() => {}}
+          <FormRequestChange visible={visible} onOk={this.onOk}
                              onCancel={this.closeNewRequest}/>
         </div>
     );
