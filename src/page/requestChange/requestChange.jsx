@@ -37,11 +37,13 @@ export default class RequestChange extends Component {
       title: 'Action',
       key: 'action',
       fixed: 'right',
-      width: 100,
+      width: 150,
       render: (text, record) => (
-          <span>
-      <a href="javascript:;" onClick={() => {this.openNewRequest();}}>Editar</a>
-    </span>
+        <span>
+          <Link to={`flow/${text.rfc_Codigo}`}>Ir al Flujo</Link>
+          <Divider type="vertical"/>
+          <a href="javascript:;" onClick={() => {this.openNewRequest();}}> Editar </a>
+        </span>
       ),
     }];
 
@@ -55,7 +57,7 @@ export default class RequestChange extends Component {
   state = {
     visible: false,
     loading: true,
-    data: []
+    data: [],
   };
 
   openNewRequest() {
@@ -80,11 +82,11 @@ export default class RequestChange extends Component {
     );
   }
 
-  fetchListRFC(){
+  fetchListRFC() {
     http('C0001G0001', 'GET', {}, (data) => {
       this.setState({
         data,
-        loading : false
+        loading: false,
       });
     });
   }
@@ -93,7 +95,7 @@ export default class RequestChange extends Component {
     this.fetchListRFC();
   }
 
-  onOk = (response) =>{
+  onOk = (response) => {
     this.fetchListRFC();
     this.closeNewRequest();
   };
@@ -108,7 +110,7 @@ export default class RequestChange extends Component {
               size="middle"
               loading={loading}
               bordered
-              scroll={{ x: 1300 }}
+              scroll={{x: 1300}}
               title={this.titleTable}/>
           <FormRequestChange visible={visible} onOk={this.onOk}
                              onCancel={this.closeNewRequest}/>
