@@ -1,4 +1,4 @@
-const http = ( pathName, method = 'GET', body = {}, callback, callbackError ) => {
+const http = ( pathName, method = 'GET', body = {}, callback, callbackError = () => {} ) => {
 
   let _url = `https://upctp3-des.azurewebsites.net/${pathName}`;
   if ( method === 'GET' ) {
