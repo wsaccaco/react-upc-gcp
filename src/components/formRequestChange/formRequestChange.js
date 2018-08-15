@@ -39,6 +39,8 @@ class FormRequestChange extends Component {
     http('C0003G0001', 'GET', {}, (response) => {
       let OptionPortafalio = response.map(({text, value}, index) => {
           return <Option key={index} value={value}>{text}</Option>;
+      }, (err) => {
+        console.log(err);
       });
 
       this.setState({

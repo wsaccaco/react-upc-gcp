@@ -4,8 +4,7 @@ import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 import Eheader from '../../components/Eheader/Eheader';
 import RequestChange from '../../page/requestChange/requestChange';
-import Michael from '../../page/michael/michael';
-import NdWAp from '../../page/NdWAp/NdWAp';
+import FlowPage from '../../page/flow/Flow';
 
 const { SubMenu } = Menu;
 const { Footer, Sider, Content } = Layout;
@@ -65,8 +64,7 @@ export default class Change extends Component {
                 <Router>
                   <Switch>
                     <Route exact path={`${match.path}/main`} component={RequestChange}/>
-                    <Route exact path={`${match.path}/michael`} component={Michael}/>
-                      <Route exact path={`${match.path}/NdWAp`} component={NdWAp}/>
+                    <Route exact path={`${match.path}/flow/:id`} component={FlowPage}/>
                   </Switch>
                 </Router>
               </Content>

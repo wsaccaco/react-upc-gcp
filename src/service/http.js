@@ -14,19 +14,22 @@ const http = ( pathName, method = 'GET', body = {}, callback, callbackError = ()
     method: method,
     headers: myHeaders,
     mode: 'cors',
-    cache: 'default',
-    body: method === "POST" && JSON.stringify( body )
+    cache: 'default'
   };
 
-  /*let myRequest = new Request( _url, myInit );*/
+  if (method === 'POST') {
+    myInit.body = JSON.stringify( body )
+  }
 
   fetch(_url,  myInit )
   .then( function ( response ) {
+
     return response.json()
   } )
   .then( function ( response ) {
     callback( response )
   } ).catch( ( e ) => {
+    console.error(e);
     callbackError(e)
   } );
 }
