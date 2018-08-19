@@ -1,0 +1,3 @@
+.planning .wrap-table:not(:first-child){
+    margin-top: 16px;
+}

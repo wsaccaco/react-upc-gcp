@@ -23,10 +23,9 @@ const http = (
     myInit.body = JSON.stringify(body);
   }
 
-  fetch(_url, myInit).then(function(response) {
-
-    return response.json();
-  }).then(function(response) {
+  fetch(_url, myInit)
+  .then( response => response.json() )
+  .then(function(response) {
     callback(response);
   }).catch((e) => {
     console.error(e);
