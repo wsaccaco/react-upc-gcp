@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom';
 import Risk from '../../components/Risk/Risk';
 import DetailsFlow from '../../components/DetailsFlow/DetailsFlow';
 import FlowRequirement from '../../components/FlowRequirement/FlowRequirement';
+import FlowTechnical from '../../components/FlowTechnical/FlowTechnical';
 
 import './Flow.css';
 import http from '../../service/http';
@@ -52,7 +53,7 @@ export default class FlowPage extends Component {
   }
 
   state = {
-    current: 0,
+    current: 1,
     loading: false,
     dataSource: {
       por_Nombre: null,
@@ -62,8 +63,8 @@ export default class FlowPage extends Component {
       rfc_Asunto: '',
     },
     requirement: <FlowRequirement rfc_id={this.props.match.params.id}/>,
-    technique: <div>1</div>,
-    risk: <Risk/>,
+    technique: <FlowTechnical rfc_id={this.props.match.params.id}/>,
+    risk: <Risk rfc_id={this.props.match.params.id}/>,
     planning: <Risk/>,
     committee: <div>2</div>,
     report: <div>3</div>,
