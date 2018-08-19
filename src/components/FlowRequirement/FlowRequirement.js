@@ -107,17 +107,7 @@ export default class FlowRequirement extends Component {
     let {dataSource, loadingChange, dataSourceChange, visibleModal} = this.state;
     return (
 
-        <div className="planning component">
-          <div className="wrap-table">
-            <Table
-              title={() => "Requerimientos actuales del Proyecto"}
-              bordered
-              locale={{emptyText: 'No hay datos'}}
-              size="small"
-              scroll={{x: 1000}}
-              dataSource={dataSource}
-              columns={columns_current_requirement} />
-          </div>
+        <div className="flow-requirement component">
 
           <div className="wrap-table">
             <Table
@@ -129,6 +119,17 @@ export default class FlowRequirement extends Component {
               loading={loadingChange}
               dataSource={dataSourceChange}
               columns={columns_requirement_change} />
+          </div>
+
+          <div className="wrap-table">
+            <Table
+              title={() => "Requerimientos actuales del Proyecto"}
+              bordered
+              locale={{emptyText: 'No hay datos'}}
+              size="small"
+              scroll={{x: 1000}}
+              dataSource={dataSource}
+              columns={columns_current_requirement} />
           </div>
           <FormRequirementChange visible={visibleModal} onOk={() => {}}
                              onCancel={this.onCancel.bind(this)}/>

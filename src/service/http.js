@@ -1,8 +1,9 @@
 const http = (
     pathName, method = 'GET', body = {}, callback,
     callbackError = () => {}) => {
+  let _url = `http://25.3.69.136/${pathName}`;
+  // let _url = `https://upctp3-des.azurewebsites.net/${pathName}`;
 
-  let _url = `https://upctp3-des.azurewebsites.net/${pathName}`;
   if (method === 'GET') {
     _url = new URL(_url);
     Object.keys(body).forEach(key => _url.searchParams.append(key, body[key]));
