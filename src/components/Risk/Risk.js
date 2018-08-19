@@ -66,7 +66,7 @@ class Risk extends Component {
         let {form} = this.props;
 
         //PopConfirm
-        http('C0001S0003', 'POST', form, (response) => {
+        http('RFC/EvaluacionRiesgo', 'POST', form, (response) => {
             if (response === 'OK') {
                 message.success('Se envio la información a Evaluar en Riesgo.');
             } else {
@@ -76,8 +76,8 @@ class Risk extends Component {
     };
 
     fetchEstado(){
-        http('C0003G0001', 'GET', {}, (response) => {
-            let OptionEstado = response.map(({text, value}, index) => {
+        http('RFC/EstadoRiesgo', 'GET', {}, (response) => {
+            let OptionEstado = response.map(({esr_Descripcion:text, esr_Codigo:value}, index) => {
                 return <Option key={index} value={value}>{text}</Option>;
             }, (err) => {
                 console.log(err);
@@ -89,8 +89,8 @@ class Risk extends Component {
     }
 
     fetchImpacto(){
-        http('C0003G0001', 'GET', {}, (response) => {
-            let OptionImpacto = response.map(({text, value}, index) => {
+        http('RFC/ImpactoRiesgo', 'GET', {}, (response) => {
+            let OptionImpacto = response.map(({imp_Descripcion:text, imp_Codigo:value}, index) => {
                 return <Option key={index} value={value}>{text}</Option>;
             }, (err) => {
                 console.log(err);
@@ -153,7 +153,6 @@ class Risk extends Component {
                         <Button
                             type="primary"
                             icon="rocket"
-                            //onClick={this.onClickEnviarRiesgo}
                             disabled={enviarriesgoDisabled}>
                             Enviar a Riesgo
                         </Button>
