@@ -180,11 +180,11 @@ class Risk extends Component {
             <Form className="gcp-form">
                 <FormItem>
                     {getFieldDecorator('rfc_Codigo', {
-                        rules: [],
-                        initialValue: rfc_id
-                    })(
-                        <Input type="hidden"/>
-                    )}
+                    rules: [],
+                    initialValue: rfc_id
+                })(
+                    <Input type="hidden"/>
+                )}
                 </FormItem>
 
                 <FormItem
@@ -219,7 +219,7 @@ class Risk extends Component {
                 </FormItem>
 
                 <FormItem
-                    label={'Estado'}
+                    label={'Estado1'}
                     {...formItemLayout}
                     >
                     <Select
