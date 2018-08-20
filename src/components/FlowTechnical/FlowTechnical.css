@@ -1,0 +1,13 @@
+.flow-technical .card-details-technical .ant-card-body{
+    padding: 5px 0;
+}
+
+.flow-technical .item-meta{
+    margin: 0;
+}
+
+.flow-technical .ant-list-grid .ant-list-item-content{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
