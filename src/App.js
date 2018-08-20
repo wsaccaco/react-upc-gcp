@@ -12,7 +12,8 @@ class App extends Component {
     return (
         <Router>
           <Switch>
-            <Route path="/change" component={Change}/>
+            <Route path="/change1" component={Main}/>
+
           </Switch>
         </Router>
     );
