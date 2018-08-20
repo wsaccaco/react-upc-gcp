@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Button, DatePicker, Form, Input, message, Popconfirm, Radio, Select} from 'antd';
+import moment from 'moment';
 import './Risk.css';
 import http from '../../service/http';
 
@@ -19,6 +20,10 @@ const formItemLayout = {
     },
 };
 
+const textEnviarRiesgo = 'Estas seguro de enviar la información a Evaluar en Riesgo?';
+//const dateFormat = 'YYYY/MM/DD';
+const dateFormat = 'DD/MM/YYYY';
+
 class Risk extends Component {
 
     constructor(props) {
@@ -28,8 +33,13 @@ class Risk extends Component {
     }
 
     state = {
-        textEnviarRiesgo: 'Estas seguro de enviar la información a Evaluar en Riesgo?',
-        valueRadioRisk: 1,
+        evr_Requiere: 0,
+        evr_FechaEnvio: '01/01/1900',
+        evr_Estado: 0,
+        evr_FechaRespuesta: '01/01/1900',
+        evr_Informe: '',
+        evr_Impacto: 0,
+
         evaluacionriesgoDisabled: false,
         enviarriesgoDisabled: true,
         OptionEstado: [],
@@ -43,7 +53,7 @@ class Risk extends Component {
     };
 
     onChange = (e) => {
-        console.log('radio checked', e.target.value);
+        //console.log('radio checked', e.target.value);
         this.setState({
             valueRadioRisk: e.target.value
         });
@@ -66,9 +76,23 @@ class Risk extends Component {
         let {form} = this.props;
 
         //PopConfirm
-        http('C0001S0003', 'POST', form, (response) => {
+        http('RFC/EvaluacionRiesgo', 'POST', form, (response) => {
             if (response === 'OK') {
                 message.success('Se envio la información a Evaluar en Riesgo.');
+                let {evr_Requiere,
+                    evr_FechaEnvio,
+                    evr_Estado,
+                    evr_FechaRespuesta,
+                    evr_Informe,
+                    evr_Impacto} = response;
+                this.setState({
+                    evr_Requiere,
+                    evr_FechaEnvio,
+                    evr_Estado,
+                    evr_FechaRespuesta,
+                    evr_Informe,
+                    evr_Impacto
+                });
             } else {
                 message.warning('Ocurrio un error en el envio.');
             }
@@ -76,8 +100,8 @@ class Risk extends Component {
     };
 
     fetchEstado(){
-        http('C0003G0001', 'GET', {}, (response) => {
-            let OptionEstado = response.map(({text, value}, index) => {
+        http('RFC/EstadoRiesgo', 'GET', {}, (response) => {
+            let OptionEstado = response.map(({esr_Descripcion:text, esr_Codigo:value}, index) => {
                 return <Option key={index} value={value}>{text}</Option>;
             }, (err) => {
                 console.log(err);
@@ -89,8 +113,8 @@ class Risk extends Component {
     }
 
     fetchImpacto(){
-        http('C0003G0001', 'GET', {}, (response) => {
-            let OptionImpacto = response.map(({text, value}, index) => {
+        http('RFC/ImpactoRiesgo', 'GET', {}, (response) => {
+            let OptionImpacto = response.map(({imp_Descripcion:text, imp_Codigo:value}, index) => {
                 return <Option key={index} value={value}>{text}</Option>;
             }, (err) => {
                 console.log(err);
@@ -101,18 +125,43 @@ class Risk extends Component {
         });
     }
 
+    fetchEvaluacionRiesgo(){
+        let {rfc_id} = this.props;
+        http('RFC/EvaluacionRiesgo', 'GET', {id:rfc_id}, (response) => {
+            let {evr_Requiere,
+                evr_FechaEnvio,
+                evr_Estado,
+                evr_FechaRespuesta,
+                evr_Informe,
+                evr_Impacto} = response;
+            this.setState({
+                evr_Requiere,
+                evr_FechaEnvio,
+                evr_Estado,
+                evr_FechaRespuesta,
+                evr_Informe,
+                evr_Impacto
+            });
+        });
+    }
+
     componentDidMount() {
         this.fetchEstado();
         this.fetchImpacto();
-        this.props.form.validateFields();
+        this.fetchEvaluacionRiesgo();
     }
 
     render() {
-        let {visible, onOk, onCancel, form} = this.props;
 
+        let {visible, onOk, onCancel, form, rfc_id} = this.props;
         let {
-            textEnviarRiesgo,
-            valueRadioRisk,
+            evr_Requiere,
+            evr_FechaEnvio,
+            evr_Estado,
+            evr_FechaRespuesta,
+            evr_Informe,
+            evr_Impacto,
+
             evaluacionriesgoDisabled,
             enviarriesgoDisabled,
             OptionEstado,
@@ -129,12 +178,22 @@ class Risk extends Component {
 
         return (
             <Form className="gcp-form">
+                <FormItem>
+                    {getFieldDecorator('rfc_Codigo', {
+                        rules: [],
+                        initialValue: rfc_id
+                    })(
+                        <Input type="hidden"/>
+                    )}
+                </FormItem>
+
                 <FormItem
                     label={'Requiere evaluación'}
                     {...formItemLayout}
                     >
-                    {getFieldDecorator('rfc_EvaluacionRiesgo', {
-                        rules: []
+                    {getFieldDecorator('evr_Requiere', {
+                        rules: [],
+                        initialValue: evr_Requiere
                     })(
                         <RadioGroup
                             onChange={this.onChange}
@@ -148,12 +207,11 @@ class Risk extends Component {
                 <FormItem
                     label={' '}
                     {...formItemLayout}
-                >
+                    >
                     <Popconfirm placement="bottom" title={textEnviarRiesgo} onConfirm={this.confirmEnviarRiesgo} okText="Yes" cancelText="No">
                         <Button
                             type="primary"
                             icon="rocket"
-                            //onClick={this.onClickEnviarRiesgo}
                             disabled={enviarriesgoDisabled}>
                             Enviar a Riesgo
                         </Button>
@@ -164,81 +222,68 @@ class Risk extends Component {
                     label={'Estado'}
                     {...formItemLayout}
                     >
-                    {getFieldDecorator('rfc_Estado', {
-                        rules: []
-                    })(
-                        <Select
-                            showSearch
-                            disabled={estadoDisabled}
-                            placeholder="Seleccione Estado">
-                            {OptionEstado}
-                        </Select>
-                    )}
+                    <Select
+                        showSearch
+                        disabled={estadoDisabled}
+                        placeholder="Seleccione Estado"
+                        defaultValue={evr_Estado}>
+                        {OptionEstado}
+                    </Select>
                 </FormItem>
 
                 <FormItem
                     label={'Fecha de Envio'}
                     {...formItemLayout}
                     >
-                    {getFieldDecorator('rfc_FechaEnvio', {
-                        rules: []
-                    })(
-                        <DatePicker
-                            disabled={fenvioDisabled}
-                        />
-                    )}
+                    <DatePicker
+                        disabled={fenvioDisabled}
+                        defaultValue={moment(evr_FechaEnvio, this.dateformat)}
+                        format={dateFormat}
+                    />
                 </FormItem>
 
                 <FormItem
                     label={'Fecha de Respuesta'}
                     {...formItemLayout}
                     >
-                    {getFieldDecorator('rfc_FechaRepuesta', {
-                        rules: []
-                    })(
-                        <DatePicker
-                            disabled={frespuestaDisabled}
-                        />
-                    )}
+                    <DatePicker
+                        disabled={frespuestaDisabled}
+                        defaultValue={moment(evr_FechaRespuesta, this.dateformat)}
+                        format={dateFormat}
+                    />
                 </FormItem>
 
                 <FormItem
                     label={'Informe'}
                     {...formItemLayout}
                     >
-                    {getFieldDecorator('rfc_Informe', {
-                        rules: [],
-                    })(
-                        <TextArea
-                            disabled={informeDisabled}
-                            placeholder="Resumen de informe emitido por Gestión de Riesgo"
-                        />
-                    )}
+                    <TextArea
+                        disabled={informeDisabled}
+                        placeholder="Resumen de informe emitido por Gestión de Riesgo"
+                        defaultValue={evr_Informe}
+                    />
                 </FormItem>
 
                 <FormItem
                     label={'Impacto'}
                     {...formItemLayout}
                     >
-                    {getFieldDecorator('rfc_Impacto', {
-                        rules: []
-                    })(
-                        <Select
-                            showSearch
-                            disabled={impactoDisabled}
-                            placeholder="Seleccione Impacto">
-                            {OptionImpacto}
-                        </Select>
-                    )}
+                    <Select
+                        showSearch
+                        disabled={impactoDisabled}
+                        placeholder="Seleccione Impacto"
+                        defaultValue={evr_Impacto}>
+                        {OptionImpacto}
+                    </Select>
                 </FormItem>
 
                 <FormItem
                     label={'Adjunto'}
                     {...formItemLayout}
-                >
+                    >
                     <Button
                         icon="download"
-                        //onChange={}
+                        //onClick={}
                         disabled={downloadDisabled}>
                         Download
                     </Button>
