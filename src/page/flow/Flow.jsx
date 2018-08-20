@@ -53,7 +53,7 @@ export default class FlowPage extends Component {
   }
 
   state = {
-    current: 1,
+    current: 2,
     loading: false,
     dataSource: {
       por_Nombre: null,
