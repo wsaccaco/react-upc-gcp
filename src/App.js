@@ -12,8 +12,10 @@ class App extends Component {
     return (
         <Router>
           <Switch>
+
             <Route path="/change" component={Change}/>
             <Route path="/loader-technical" component={LeaderTechnical}/>
+
           </Switch>
         </Router>
     );
