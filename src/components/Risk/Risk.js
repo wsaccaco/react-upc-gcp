@@ -245,6 +245,7 @@ class Risk extends Component {
 
         return (
             <Form className="gcp-form">
+<<<<<<< HEAD
                 <div>
                     <Row>
                         <Col span={12}>
@@ -256,6 +257,93 @@ class Risk extends Component {
                                     <Input type="hidden"/>
                                 )}
                             </FormItem>
+=======
+                <FormItem>
+                    {getFieldDecorator('rfc_Codigo', {
+                    rules: [],
+                    initialValue: rfc_id
+                })(
+                    <Input type="hidden"/>
+                )}
+                </FormItem>
+
+                <FormItem
+                    label={'Requiere evaluación'}
+                    {...formItemLayout}
+                    >
+                    {getFieldDecorator('evr_Requiere', {
+                        rules: [],
+                        initialValue: evr_Requiere
+                    })(
+                        <RadioGroup
+                            onChange={this.onChange}
+                            disabled={evaluacionriesgoDisabled}>
+                            <Radio value={1}>SI</Radio>
+                            <Radio value={0}>NO</Radio>
+                        </RadioGroup>
+                    )}
+                </FormItem>
+
+                <FormItem
+                    label={' '}
+                    {...formItemLayout}
+                    >
+                    <Popconfirm placement="bottom" title={textEnviarRiesgo} onConfirm={this.confirmEnviarRiesgo} okText="Yes" cancelText="No">
+                        <Button
+                            type="primary"
+                            icon="rocket"
+                            disabled={enviarriesgoDisabled}>
+                            Enviar a Riesgo
+                        </Button>
+                    </Popconfirm>
+                </FormItem>
+
+                <FormItem
+                    label={'Estado1'}
+                    {...formItemLayout}
+                    >
+                    <Select
+                        showSearch
+                        disabled={estadoDisabled}
+                        placeholder="Seleccione Estado"
+                        defaultValue={evr_Estado}>
+                        {OptionEstado}
+                    </Select>
+                </FormItem>
+
+                <FormItem
+                    label={'Fecha de Envio'}
+                    {...formItemLayout}
+                    >
+                    <DatePicker
+                        disabled={fenvioDisabled}
+                        defaultValue={moment(evr_FechaEnvio, this.dateformat)}
+                        format={dateFormat}
+                    />
+                </FormItem>
+
+                <FormItem
+                    label={'Fecha de Respuesta'}
+                    {...formItemLayout}
+                    >
+                    <DatePicker
+                        disabled={frespuestaDisabled}
+                        defaultValue={moment(evr_FechaRespuesta, this.dateformat)}
+                        format={dateFormat}
+                    />
+                </FormItem>
+
+                <FormItem
+                    label={'Informe'}
+                    {...formItemLayout}
+                    >
+                    <TextArea
+                        disabled={informeDisabled}
+                        placeholder="Resumen de informe emitido por Gestión de Riesgo"
+                        defaultValue={evr_Informe}
+                    />
+                </FormItem>
+>>>>>>> 2d4e3f81bd12278f19bdc0253e607c50e82c248a
 
                             <FormItem
                                 label={'Requiere evaluación'}
