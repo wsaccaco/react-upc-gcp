@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, DatePicker, Form, Input, message, Popconfirm, Radio, Select, Table, Row, Col} from 'antd';
+import {Button, DatePicker, Form, Input, message, Popconfirm, Radio, Select, Table, Row, Col, Modal} from 'antd';
 import moment from 'moment';
 
 import './Risk.css';
@@ -12,6 +12,7 @@ let RadioGroup = Radio.Group;
 let Option = Select.Option;
 let TextArea = Input.TextArea;
 
+const confirm = Modal.confirm;
 const formItemLayout = {
     labelCol: {
         xs: {span: 24},
@@ -22,11 +23,8 @@ const formItemLayout = {
         sm: {span: 16},
     },
 };
-
 const textEnviarRiesgo = 'Estas seguro de enviar la información a Evaluar en Riesgo?';
-//const dateFormat = 'YYYY/MM/DD';
-const dateFormat = 'DD/MM/YYYY';
-
+const dateFormat = 'YYYY-MM-DD';
 //Cambios de Requerimientos
 const _column_template = [{
     title: 'Código',
@@ -61,9 +59,9 @@ class Risk extends Component {
 
     state = {
         evr_Requiere: 0,
-        evr_FechaEnvio: '01/01/1900',
+        evr_FechaEnvio: '1900-01-01',
         evr_Estado: 'Estado',
-        evr_FechaRespuesta: '01/01/1900',
+        evr_FechaRespuesta: '1900-01-01',
         evr_Informe: '',
         evr_Impacto: 'Impacto',
 
@@ -98,38 +96,66 @@ class Risk extends Component {
         }
     }
 
-    confirmEnviarRiesgo(e) {
+    handleSubmit = (e) => {
         e.preventDefault();
         let {form} = this.props;
+        form.validateFields((err, form) => {
+            if (!err) {
+                console.log('Received values of form: ', form);
 
-        //PopConfirm
-        http('RFC/EvaluacionRiesgo', 'POST', form, (response) => {
-            if (response === 'OK') {
-                message.success('Se envio la información a Evaluar en Riesgo.');
-                let {evr_Requiere,
-                    evr_FechaEnvio,
-                    evr_Estado,
-                    evr_FechaRespuesta,
-                    evr_Informe,
-                    evr_Impacto} = response;
-                this.setState({
-                    evr_Requiere,
-                    evr_FechaEnvio,
-                    evr_Estado,
-                    evr_FechaRespuesta,
-                    evr_Informe,
-                    evr_Impacto
+                confirm({
+                    title: 'Seguro de enviar la información a Gestión de Riesgo?',
+                    content: 'Se enviará toda la información del RFC al proceso de evaluación de riesgo.',
+                    onOk: () => {
+                        console.log('OK');
+                        try{
+                            http('EvaluacionRiesgo', 'POST', form, (response) => {
+                                let {evr_Codigo} = response;
+                                if (evr_Codigo > 0) {
+                                    message.success('Se envio la información a Gestión de Riesgo.');
+                                    let {evr_Requiere,
+                                        evr_FechaEnvio,
+                                        evr_Estado,
+                                        evr_FechaRespuesta,
+                                        evr_Informe,
+                                        evr_Impacto} = response;
+                                    let {evaluacionriesgoDisabled,enviarriesgoDisabled} = this.state;
+                                    if (evr_Requiere === true){
+                                        evr_Requiere = 1;
+                                        evaluacionriesgoDisabled = true;
+                                        enviarriesgoDisabled = true;
+                                    }
+                                    console.log(this);
+                                    this.setState({
+                                        evaluacionriesgoDisabled,
+                                        enviarriesgoDisabled,
+                                        evr_Requiere,
+                                        evr_FechaEnvio,
+                                        evr_Estado,
+                                        evr_FechaRespuesta,
+                                        evr_Informe,
+                                        evr_Impacto
+                                    });
+                                } else {
+                                    message.warning('Ocurrió un error en el envió.');
+                                }
+                            }, (e) => {
+                                console.error(e)
+                            } );
+                        } catch (e) {
+                            console.error(e)
+                        }
+                    },
+                    onCancel() {
+                        console.log('Cancel');
+                    },
                 });
-            } else {
-                message.warning('Ocurrio un error en el envio.');
             }
-        }, (e) => {
-            console.error(e)
-        } );
+        });
     }
 
     fetchEstado(){
-        http('RFC/EstadoRiesgo', 'GET', {}, (response) => {
+        http('EstadoRiesgo', 'GET', {}, (response) => {
             let OptionEstado = response.map(({esr_Descripcion:text, esr_Codigo:value}, index) => {
                 return <Option key={index} value={value}>{text}</Option>;
             }, (err) => {
@@ -142,7 +168,7 @@ class Risk extends Component {
     }
 
     fetchImpacto(){
-        http('RFC/ImpactoRiesgo', 'GET', {}, (response) => {
+        http('ImpactoRiesgo', 'GET', {}, (response) => {
             let OptionImpacto = response.map(({imp_Descripcion:text, imp_Codigo:value}, index) => {
                 return <Option key={index} value={value}>{text}</Option>;
             }, (err) => {
@@ -156,22 +182,28 @@ class Risk extends Component {
 
     fetchEvaluacionRiesgo(){
         let {rfc_id} = this.props;
-        http('RFC/EvaluacionRiesgo/' + rfc_id, 'GET', {}, (response) => {
+        http('EvaluacionRiesgo/' + rfc_id, 'GET', {}, (response) => {
             let {evr_Requiere,
                 evr_FechaEnvio,
                 evr_Estado,
                 evr_FechaRespuesta,
                 evr_Informe,
-                evr_Impacto} = response;
+                evr_Impacto} = response[0];
+            console.log(evr_Requiere,
+                evr_FechaEnvio,
+                evr_Estado,
+                evr_FechaRespuesta,
+                evr_Informe,
+                evr_Impacto);
             let {evaluacionriesgoDisabled,enviarriesgoDisabled} = this.state;
-            if (evr_Requiere == 1){
+            if (evr_Requiere === true){
+                evr_Requiere = 1;
                 evaluacionriesgoDisabled = true;
                 enviarriesgoDisabled = true;
             }
             this.setState({
                 evaluacionriesgoDisabled,
                 enviarriesgoDisabled,
-
                 evr_Requiere,
                 evr_FechaEnvio,
                 evr_Estado,
@@ -181,7 +213,7 @@ class Risk extends Component {
             });
         }, (e) => {
             console.error(e)
-        } );
+        });
     }
 
     //Cambios de Requerimientos
@@ -191,7 +223,7 @@ class Risk extends Component {
             loadingChange: true
         });
 
-        http( 'C0002G0004', 'POST', {rfc_Codigo:rfc_id}, (response) => {
+        http('/rfc/' + rfc_id + '/nuevosRequerimientos', 'GET', {}, (response) => {
             this.setState({
                 dataSourceChange: response,
                 loadingChange: false
@@ -244,13 +276,13 @@ class Risk extends Component {
         const {getFieldDecorator} = form;
 
         return (
-            <Form className="gcp-form">
+            <Form onSubmit={this.handleSubmit} className="gcp-form" >
                 <div>
                     <Row>
                         <Col span={12}>
                             <FormItem>
                                 {getFieldDecorator('rfc_Codigo', {
-                                    rules: [],
+                                    rules: [{required: true, message: 'Definir el RFC'}],
                                     initialValue: rfc_id
                                 })(
                                     <Input type="hidden"/>
@@ -262,7 +294,7 @@ class Risk extends Component {
                                 {...formItemLayout}
                                 >
                                 {getFieldDecorator('evr_Requiere', {
-                                    rules: [],
+                                    rules: [{required: false, message: 'Definir Requiere'}],
                                     initialValue: evr_Requiere
                                 })(
                                     <RadioGroup
@@ -272,14 +304,13 @@ class Risk extends Component {
                                         <Radio value={1}>SI</Radio>
                                     </RadioGroup>
                                 )}
-                                <Popconfirm placement="bottom" title={textEnviarRiesgo} onConfirm={this.confirmEnviarRiesgo} okText="Yes" cancelText="No">
-                                    <Button
-                                        type="primary"
-                                        icon="rocket"
-                                        disabled={enviarriesgoDisabled}>
-                                        Enviar a Riesgo
-                                    </Button>
-                                </Popconfirm>
+                                <Button
+                                    type="primary"
+                                    htmlType="submit"
+                                    icon="rocket"
+                                    disabled={enviarriesgoDisabled}>
+                                    Enviar a Riesgo
+                                </Button>
                             </FormItem>
                         </Col>
                         <Col span={12}>
@@ -289,7 +320,7 @@ class Risk extends Component {
                             >
                                 <DatePicker
                                     disabled={fenvioDisabled}
-                                    defaultValue={moment(evr_FechaEnvio, this.dateformat)}
+                                    value={moment(evr_FechaEnvio, this.dateformat)}
                                     format={dateFormat}
                                 />
                             </FormItem>
@@ -305,7 +336,7 @@ class Risk extends Component {
                                     showSearch
                                     disabled={estadoDisabled}
                                     placeholder="Seleccione Estado"
-                                    defaultValue={evr_Estado}>
+                                    value={evr_Estado}>
                                     {OptionEstado}
                                 </Select>
                             </FormItem>
@@ -317,7 +348,7 @@ class Risk extends Component {
                             >
                                 <DatePicker
                                     disabled={frespuestaDisabled}
-                                    defaultValue={moment(evr_FechaRespuesta, this.dateformat)}
+                                    value={moment(evr_FechaRespuesta, this.dateformat)}
                                     format={dateFormat}
                                 />
                             </FormItem>
@@ -332,7 +363,7 @@ class Risk extends Component {
                                 <TextArea
                                     disabled={informeDisabled}
                                     placeholder="Resumen de informe emitido por Gestión de Riesgo"
-                                    defaultValue={evr_Informe}
+                                    value={evr_Informe}
                                 />
                             </FormItem>
                         </Col>
@@ -350,7 +381,7 @@ class Risk extends Component {
                                     showSearch
                                     disabled={impactoDisabled}
                                     placeholder="Seleccione Impacto"
-                                    defaultValue={evr_Impacto}>
+                                    value={evr_Impacto}>
                                     {OptionImpacto}
                                 </Select>
                             </FormItem>
