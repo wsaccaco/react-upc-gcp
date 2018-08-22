@@ -53,6 +53,7 @@ class Risk extends Component {
 
     constructor(props) {
         super(props);
+        this.fetchPrioridad = this.fetchPrioridad.bind(this);
         this.fetchEstado = this.fetchEstado.bind(this);
         this.fetchImpacto = this.fetchImpacto.bind(this);
     }
@@ -65,6 +66,9 @@ class Risk extends Component {
         evr_Informe: '',
         evr_Impacto: 'Impacto',
 
+        pri_Codigo: 'Prioridad',
+        evr_Observacion: '',
+
         evaluacionriesgoDisabled: false,
         enviarriesgoDisabled: true,
         OptionEstado: [],
@@ -75,6 +79,10 @@ class Risk extends Component {
         OptionImpacto: [],
         impactoDisabled: true,
         downloadDisabled: true,
+
+        prioridadDisabled: true,
+        OptionPrioridad: [],
+        observacionDisabled: true,
 
         dataSourceChange: [],
         loadingChange: true,
@@ -87,11 +95,15 @@ class Risk extends Component {
         });
         if (e.target.value == 0){
             this.setState({
-                enviarriesgoDisabled: true
+                enviarriesgoDisabled: true,
+                prioridadDisabled: true,
+                observacionDisabled: true
             });
         } else {
             this.setState({
-                enviarriesgoDisabled: false
+                enviarriesgoDisabled: false,
+                prioridadDisabled: false,
+                observacionDisabled: false
             });
         }
     }
@@ -118,23 +130,34 @@ class Risk extends Component {
                                         evr_Estado,
                                         evr_FechaRespuesta,
                                         evr_Informe,
-                                        evr_Impacto} = response;
-                                    let {evaluacionriesgoDisabled,enviarriesgoDisabled} = this.state;
+                                        evr_Impacto,
+                                        pri_Codigo,
+                                        evr_Observacion} = response;
+                                    let {evaluacionriesgoDisabled,
+                                        enviarriesgoDisabled,
+                                        prioridadDisabled,
+                                        observacionDisabled} = this.state;
                                     if (evr_Requiere === true){
                                         evr_Requiere = 1;
                                         evaluacionriesgoDisabled = true;
                                         enviarriesgoDisabled = true;
+                                        prioridadDisabled = true;
+                                        observacionDisabled = true;
                                     }
                                     console.log(this);
                                     this.setState({
                                         evaluacionriesgoDisabled,
                                         enviarriesgoDisabled,
+                                        prioridadDisabled,
+                                        observacionDisabled,
                                         evr_Requiere,
                                         evr_FechaEnvio,
                                         evr_Estado,
                                         evr_FechaRespuesta,
                                         evr_Informe,
-                                        evr_Impacto
+                                        evr_Impacto,
+                                        pri_Codigo,
+                                        evr_Observacion
                                     });
                                 } else {
                                     message.warning('Ocurrió un error en el envió.');
@@ -151,6 +174,19 @@ class Risk extends Component {
                     },
                 });
             }
+        });
+    }
+
+    fetchPrioridad(){
+        http('PrioridadRiesgo', 'GET', {}, (response) => {
+            let OptionPrioridad = response.map(({pri_Descripcion:text, pri_Codigo:value}, index) => {
+                return <Option key={index} value={value}>{text}</Option>;
+            }, (err) => {
+                console.log(err);
+            });
+            this.setState({
+                OptionPrioridad
+            })
         });
     }
 
@@ -188,28 +224,41 @@ class Risk extends Component {
                 evr_Estado,
                 evr_FechaRespuesta,
                 evr_Informe,
-                evr_Impacto} = response[0];
+                evr_Impacto,
+                pri_Codigo,
+                evr_Observacion} = response[0];
             console.log(evr_Requiere,
                 evr_FechaEnvio,
                 evr_Estado,
                 evr_FechaRespuesta,
                 evr_Informe,
-                evr_Impacto);
-            let {evaluacionriesgoDisabled,enviarriesgoDisabled} = this.state;
+                evr_Impacto,
+                pri_Codigo,
+                evr_Observacion);
+            let {evaluacionriesgoDisabled,
+                enviarriesgoDisabled,
+                prioridadDisabled,
+                observacionDisabled} = this.state;
             if (evr_Requiere === true){
                 evr_Requiere = 1;
                 evaluacionriesgoDisabled = true;
                 enviarriesgoDisabled = true;
+                prioridadDisabled = true;
+                observacionDisabled = true;
             }
             this.setState({
                 evaluacionriesgoDisabled,
                 enviarriesgoDisabled,
+                prioridadDisabled,
+                observacionDisabled,
                 evr_Requiere,
                 evr_FechaEnvio,
                 evr_Estado,
                 evr_FechaRespuesta,
                 evr_Informe,
-                evr_Impacto
+                evr_Impacto,
+                pri_Codigo,
+                evr_Observacion
             });
         }, (e) => {
             console.error(e)
@@ -241,6 +290,7 @@ class Risk extends Component {
     }
 
     componentDidMount() {
+        this.fetchPrioridad();
         this.fetchEstado();
         this.fetchImpacto();
         this.fetchEvaluacionRiesgo();
@@ -249,7 +299,7 @@ class Risk extends Component {
     }
 
     render() {
-        let {visible, onOk, onCancel, form, rfc_id} = this.props;
+        let {form, rfc_id} = this.props;
         let {
             evr_Requiere,
             evr_FechaEnvio,
@@ -257,6 +307,9 @@ class Risk extends Component {
             evr_FechaRespuesta,
             evr_Informe,
             evr_Impacto,
+
+            pri_Codigo,
+            evr_Observacion,
 
             evaluacionriesgoDisabled,
             enviarriesgoDisabled,
@@ -268,6 +321,10 @@ class Risk extends Component {
             OptionImpacto,
             impactoDisabled,
             downloadDisabled,
+
+            OptionPrioridad,
+            prioridadDisabled,
+            observacionDisabled,
 
             dataSourceChange,
             loadingChange
@@ -329,9 +386,27 @@ class Risk extends Component {
                     <Row>
                         <Col span={12}>
                             <FormItem
+                                label={'Prioridad'}
+                                {...formItemLayout}
+                                >
+                                {getFieldDecorator('pri_Codigo', {
+                                    rules: [{required: true, message: 'Seleccionar Prioridad'}],
+                                    initialValue: pri_Codigo
+                                })(
+                                    <Select
+                                        showSearch
+                                        disabled={prioridadDisabled}
+                                        placeholder="Seleccione Prioridad">
+                                        {OptionPrioridad}
+                                    </Select>
+                                )}
+                            </FormItem>
+                        </Col>
+                        <Col span={12}>
+                            <FormItem
                                 label={'Estado'}
                                 {...formItemLayout}
-                            >
+                                >
                                 <Select
                                     showSearch
                                     disabled={estadoDisabled}
@@ -341,11 +416,33 @@ class Risk extends Component {
                                 </Select>
                             </FormItem>
                         </Col>
+                    </Row>
+                    <Row>
+                        <Col span={12}>
+                            <FormItem
+                                label={'Observación'}
+                                {...formItemLayout}
+                                >
+                                {getFieldDecorator('evr_Observacion', {
+                                    rules: [{required: true, message: 'Ingrese una observación'}],
+                                    initialValue: evr_Observacion
+                                })(
+                                    <TextArea
+                                        disabled={observacionDisabled}
+                                        placeholder="Observación"
+                                    />
+                                )}
+                            </FormItem>
+                        </Col>
+                        <Col span={12}>
+                        </Col>
+                    </Row>
+                    <Row>
                         <Col span={12}>
                             <FormItem
                                 label={'Fecha de Respuesta'}
                                 {...formItemLayout}
-                            >
+                                >
                                 <DatePicker
                                     disabled={frespuestaDisabled}
                                     value={moment(evr_FechaRespuesta, this.dateformat)}
@@ -353,13 +450,15 @@ class Risk extends Component {
                                 />
                             </FormItem>
                         </Col>
+                        <Col span={12}>
+                        </Col>
                     </Row>
                     <Row>
                         <Col span={12}>
                             <FormItem
                                 label={'Informe'}
                                 {...formItemLayout}
-                            >
+                                >
                                 <TextArea
                                     disabled={informeDisabled}
                                     placeholder="Resumen de informe emitido por Gestión de Riesgo"
@@ -368,7 +467,6 @@ class Risk extends Component {
                             </FormItem>
                         </Col>
                         <Col span={12}>
-
                         </Col>
                     </Row>
                     <Row>
