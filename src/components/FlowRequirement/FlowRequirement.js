@@ -60,6 +60,10 @@ export default class FlowRequirement extends Component {
     rfc_id: this.props.rfc_id
   };
 
+  constructor(props){
+    super(props)
+  }
+
   static getDerivedStateFromProps(nextProps, prevState){
     let { requirements } = nextProps;
     return {
