@@ -9,30 +9,10 @@ import FlowTechnical from '../../components/FlowTechnical/FlowTechnical';
 
 import './Flow.css';
 import http from '../../service/http';
+import {message} from 'antd/lib/index';
 
 const Step = Steps.Step;
 
-const steps = [
-  {
-    title: 'Requerimientos',
-    description: 'Registro',
-  },
-  {
-    title: 'Técnica',
-    description: 'Evaluación',
-  }, {
-    title: 'Riesgo',
-    description: 'Evaluación',
-  }, {
-    title: 'Comité',
-    description: <Link to="/">Evaluación</Link>,
-  }, {
-    title: 'Planificación',
-    description: 'Estrategía',
-  }, {
-    title: 'Informe',
-    description: 'Final',
-  }];
 
 const stepsNames = [
   'requirement',
@@ -52,6 +32,31 @@ export default class FlowPage extends Component {
     console.log(props);
   }
 
+  makeLink(number){
+    return <a href="javascript:void(false)" onClick={this.changeStep.bind(this, [number])}>Evaluación</a>
+  }
+  steps = [
+    {
+      title: 'Requerimientos',
+      description: this.makeLink(0, 'Registro'),
+    },
+    {
+      title: 'Técnica',
+      description: this.makeLink(1, 'Evaluación')
+    }, {
+      title: 'Riesgo',
+      description: this.makeLink(2, 'Evaluación')
+    }, {
+      title: 'Comité',
+      description: this.makeLink(3, 'Evaluación')
+    }, {
+      title: 'Planificación',
+      description: this.makeLink(4, 'Estrategía'),
+    }, {
+      title: 'Informe',
+      description: this.makeLink(5, 'Final'),
+    }];
+
   state = {
     current: 0,
     loading: false,
@@ -70,12 +75,19 @@ export default class FlowPage extends Component {
     report: <div>3</div>,
   };
 
+  changeStep( step ){
+    this.setState({
+      current: +step
+    })
+  }
+
   fetchDetails() {
     let {id: rfc_Codigo} = this.props.match.params;
     this.setState({
       loading: true,
     });
-    http('C0001G0002', 'POST', {rfc_Codigo},
+    try {
+      http('C0001G0002', 'POST', {rfc_Codigo},
         ({por_Nombre, per_Email, pro_Nombre, per_Nombre, rfc_Asunto, LST_REQU, ...props}) => {
           this.setState({
             dataSource: {
@@ -88,9 +100,13 @@ export default class FlowPage extends Component {
             requirement: <FlowRequirement requirements={LST_REQU}  />,
             loading: false,
           });
-        }, () => {
-
+        }, (e) => {
+          message.error("Ups, vuelva a intentarlo nuevamente")
         });
+    }catch (e) {
+
+    }
+
   }
 
   componentDidMount() {
@@ -114,7 +130,7 @@ export default class FlowPage extends Component {
               <Card
                   title={
                     <Steps size="small" current={current}>
-                      {steps.map(
+                      {this.steps.map(
                           item => <Step key={item.title} title={item.title}
                                         description={item.description}/>)}
                     </Steps>

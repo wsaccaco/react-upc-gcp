@@ -32,6 +32,7 @@ class FormRequirementChange extends Component {
 
   state = {
     updateRequirement: false,
+    rfc_Codigo: this.props.rfc_Codigo
   };
 
   handleSubmit = (e) => {
@@ -55,12 +56,13 @@ class FormRequirementChange extends Component {
 
   onCreate = (e) => {
     e.preventDefault();
-    let {onOk, form} = this.props;
+    let {onOk, form, rfc_Codigo} = this.props;
     let {validateFields, resetFields} = form;
 
     validateFields((err, {delivery: _delivery, ...form}) => {
       if (!err) {
         form.delivery = _delivery.format('YYYYMMDD');
+        form.rfc_Codigo = rfc_Codigo;
         http('Requerimiento', 'POST', form, ({success, data}) => {
           if (success) {
             onOk(data);

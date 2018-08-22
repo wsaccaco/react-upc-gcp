@@ -56,7 +56,8 @@ export default class FlowRequirement extends Component {
     dataSource : [],
     dataSourceChange: [],
     loadingChange: true,
-    visibleModal: false
+    visibleModal: false,
+    rfc_id: this.props.rfc_id
   };
 
   static getDerivedStateFromProps(nextProps, prevState){
@@ -67,12 +68,12 @@ export default class FlowRequirement extends Component {
   }
 
   fetchRequerimentsChanged() {
-    const {rfc_id} = this.props;
+    const {rfc_id} = this.state;
     this.setState({
       loadingChange: true,
     });
 
-    http( `rfc/${rfc_id}/nuevosRequerimientos`, 'GET', { rfc_Codigo: rfc_id }, ( response ) => {
+    http( `rfc/${rfc_id}/nuevosRequerimientos`, 'GET', {}, ( response ) => {
       this.setState({
         dataSourceChange: response,
         loadingChange: false
@@ -109,16 +110,14 @@ export default class FlowRequirement extends Component {
   }
 
   _onOk(data){
-    this.setState((prevState) => {
-      return {
-        visibleModal: false,
-        dataSourceChange: prevState.dataSourceChange.push(data)
-      }
+    this.fetchRequerimentsChanged();
+    this.setState({
+      visibleModal: false,
     })
   }
 
   render() {
-    let {dataSource, loadingChange, dataSourceChange, visibleModal} = this.state;
+    let {dataSource, loadingChange, dataSourceChange, visibleModal, rfc_id} = this.state;
     return (
 
         <div className="flow-requirement component">
@@ -145,7 +144,7 @@ export default class FlowRequirement extends Component {
               dataSource={dataSource}
               columns={columns_current_requirement} />
           </div>
-          <FormRequirementChange visible={visibleModal} onOk={this._onOk.bind(this)}
+          <FormRequirementChange rfc_Codigo={rfc_id} visible={visibleModal} onOk={this._onOk.bind(this)}
                              onCancel={this.onCancel.bind(this)}/>
         </div>
     );

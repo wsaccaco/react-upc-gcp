@@ -15,7 +15,7 @@ export default class RequestChange extends Component {
       title: 'Código',
       dataIndex: 'rfc_Codigo',
       key: 'rfc_Codigo',
-      render: text => <a href="javascript:;">{text}</a>,
+      render: text => `P00${text}`,
     }, {
       title: 'Asunto',
       dataIndex: 'rfc_Asunto',
@@ -52,6 +52,7 @@ export default class RequestChange extends Component {
     this.openNewRequest = this.openNewRequest.bind(this);
     this.titleTable = this.titleTable.bind(this);
     this.closeNewRequest = this.closeNewRequest.bind(this);
+    this.onOk = this.onOk.bind(this);
   }
 
   state = {
