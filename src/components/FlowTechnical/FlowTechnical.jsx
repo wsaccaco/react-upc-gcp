@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
-import {List, Icon, Card} from 'antd';
+import {List, Icon, Card, Badge, Tooltip} from 'antd';
 import {Link} from 'react-router-dom';
+import {getPrioridad} from '../../tools/tools';
+import DescriptionMeta from '../DescriptionMeta/DescriptionMeta';
+import {LeaderTechnical} from '../../context/LeaderTechnical';
 import './FlowTechnical.css';
 
 import http from '../../service/http';
@@ -10,10 +13,12 @@ export default class FlowTechnical extends Component {
   state = {
     dataSource: [],
     loading: false,
+    leaders: [],
   };
 
   componentDidMount() {
     this.fetchRequirementChanged();
+    this.fetchLeaderTechnical();
   }
 
   fetchRequirementChanged() {
@@ -23,13 +28,21 @@ export default class FlowTechnical extends Component {
       loading: true,
     });
 
-    http('C0002G0004', 'POST', {rfc_Codigo: rfc_id}, (response) => {
+    http(`rfc/${rfc_id}/nuevosRequerimientos`, 'GET', {}, (response) => {
       this.setState({
         dataSource: response,
         loading: false,
       });
     }, (e) => {
       console.error(e);
+    });
+  }
+
+  fetchLeaderTechnical() {
+    http('/LiderTecnico', 'GET', {}, (leaders) => {
+      this.setState({
+        leaders,
+      });
     });
   }
 
@@ -40,20 +53,24 @@ export default class FlowTechnical extends Component {
   </span>
   );
 
-  DescriptionMeta() {
-    return <Card className="card-details-technical" bordered={false}>
-      <p>
-        <strong style={{display: 'block'}}>Probando : </strong>
-        Card content
-      </p>
-      <p>Card content</p>
-      <p>Card content</p>
-    </Card>;
+  TitleMeta({title, prioridad}) {
+    let {text, status} = getPrioridad(prioridad);
+    return (<span className="title-meta-wrap">
+
+      <span>{title}</span>
+      <Badge status={status} text={
+        <span>
+          {text}
+          <Tooltip title="Prioridad">
+            <Icon type="question-circle"/>
+          </Tooltip>
+        </span>}/>
+    </span>);
   }
 
   render() {
-    let {dataSource, loading} = this.state;
-    let {IconText, DescriptionMeta} = this;
+    let {dataSource, loading, leaders} = this.state;
+    let {IconText, TitleMeta} = this;
     return (
 
       <div className="flow-technical component">
@@ -62,22 +79,29 @@ export default class FlowTechnical extends Component {
           loading={loading}
           grid={{gutter: 16, xs: 1, sm: 2}}
           dataSource={dataSource}
-          renderItem={({lir_Nombre, lir_Resumen}, index) => (
-            <List.Item
-              key={index}
-              actions={[
-                <IconText type="star-o" text="156"/>,
-                <IconText type="like-o" text="156"/>,
-                <IconText type="message" text="2"/>]}
-            >
-              <List.Item.Meta
-                className="item-meta"
-                title={lir_Nombre}
-                description={<DescriptionMeta />}
-              />
-              {lir_Resumen}
-            </List.Item>
-          )}
+          renderItem={(
+            {lir_Nombre, lir_Resumen, lir_Prioridad, ...props}, index) => {
+            return (
+              <List.Item
+                key={index}
+                actions={[
+                  <IconText type="star-o" text="156"/>,
+                  <IconText type="like-o" text="156"/>,
+                  <IconText type="message" text="2"/>]}
+              >
+                <LeaderTechnical.Provider value={leaders}>
+                  <List.Item.Meta
+                    className="item-meta"
+                    title={[
+                      <TitleMeta key={index} title={lir_Nombre}
+                                 prioridad={lir_Prioridad}/>]}
+                    description={<DescriptionMeta data={props}/>}
+                  />
+                </LeaderTechnical.Provider>
+                {lir_Resumen}
+              </List.Item>
+            );
+          }}
         />
       </div>
     );

@@ -8,6 +8,7 @@ import {
   DatePicker,
   Switch,
   Collapse,
+  message,
   Divider,
 } from 'antd';
 import http from '../../service/http';
@@ -57,17 +58,17 @@ class FormRequirementChange extends Component {
     let {onOk, form} = this.props;
     let {validateFields, resetFields} = form;
 
-    validateFields((err, form) => {
+    validateFields((err, {delivery: _delivery, ...form}) => {
       if (!err) {
-        console.log(form);
-        // let pathName = this.isNew ? 'C0001S0003' : 'C0001S0004';
-
-        // http('C0001S0003', 'POST', form, (response) => {
-        //   if (response === 'OK') {
-        //     onOk(response);
-        //     resetFields();
-        //   }
-        // });
+        form.delivery = _delivery.format('YYYYMMDD');
+        http('Requerimiento', 'POST', form, ({success, data}) => {
+          if (success) {
+            onOk(data);
+            resetFields();
+          }else{
+            message.error("Ups, vuelva a intentarlo nuevamente")
+          }
+        });
 
       }
     });

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Col, Row, Steps, Card, Table} from 'antd';
 import {Link} from 'react-router-dom';
+import {getPrioridad} from '../../tools/tools'
 import FormRequirementChange from '../formRequirementChange/formRequirementChange'
 import './FlorRequirement.css'
 
@@ -19,6 +20,10 @@ const _column_template = [{
   title: 'Prioridad',
   dataIndex: 'lir_Prioridad',
   key: 'lir_Prioridad',
+  render: (_text, record) => {
+    let {text} = getPrioridad(_text)
+    return text
+  }
 }, {
   title: 'Estado',
   dataIndex: 'est_Estado',
@@ -29,19 +34,19 @@ const _column_template = [{
   key: 'lir_Fecha',
 }];
 
-let columns_current_requirement = [..._column_template, ...[{
+let columns_current_requirement = [..._column_template];
+
+let columns_requirement_change = [..._column_template, ...[{
   title: 'Action',
   key: 'action',
   fixed: 'right',
   width: 100,
   render: (text, record) => (
     <span>
-      <a href="javascript:;" onClick={() => {this.openChangeRequirement();}}> Corregir </a>
+      <a href="javascript:;" onClick={() => {}}> Editar </a>
     </span>
   ),
 }]];
-
-let columns_requirement_change = [..._column_template];
 
 
 
@@ -67,7 +72,7 @@ export default class FlowRequirement extends Component {
       loadingChange: true,
     });
 
-    http( 'C0002G0004', 'POST', { rfc_Codigo: rfc_id }, ( response ) => {
+    http( `rfc/${rfc_id}/nuevosRequerimientos`, 'GET', { rfc_Codigo: rfc_id }, ( response ) => {
       this.setState({
         dataSourceChange: response,
         loadingChange: false
@@ -103,6 +108,15 @@ export default class FlowRequirement extends Component {
     );
   }
 
+  _onOk(data){
+    this.setState((prevState) => {
+      return {
+        visibleModal: false,
+        dataSourceChange: prevState.dataSourceChange.push(data)
+      }
+    })
+  }
+
   render() {
     let {dataSource, loadingChange, dataSourceChange, visibleModal} = this.state;
     return (
@@ -131,7 +145,7 @@ export default class FlowRequirement extends Component {
               dataSource={dataSource}
               columns={columns_current_requirement} />
           </div>
-          <FormRequirementChange visible={visibleModal} onOk={() => {}}
+          <FormRequirementChange visible={visibleModal} onOk={this._onOk.bind(this)}
                              onCancel={this.onCancel.bind(this)}/>
         </div>
     );

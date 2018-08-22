@@ -2,7 +2,7 @@
     padding: 5px 0;
 }
 
-.flow-technical .item-meta{
+.flow-technical .ant-list-vertical .item-meta{
     margin: 0;
 }
 
@@ -10,4 +10,9 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+
+.flow-technical .title-meta-wrap{
+    display: flex;
+    justify-content: space-between;
 }
