@@ -1,75 +1,77 @@
 import React, { Component } from 'react';
-import {Card, Form, Input, Radio} from 'antd';
+import {Form, Input, Card} from 'antd';
+
 import './LeaderTechnical.css'
 
-let FormItem = Form.Item;
-let RadioGroup = Radio.Group;
 
+const FormItem = Form.Item;
 
-const formItemLayout = {
-    labelCol: {
-        xs: {span: 24},
-        sm: {span: 8},
-    },
-    wrapperCol: {
-        xs: {span: 24},
-        sm: {span: 16},
-    },
-};
+export default class LeaderTechnical extends Component {
 
-
-
-class LeaderTechnical extends Component {
-
-    state = {
-        evr_Requiere: 0,
-
-        evaluacionriesgoDisabled: false
-
+    constructor(props) {
+        super(props);
+        this.state = { items: [], text: '' };
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
 
+    render() {
 
-  render() {
-        let { form, rfc_id} = this.props;
-
-          let {
-              evr_Requiere,
-
-              evaluacionriesgoDisabled
-              } = this.state;
-
-        const {getFieldDecorator} = form;
         return (
-            <Form className="gcp-form">
-                <FormItem>
-                    {getFieldDecorator('rfc_Codigo', {
-                        rules: [],
-                        initialValue: rfc_id
-                    })(
-                        <Input type="hidden"/>
-                    )}
-                </FormItem>
-
-                <FormItem
-                    label={'Requiere evaluación'}
-                    {...formItemLayout}
-                >
-                    {getFieldDecorator('evr_Requiere', {
-                        rules: [],
-                        initialValue: evr_Requiere
-                    })(
-                        <RadioGroup
-                            onChange={this.onChange}
-                            disabled={evaluacionriesgoDisabled}>
-                            <Radio value={1}>SI</Radio>
-                            <Radio value={0}>NO</Radio>
-                        </RadioGroup>
-                    )}
-                </FormItem>
-            </Form>
+            <div className="leader-page page">
+                <Card title="Evaluación Técnica" className="card-leader" style={{width: 400}}>
+                    <p>Tiempo</p>
+                    <Input/>
+                    <p>Recursos adicionales</p>
+                    <Input/>
+                    <p>Limitaciones</p>
+                    <LimitacionesList items={this.state.items} />
+                    <form onSubmit={this.handleSubmit}>
+                        <label htmlFor="new-limitaciones">
+                            What needs to be done?
+                        </label>
+                        <input
+                            id="new-limitaciones"
+                            onChange={this.handleChange}
+                            value={this.state.text}
+                        />
+                        <button>
+                            Add #{this.state.items.length + 1}
+                        </button>
+                    </form>
+                </Card>
+            </div>
         );
-  }
+    }
+    handleChange(e) {
+        this.setState({ text: e.target.value });
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        if (!this.state.text.length) {
+            return;
+        }
+        const newItem = {
+            text: this.state.text,
+            id: Date.now()
+        };
+        this.setState(prevState => ({
+            items: prevState.items.concat(newItem),
+            text: ''
+        }));
+    }
 }
 
-export default  Form.create()(LeaderTechnical);
+class LimitacionesList extends React.Component {
+    render() {
+        return (
+            <ul>
+                {this.props.items.map(item => (
+                    <li key={item.id}>{item.text}</li>
+                ))}
+            </ul>
+        );
+    }
+}
