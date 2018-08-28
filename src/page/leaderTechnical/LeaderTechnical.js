@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Form, Input, Card} from 'antd';
+import {Form, Input, Card, InputNumber} from 'antd';
 
 import './LeaderTechnical.css'
 
@@ -22,7 +22,12 @@ export default class LeaderTechnical extends Component {
             <div className="leader-page page">
                 <Card title="Evaluación Técnica" className="card-leader" style={{width: 400}}>
                     <p>Tiempo</p>
-                    <Input/>
+                    <InputNumber
+                        min={0}
+                        max={50}
+                        defaultValue={1}
+                        size={"small"}
+                      />
                     <p>Recursos adicionales</p>
                     <Input/>
                     <p>Limitaciones</p>
