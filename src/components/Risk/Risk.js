@@ -411,7 +411,7 @@ class Risk extends Component {
                                     showSearch
                                     disabled={estadoDisabled}
                                     placeholder="Seleccione Estado"
-                                    value={evr_Estado}>
+                                    defaultValue={evr_Estado}>
                                     {OptionEstado}
                                 </Select>
                             </FormItem>
@@ -479,7 +479,7 @@ class Risk extends Component {
                                     showSearch
                                     disabled={impactoDisabled}
                                     placeholder="Seleccione Impacto"
-                                    value={evr_Impacto}>
+                                    defaultValue={evr_Impacto}>
                                     {OptionImpacto}
                                 </Select>
                             </FormItem>

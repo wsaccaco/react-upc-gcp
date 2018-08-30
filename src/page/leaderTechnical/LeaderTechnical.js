@@ -1,10 +1,20 @@
 import React, { Component } from 'react';
-import {Form, Input, Card} from 'antd';
+import {Form, Input, Card, InputNumber} from 'antd';
 
 import './LeaderTechnical.css'
 
 
 const FormItem = Form.Item;
+const formItemLayout = {
+    labelCol: {
+        xs: {span: 24},
+        sm: {span: 8},
+    },
+    wrapperCol: {
+        xs: {span: 24},
+        sm: {span: 16},
+    },
+};
 
 export default class LeaderTechnical extends Component {
 
@@ -22,7 +32,12 @@ export default class LeaderTechnical extends Component {
             <div className="leader-page page">
                 <Card title="Evaluación Técnica" className="card-leader" style={{width: 400}}>
                     <p>Tiempo</p>
-                    <Input/>
+                    <InputNumber
+                        min={0}
+                        max={50}
+                        defaultValue={1}
+                        size={"small"}
+                      />
                     <p>Recursos adicionales</p>
                     <Input/>
                     <p>Limitaciones</p>
