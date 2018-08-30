@@ -3,6 +3,7 @@ import {Button, Col, Row, Steps, Card, List} from 'antd';
 import {Link} from 'react-router-dom';
 
 import Risk from '../../components/Risk/Risk';
+import Planning from '../../components/Planning/Planning';
 import DetailsFlow from '../../components/DetailsFlow/DetailsFlow';
 import FlowRequirement from '../../components/FlowRequirement/FlowRequirement';
 import FlowTechnical from '../../components/FlowTechnical/FlowTechnical';
@@ -72,7 +73,7 @@ export default class FlowPage extends Component {
     technique: <FlowTechnical rfc_id={this.props.match.params.id}/>,
     risk: <Risk rfc_id={this.props.match.params.id}/>,
     planning: <Risk/>,
-    committee: <FlowCommittee></FlowCommittee>,
+    committee: <FlowCommittee />,
     report: <div>3</div>,
   };
 

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Button, DatePicker, Form, Input, message, Popconfirm, Radio, Select, Table, Row, Col, Modal} from 'antd';
 import moment from 'moment';
 
-import './Risk.css';
+import './Planning.css';
 import '../FlowRequirement/FlorRequirement.css'
 
 import http from '../../service/http';
@@ -49,7 +49,7 @@ const _column_template = [{
 }];
 let columns_requirement_change = [..._column_template];
 
-class Risk extends Component {
+class Planning extends Component {
 
     constructor(props) {
         super(props);
@@ -91,7 +91,7 @@ class Risk extends Component {
     onChange = (e) => {
         //console.log('radio checked', e.target.value);
         this.setState({
-            valueRadioRisk: e.target.value
+            valueRadioPlanning: e.target.value
         });
         if (e.target.value == 0){
             this.setState({
@@ -347,9 +347,9 @@ class Risk extends Component {
                             </FormItem>
 
                             <FormItem
-                                label={'Requiere evaluación'}
+                                label={'Lista de requerimientos'}
                                 {...formItemLayout}
-                                >
+                            >
                                 {getFieldDecorator('evr_Requiere', {
                                     rules: [{required: false, message: 'Definir Requiere'}],
                                     initialValue: evr_Requiere
@@ -388,7 +388,7 @@ class Risk extends Component {
                             <FormItem
                                 label={'Prioridad'}
                                 {...formItemLayout}
-                                >
+                            >
                                 {getFieldDecorator('pri_Codigo', {
                                     rules: [{required: true, message: 'Seleccionar Prioridad'}],
                                     initialValue: pri_Codigo
@@ -406,12 +406,12 @@ class Risk extends Component {
                             <FormItem
                                 label={'Estado'}
                                 {...formItemLayout}
-                                >
+                            >
                                 <Select
                                     showSearch
                                     disabled={estadoDisabled}
                                     placeholder="Seleccione Estado"
-                                    defaultValue={evr_Estado}>
+                                    value={evr_Estado}>
                                     {OptionEstado}
                                 </Select>
                             </FormItem>
@@ -422,7 +422,7 @@ class Risk extends Component {
                             <FormItem
                                 label={'Observación'}
                                 {...formItemLayout}
-                                >
+                            >
                                 {getFieldDecorator('evr_Observacion', {
                                     rules: [{required: true, message: 'Ingrese una observación'}],
                                     initialValue: evr_Observacion
@@ -442,7 +442,7 @@ class Risk extends Component {
                             <FormItem
                                 label={'Fecha de Respuesta'}
                                 {...formItemLayout}
-                                >
+                            >
                                 <DatePicker
                                     disabled={frespuestaDisabled}
                                     value={moment(evr_FechaRespuesta, this.dateformat)}
@@ -458,7 +458,7 @@ class Risk extends Component {
                             <FormItem
                                 label={'Informe'}
                                 {...formItemLayout}
-                                >
+                            >
                                 <TextArea
                                     disabled={informeDisabled}
                                     placeholder="Resumen de informe emitido por Gestión de Riesgo"
@@ -474,12 +474,12 @@ class Risk extends Component {
                             <FormItem
                                 label={'Impacto'}
                                 {...formItemLayout}
-                                >
+                            >
                                 <Select
                                     showSearch
                                     disabled={impactoDisabled}
                                     placeholder="Seleccione Impacto"
-                                    defaultValue={evr_Impacto}>
+                                    value={evr_Impacto}>
                                     {OptionImpacto}
                                 </Select>
                             </FormItem>
@@ -490,7 +490,7 @@ class Risk extends Component {
                             <FormItem
                                 label={'Adjunto'}
                                 {...formItemLayout}
-                                >
+                            >
                                 <Button
                                     icon="download"
                                     //onClick={}
@@ -522,4 +522,4 @@ class Risk extends Component {
     }
 }
 
-export default  Form.create()(Risk);
+export default  Form.create()(Planning);
