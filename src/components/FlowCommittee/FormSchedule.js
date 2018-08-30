@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Form, Icon, Col, Button, Row, Input, DatePicker, TimePicker, Tag, Select} from 'antd';
 import {Link} from 'react-router-dom';
+import FormEvaluation from '../../components/formEvaluation/formEvaluation'
 import './FlowCommittee.css';
 
 import http from '../../service/http';
@@ -46,11 +47,21 @@ class FlowCommittee extends Component {
     });
   }
 
+  fetchPostSchedule(values){
+    http(`Reunion`, 'POST', values, (response = []) => {
+
+      console.log(response);
+
+    }, (e) => {
+      console.error(e);
+    });
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        this.fetchPostSchedule(values);
       }
     })
   };
@@ -88,7 +99,7 @@ class FlowCommittee extends Component {
                     message: 'Ingresa una Hora',
                   }],
                 })(
-                  <TimePicker />
+                  <TimePicker placeholder={'hh:mm'} format={'HH:mm'} />
                 )}
               </FormItem>
             </Col>
@@ -109,9 +120,7 @@ class FlowCommittee extends Component {
             <Col span={12}>
               <FormItem label={`Descripción`} {...formItemLayout} >
                 {getFieldDecorator(`description`, {
-                  rules: [{
-                    required: true
-                  }],
+                  rules: [],
                 })(
                   <Input style={{width: '100%'}}/>
                 )}
@@ -143,7 +152,7 @@ class FlowCommittee extends Component {
           </Row>
           <Row>
             <Col span={24} style={{ textAlign: 'right' }}>
-              <Button type="primary" htmlType="submit">Enviar y Agendar</Button>
+              <Button type="default" htmlType="submit">Enviar y Agendar</Button>
             </Col>
           </Row>
         </Form>

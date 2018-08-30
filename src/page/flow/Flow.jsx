@@ -73,7 +73,7 @@ export default class FlowPage extends Component {
     technique: <FlowTechnical rfc_id={this.props.match.params.id}/>,
     risk: <Risk rfc_id={this.props.match.params.id}/>,
     planning: <Risk/>,
-    committee: <FlowCommittee />,
+    committee: <FlowCommittee rfc_id={this.props.match.params.id} />,
     report: <div>3</div>,
   };
 
@@ -99,7 +99,7 @@ export default class FlowPage extends Component {
               per_Nombre,
               rfc_Asunto,
             },
-            requirement: <FlowRequirement requirements={LST_REQU}  />,
+            requirement: <FlowRequirement rfc_id={this.props.match.params.id} requirements={LST_REQU}  />,
             loading: false,
           });
         }, (e) => {

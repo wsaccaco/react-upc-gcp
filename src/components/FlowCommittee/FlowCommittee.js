@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {Form, Icon, Col, Row, Table, Card} from 'antd';
+import {Icon, Button, Col, Row, Table, Card} from 'antd';
 import {Link} from 'react-router-dom';
 import FormSchedule from './FormSchedule'
+import FormEvaluation from '../../components/formEvaluation/formEvaluation'
 import http from '../../service/http';
 
 import './FlowCommittee.css';
@@ -50,46 +51,64 @@ const data = [{
 export default class FlowCommittee extends Component {
 
   state = {
-
+    visibleEvaluation: false
   };
 
   componentDidMount() {
-
+    this.fetchSchedule();
   }
 
-  fetchRequirementChanged() {
+  fetchSchedule() {
     let {rfc_id} = this.props;
 
     this.setState({
-      loading: true,
+      loading: true
     });
 
-    http(`rfc/${rfc_id}/nuevosRequerimientos`, 'GET', {}, (response) => {
-      this.setState({
-        dataSource: response,
-        loading: false,
-      });
+    http(`Reunion/${rfc_id}`, 'GET', {}, (response) => {
+      console.log(response)
+      // this.setState({
+      //   dataSource: response,
+      //   loading: false,
+      // });
     }, (e) => {
       console.error(e);
     });
   }
 
+  _openEvaluation = () => {
+    this.setState({
+      visibleEvaluation : true
+    })
+  };
+
+  _closeEvaluation = () => {
+    this.setState({
+      visibleEvaluation : false
+    })
+  };
 
   render() {
-
+    let {visibleEvaluation} = this.state;
+    console.log({visibleEvaluation})
     return (
       <div className="flow-committee component">
         <Card title="Programar Reunión" type="inner">
           <FormSchedule />
           <div style={{padding: '15px 0'}}>
-            <Table columns={columns} dataSource={data} />
-            <Row gutter={16}>
-              <Row>
-                <Col>hola</Col>
-              </Row>
-            </Row>
+            <Table
+              columns={columns}
+              dataSource={data}
+              footer={() => (
+                <Row justify="end" type="flex">
+                  <Col>
+                    <Button type="primary" icon="schedule" onClick={this._openEvaluation}>Evaluar</Button>
+                  </Col>
+                </Row>)
+              } />
           </div>
         </Card>
+        <FormEvaluation visible={visibleEvaluation} onClose={this._closeEvaluation} />
       </div>
     );
   }
