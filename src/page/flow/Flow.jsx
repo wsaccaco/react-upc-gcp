@@ -11,6 +11,7 @@ import FlowTechnical from '../../components/FlowTechnical/FlowTechnical';
 import './Flow.css';
 import http from '../../service/http';
 import {message} from 'antd/lib/index';
+import FlowCommittee from '../../components/FlowCommittee/FlowCommittee';
 
 const Step = Steps.Step;
 
@@ -59,7 +60,7 @@ export default class FlowPage extends Component {
     }];
 
   state = {
-    current: 1,
+    current: 3,
     loading: false,
     dataSource: {
       por_Nombre: null,
@@ -71,8 +72,8 @@ export default class FlowPage extends Component {
     requirement: <FlowRequirement rfc_id={this.props.match.params.id}/>,
     technique: <FlowTechnical rfc_id={this.props.match.params.id}/>,
     risk: <Risk rfc_id={this.props.match.params.id}/>,
-    planning: <Planning rfc_id={this.props.match.params.id}/>,
-    committee: <div>2</div>,
+    planning: <Risk/>,
+    committee: <FlowCommittee />,
     report: <div>3</div>,
   };
 
