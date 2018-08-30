@@ -31,88 +31,59 @@ const _column_template_requirement = [{
     key: 'lir_Codigo',
 }, {
     title: 'Clasificación',
-    dataIndex: 'lir_Nombre',
-    key: 'lir_Nombre',
+    dataIndex: 'lir_Nombre'
 }, {
     title: 'Esfuerzo',
-    dataIndex: 'lir_Prioridad',
-    key: 'lir_Prioridad',
+    dataIndex: 'lir_Prioridad'
 }, {
     title: 'Inicio',
-    dataIndex: 'est_Estado',
-    key: 'est_Estado',
+    dataIndex: 'est_Estado'
 }, {
-    title: 'Termino',
-    dataIndex: 'lir_Fecha',
-    key: 'lir_Fecha',
+    title: 'Termino'
 }, {
-    title: 'Responsable',
-    dataIndex: 'lir_Fecha',
-    key: 'lir_Fecha',
+    title: 'Responsable'
 }, {
-    title: 'Acción',
-    dataIndex: 'lir_Fecha',
-    key: 'lir_Fecha',
+    title: 'Acción'
 }];
 let columns_requirement = [..._column_template_requirement];
 const _column_template_rrhh = [{
     title: 'Identificador',
-    dataIndex: 'lir_Codigo',
-    key: 'lir_Codigo',
+    dataIndex: 'lir_Codigo'
 }, {
     title: 'Perfil',
-    dataIndex: 'lir_Nombre',
-    key: 'lir_Nombre',
+    dataIndex: 'lir_Nombre'
 }, {
     title: 'Cantidad',
-    dataIndex: 'lir_Prioridad',
-    key: 'lir_Prioridad',
+    dataIndex: 'lir_Prioridad'
 }, {
     title: 'Nivel',
-    dataIndex: 'est_Estado',
-    key: 'est_Estado',
+    dataIndex: 'est_Estado'
 }, {
-    title: 'Desde',
-    dataIndex: 'lir_Fecha',
-    key: 'lir_Fecha',
+    title: 'Desde'
 }, {
-    title: 'Hasta',
-    dataIndex: 'lir_Fecha',
-    key: 'lir_Fecha',
+    title: 'Hasta'
 }, {
-    title: 'Presupuesto',
-    dataIndex: 'lir_Fecha',
-    key: 'lir_Fecha',
+    title: 'Presupuesto'
 }, {
-    title: 'Acción',
-    dataIndex: 'lir_Fecha',
-    key: 'lir_Fecha',
+    title: 'Acción'
 }];
 let columns_rrhh = [..._column_template_rrhh];
 const _column_template_add = [{
     title: 'Recurso',
-    dataIndex: 'lir_Codigo',
-    key: 'lir_Codigo',
+    dataIndex: 'lir_Codigo'
 }, {
     title: 'Cantidad',
-    dataIndex: 'lir_Nombre',
-    key: 'lir_Nombre',
+    dataIndex: 'lir_Nombre'
 }, {
     title: 'Desde',
-    dataIndex: 'lir_Prioridad',
-    key: 'lir_Prioridad',
+    dataIndex: 'lir_Prioridad'
 }, {
     title: 'Hasta',
-    dataIndex: 'est_Estado',
-    key: 'est_Estado',
+    dataIndex: 'est_Estado'
 }, {
-    title: 'Presupuesto',
-    dataIndex: 'lir_Fecha',
-    key: 'lir_Fecha',
+    title: 'Presupuesto'
 }, {
-    title: 'Acción',
-    dataIndex: 'lir_Fecha',
-    key: 'lir_Fecha',
+    title: 'Acción'
 }];
 let columns_requirement_add = [..._column_template_add];
 const _column_agreement = [{
@@ -121,21 +92,18 @@ const _column_agreement = [{
     key: 'lir_Codigo',
 }, {
     title: 'Resumen',
-    dataIndex: 'lir_Nombre',
-    key: 'lir_Nombre',
+    dataIndex: 'lir_Nombre'
 }, {
-    title: 'Acción',
-    dataIndex: 'lir_Fecha',
-    key: 'lir_Fecha',
+    title: 'Acción'
 }];
 let columns_agreement = [..._column_agreement];
 class Planning extends Component {
 
     constructor(props) {
         super(props);
-        this.fetchPrioridad = this.fetchPrioridad.bind(this);
-        this.fetchEstado = this.fetchEstado.bind(this);
-        this.fetchImpacto = this.fetchImpacto.bind(this);
+        //this.fetchPrioridad = this.fetchPrioridad.bind(this);
+        //this.fetchEstado = this.fetchEstado.bind(this);
+        //this.fetchImpacto = this.fetchImpacto.bind(this);
     }
 
     state = {
@@ -169,7 +137,6 @@ class Planning extends Component {
     };
 
     onChange = (e) => {
-        //console.log('radio checked', e.target.value);
         this.setState({
             valueRadioPlanning: e.target.value
         });
@@ -257,94 +224,6 @@ class Planning extends Component {
         });
     }
 
-    fetchPrioridad(){
-        http('PrioridadRiesgo', 'GET', {}, (response) => {
-            let OptionPrioridad = response.map(({pri_Descripcion:text, pri_Codigo:value}, index) => {
-                return <Option key={index} value={value}>{text}</Option>;
-            }, (err) => {
-                console.log(err);
-            });
-            this.setState({
-                OptionPrioridad
-            })
-        });
-    }
-
-    fetchEstado(){
-        http('EstadoRiesgo', 'GET', {}, (response) => {
-            let OptionEstado = response.map(({esr_Descripcion:text, esr_Codigo:value}, index) => {
-                return <Option key={index} value={value}>{text}</Option>;
-            }, (err) => {
-                console.log(err);
-            });
-            this.setState({
-                OptionEstado
-            })
-        });
-    }
-
-    fetchImpacto(){
-        http('ImpactoRiesgo', 'GET', {}, (response) => {
-            let OptionImpacto = response.map(({imp_Descripcion:text, imp_Codigo:value}, index) => {
-                return <Option key={index} value={value}>{text}</Option>;
-            }, (err) => {
-                console.log(err);
-            });
-            this.setState({
-                OptionImpacto
-            })
-        });
-    }
-
-    fetchEvaluacionRiesgo(){
-        let {rfc_id} = this.props;
-        http('EvaluacionRiesgo/' + rfc_id, 'GET', {}, (response) => {
-            let {evr_Requiere,
-                evr_FechaEnvio,
-                evr_Estado,
-                evr_FechaRespuesta,
-                evr_Informe,
-                evr_Impacto,
-                pri_Codigo,
-                evr_Observacion} = response[0];
-            console.log(evr_Requiere,
-                evr_FechaEnvio,
-                evr_Estado,
-                evr_FechaRespuesta,
-                evr_Informe,
-                evr_Impacto,
-                pri_Codigo,
-                evr_Observacion);
-            let {evaluacionriesgoDisabled,
-                enviarriesgoDisabled,
-                prioridadDisabled,
-                observacionDisabled} = this.state;
-            if (evr_Requiere === true){
-                evr_Requiere = 1;
-                evaluacionriesgoDisabled = true;
-                enviarriesgoDisabled = true;
-                prioridadDisabled = true;
-                observacionDisabled = true;
-            }
-            this.setState({
-                evaluacionriesgoDisabled,
-                enviarriesgoDisabled,
-                prioridadDisabled,
-                observacionDisabled,
-                evr_Requiere,
-                evr_FechaEnvio,
-                evr_Estado,
-                evr_FechaRespuesta,
-                evr_Informe,
-                evr_Impacto,
-                pri_Codigo,
-                evr_Observacion
-            });
-        }, (e) => {
-            console.error(e)
-        });
-    }
-
     //Cambios de Requerimientos
     fetchRequerimentsChanged() {
         const {rfc_id} = this.props;
@@ -370,10 +249,10 @@ class Planning extends Component {
     }
 
     componentDidMount() {
-        this.fetchPrioridad();
-        this.fetchEstado();
-        this.fetchImpacto();
-        this.fetchEvaluacionRiesgo();
+        //this.fetchPrioridad();
+        //this.fetchEstado();
+        //this.fetchImpacto();
+        //this.fetchEvaluacionRiesgo();
         //Cambios de Requerimientos
         this.fetchRequerimentsChanged()
     }

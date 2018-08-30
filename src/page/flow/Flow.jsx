@@ -60,7 +60,7 @@ export default class FlowPage extends Component {
     }];
 
   state = {
-    current: 3,
+    current: 0,
     loading: false,
     dataSource: {
       por_Nombre: null,
@@ -72,7 +72,7 @@ export default class FlowPage extends Component {
     requirement: <FlowRequirement rfc_id={this.props.match.params.id}/>,
     technique: <FlowTechnical rfc_id={this.props.match.params.id}/>,
     risk: <Risk rfc_id={this.props.match.params.id}/>,
-    planning: <Risk/>,
+    planning: <Planning rfc_id={this.props.match.params.id}/>,
     committee: <FlowCommittee />,
     report: <div>3</div>,
   };
