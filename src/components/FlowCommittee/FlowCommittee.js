@@ -3,21 +3,30 @@ import {Icon, Button, Col, Row, Table, Card} from 'antd';
 import {Link} from 'react-router-dom';
 import FormSchedule from './FormSchedule'
 import FormEvaluation from '../../components/formEvaluation/formEvaluation'
+import {RfcContext} from '../../context/RFC'
 import http from '../../service/http';
 
 import './FlowCommittee.css';
 
+// public int acci { get; set; }
+// public int reu_Codigo { get; set; }
+// public int rfc_Codigo { get; set; }
+// public DateTime reu_FechaReunion { get; set; }
+// public DateTime reu_HoraReunion { get; set; }
+// public string reu_Lugar { get; set; }
+// public string reu_Comentario { get; set; }
+
 const columns = [{
   title: 'Fecha',
-  dataIndex: 'name',
+  dataIndex: 'reu_FechaReunion',
   key: 'name',
 }, {
   title: 'Lugar',
-  dataIndex: 'age',
+  dataIndex: 'reu_Lugar',
   key: 'age',
 }, {
   title: 'Asunto',
-  dataIndex: 'address',
+  dataIndex: 'reu_Comentario',
   key: 'address',
 }, {
   title: 'Participantes',
@@ -28,30 +37,11 @@ const columns = [{
   key: 'action'
 }];
 
-const data = [{
-  key: '1',
-  name: 'John Brown',
-  age: 32,
-  address: 'New York No. 1 Lake Park',
-  tags: ['nice', 'developer'],
-}, {
-  key: '2',
-  name: 'Jim Green',
-  age: 42,
-  address: 'London No. 1 Lake Park',
-  tags: ['loser'],
-}, {
-  key: '3',
-  name: 'Joe Black',
-  age: 32,
-  address: 'Sidney No. 1 Lake Park',
-  tags: ['cool', 'teacher'],
-}];
-
 export default class FlowCommittee extends Component {
 
   state = {
-    visibleEvaluation: false
+    visibleEvaluation: false,
+    rfc_id: this.props.rfc_id
   };
 
   componentDidMount() {
@@ -67,10 +57,10 @@ export default class FlowCommittee extends Component {
 
     http(`Reunion/${rfc_id}`, 'GET', {}, (response) => {
       console.log(response)
-      // this.setState({
-      //   dataSource: response,
-      //   loading: false,
-      // });
+      this.setState({
+        dataSource: response,
+        loading: false,
+      });
     }, (e) => {
       console.error(e);
     });
@@ -89,16 +79,19 @@ export default class FlowCommittee extends Component {
   };
 
   render() {
-    let {visibleEvaluation} = this.state;
-    console.log({visibleEvaluation})
+    let {visibleEvaluation, dataSource, loading} = this.state;
+    let {rfc_id} = this.props;
     return (
       <div className="flow-committee component">
         <Card title="Programar Reunión" type="inner">
-          <FormSchedule />
+          <RfcContext.Provider value={rfc_id}>
+            <FormSchedule />
+          </RfcContext.Provider>
           <div style={{padding: '15px 0'}}>
             <Table
               columns={columns}
-              dataSource={data}
+              dataSource={dataSource}
+              loading={loading}
               footer={() => (
                 <Row justify="end" type="flex">
                   <Col>
@@ -108,7 +101,7 @@ export default class FlowCommittee extends Component {
               } />
           </div>
         </Card>
-        <FormEvaluation visible={visibleEvaluation} onClose={this._closeEvaluation} />
+          <FormEvaluation visible={visibleEvaluation} onClose={this._closeEvaluation} />
       </div>
     );
   }

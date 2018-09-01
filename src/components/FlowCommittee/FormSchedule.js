@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Form, Icon, Col, Button, Row, Input, DatePicker, TimePicker, Tag, Select} from 'antd';
 import {Link} from 'react-router-dom';
 import FormEvaluation from '../../components/formEvaluation/formEvaluation'
+import {RfcContext} from '../../context/RFC'
 import './FlowCommittee.css';
 
 import http from '../../service/http';
@@ -59,8 +60,10 @@ class FlowCommittee extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields((err, {reu_FechaReunion, reu_HoraReunion, ...values}) => {
       if (!err) {
+        values.reu_FechaReunion = reu_FechaReunion.format('YYYYMMDD');
+        values.reu_HoraReunion = reu_FechaReunion.format('h:mm');
         this.fetchPostSchedule(values);
       }
     })
@@ -80,8 +83,17 @@ class FlowCommittee extends Component {
         >
           <Row gutter={16}>
             <Col span={8}>
+              <RfcContext.Consumer>
+                {
+                  rfc_id => getFieldDecorator(`rfc_Codigo`, {
+                    initialValue: rfc_id
+                  })(
+                    <Input type="hidden"/>
+                  )
+                }
+              </RfcContext.Consumer>
               <FormItem label={`F. Reunión :`} {...formItemLayout} >
-                {getFieldDecorator(`meeting`, {
+                {getFieldDecorator(`reu_FechaReunion`, {
                   rules: [{
                     required: true,
                     message: 'Ingresa una fecha',
@@ -93,7 +105,7 @@ class FlowCommittee extends Component {
             </Col>
             <Col span={8}>
               <FormItem label={`Hora`} {...formItemLayout}>
-                {getFieldDecorator(`Hour`, {
+                {getFieldDecorator(`reu_HoraReunion`, {
                   rules: [{
                     required: true,
                     message: 'Ingresa una Hora',
@@ -105,7 +117,7 @@ class FlowCommittee extends Component {
             </Col>
             <Col span={8}>
               <FormItem label={`Lugar`} {...formItemLayout}>
-                {getFieldDecorator(`place`, {
+                {getFieldDecorator(`reu_Lugar`, {
                   rules: [{
                     required: true,
                     message: 'Ingresa un lugar o ambiente'
@@ -119,7 +131,7 @@ class FlowCommittee extends Component {
           <Row gutter={24}>
             <Col span={12}>
               <FormItem label={`Descripción`} {...formItemLayout} >
-                {getFieldDecorator(`description`, {
+                {getFieldDecorator(`reu_Comentario`, {
                   rules: [],
                 })(
                   <Input style={{width: '100%'}}/>
@@ -128,7 +140,7 @@ class FlowCommittee extends Component {
             </Col>
             <Col span={12}>
               <FormItem label={`Participantes`} {...formItemLayout}>
-                {getFieldDecorator(`participants`, {
+                {getFieldDecorator(`ReunionParticipante`, {
                   rules: [{
                     required: true,
                     message: 'Ingresa a los participantes'
