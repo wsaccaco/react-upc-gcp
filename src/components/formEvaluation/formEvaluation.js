@@ -50,7 +50,7 @@ export default class formEvaluation extends Component {
         title="Evaluar Requerimiento"
         visible={visible}
         onCancel={onClose}
-        width="650px"
+        width="750px"
         footer={null}
       >
         {
