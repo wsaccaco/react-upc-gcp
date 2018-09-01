@@ -31,16 +31,17 @@ export default class LeaderTechnical extends Component {
         return (
             <div className="leader-page page">
                 <Card title="Evaluación Técnica" className="card-leader" style={{width: 400}}>
-                    <p>Tiempo</p>
+                    <label>Tiempo: </label>
                     <InputNumber
                         min={0}
                         max={50}
                         defaultValue={1}
                         size={"small"}
-                      />
-                    <p>Recursos adicionales</p>
-                    <Input/>
-                    <p>Limitaciones</p>
+                    /><p></p>
+                    <label>Recursos adicionales: </label>
+                    <input/><p></p>
+                    <label>Limitaciones: </label>
+
                     <LimitacionesList items={this.state.items} />
                     <form onSubmit={this.handleSubmit}>
                         <label htmlFor="new-limitaciones">
