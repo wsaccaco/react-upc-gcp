@@ -47,9 +47,11 @@ class FlowCommittee extends Component {
   }
 
   fetchPostSchedule(values){
-    http(`Reunion`, 'POST', values, (response = []) => {
+    http(`Reunion`, 'POST', values, ({success}) => {
 
-      console.log(response);
+      if(success){
+        this.props.refresh();
+      }
 
     }, (e) => {
       console.error(e);

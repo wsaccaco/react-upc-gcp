@@ -218,7 +218,7 @@ class CardEvaluationRequirement extends Component {
           </Row>
           <Row type="flex" justify="end">
             <Col >
-              <Button type="primary" icon="search" htmlType="submit">Guardar</Button>
+              <Button type="primary" icon={''} htmlType="submit">Guardar</Button>
             </Col>
           </Row>
         </Form>

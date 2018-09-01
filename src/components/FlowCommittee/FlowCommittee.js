@@ -15,7 +15,7 @@ const columns = [
     key: 'date',
   },
   {
-    title: 'Fecha',
+    title: 'Hora',
     dataIndex: 'reu_HoraReunion',
     key: 'time',
   },
@@ -87,6 +87,10 @@ export default class FlowCommittee extends Component {
     });
   };
 
+  _refresh = () => {
+    this.fetchSchedule();
+  }
+
   render() {
     let {visibleEvaluation, dataSource, loading, FormEvaluation} = this.state;
     let {rfc_id} = this.props;
@@ -95,7 +99,7 @@ export default class FlowCommittee extends Component {
         <div className="flow-committee component">
           <Card title="Programar Reunión" type="inner">
 
-            <FormSchedule/>
+            <FormSchedule refresh={this._refresh}/>
 
             <div style={{padding: '15px 0'}}>
               <Table
