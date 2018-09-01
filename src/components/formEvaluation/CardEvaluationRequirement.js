@@ -78,7 +78,7 @@ class CardEvaluationRequirement extends Component {
     let {form} = this.props;
     let {data: {
       lir_Nombre, lir_CostoInicial, pri_Prioridad, lir_Dias,
-      lir_Aprobado, lir_CostoAsignado, lir_Codigo }} = this.state;
+      lir_Aprobado, lir_CostoAsignado, lir_Codigo, lir_ImpactoRiesgo}} = this.state;
 
     const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = form;
 
@@ -104,12 +104,8 @@ class CardEvaluationRequirement extends Component {
                 {...formItemLayout_small}
                 help={folderError || ''}>
                 {getFieldDecorator('lir_Aprobado', {
+                  valuePropName: 'checked',
                   initialValue: lir_Aprobado,
-                  rules: [
-                    {
-                      required: true,
-                      message: 'Por favor ingresé un titulo',
-                    }],
                 })(
                   <Switch/>
                 )}
@@ -122,6 +118,7 @@ class CardEvaluationRequirement extends Component {
                 {...formItemLayout}
                 help={folderError || ''}>
                 {getFieldDecorator('lir_ImpactoRiesgo', {
+                  initialValue: lir_ImpactoRiesgo,
                   rules: [
                     {
                       required: true,
@@ -202,7 +199,7 @@ class CardEvaluationRequirement extends Component {
                 validateStatus={folderError ? 'error' : ''}
                 {...formItemLayout}
                 help={folderError || ''}>
-                {getFieldDecorator('lir_CostoFinal', {
+                {getFieldDecorator('lir_CostoAsignado', {
                   initialValue: lir_CostoAsignado,
                   rules: [
                     {
@@ -221,7 +218,7 @@ class CardEvaluationRequirement extends Component {
           </Row>
           <Row type="flex" justify="end">
             <Col >
-              <Button type="primary" htmlType="submit">Guardar</Button>
+              <Button type="primary" icon="search" htmlType="submit">Guardar</Button>
             </Col>
           </Row>
         </Form>
