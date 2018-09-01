@@ -3,12 +3,10 @@ import {
   Modal, Form, Input, InputNumber, Select, DatePicker, Switch, Collapse,
   message, Divider, Row, Col, Card
 } from 'antd';
-import http from '../../service/http';
+import './CardEvaluationRequirement.css'
 
 let FormItem = Form.Item;
 let Option = Select.Option;
-let TextArea = Input.TextArea;
-let Panel = Collapse.Panel;
 
 function hasErrors(fieldsError) {
   return Object.keys(fieldsError).some(field => fieldsError[field]);
@@ -40,11 +38,11 @@ class CardEvaluationRequirement extends Component {
 
   constructor(props) {
     super(props);
+    let {data} = props;
+    this.state = {
+      data
+    }
   }
-
-  state = {
-
-  };
 
   handleSubmit = (e) => {
 
@@ -58,6 +56,9 @@ class CardEvaluationRequirement extends Component {
 
   render() {
     let {form} = this.props;
+    let {data: {lir_Nombre, lir_CostoInicial, pri_Prioridad, lir_Dias, lir_Aprobado,  ..._data, }} = this.state;
+
+    console.log(_data)
 
     const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = form;
 
@@ -65,7 +66,7 @@ class CardEvaluationRequirement extends Component {
 
 
     return (
-      <Card title={'Nombre de la vida que se usa para todo esta webada'}>
+      <Card title={lir_Nombre} className="card-requirement">
         <Form  layout="vertical" onSubmit={this.handleSubmit}
               className="gcp-form">
           <Row gutter={10} type="flex" align="middle">
@@ -76,13 +77,14 @@ class CardEvaluationRequirement extends Component {
                 {...formItemLayout_small}
                 help={folderError || ''}>
                 {getFieldDecorator('approved', {
+                  initialValue: lir_Aprobado,
                   rules: [
                     {
                       required: true,
                       message: 'Por favor ingresé un titulo',
                     }],
                 })(
-                  <Switch checkedChildren="Si" unCheckedChildren="No"/>
+                  <Switch/>
                 )}
               </FormItem>
             </Col>
@@ -117,7 +119,7 @@ class CardEvaluationRequirement extends Component {
                 {...formItemLayout_small}
                 help={folderError || ''}>
                 {getFieldDecorator('title', {
-                  initialValue:"0",
+                  initialValue : lir_Dias,
                   rules: [
                     {
                       required: true,
@@ -145,6 +147,7 @@ class CardEvaluationRequirement extends Component {
                       required: true,
                       message: 'Por favor ingresé un titulo',
                     }],
+                  initialValue: pri_Prioridad
                 })(
                   <Select>
                     <Option value="alto">Alto</Option>
@@ -163,7 +166,7 @@ class CardEvaluationRequirement extends Component {
                 validateStatus={folderError ? 'error' : ''}
                 {...formItemLayout_small}
                 help={folderError || ''}>
-                  <span>--</span>
+                  <span>{lir_CostoInicial}</span>
               </FormItem>
             </Col>
             <Col span={12}>

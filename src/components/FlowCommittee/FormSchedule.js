@@ -1,7 +1,5 @@
 import React, {Component} from 'react';
 import {Form, Icon, Col, Button, Row, Input, DatePicker, TimePicker, Tag, Select} from 'antd';
-import {Link} from 'react-router-dom';
-import FormEvaluation from '../../components/formEvaluation/formEvaluation'
 import {RfcContext} from '../../context/RFC'
 import './FlowCommittee.css';
 
@@ -60,10 +58,11 @@ class FlowCommittee extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFields((err, {reu_FechaReunion, reu_HoraReunion, ...values}) => {
+    this.props.form.validateFields((err, {reu_FechaReunion, reu_HoraReunion, ReunionParticipante, ...values}) => {
       if (!err) {
         values.reu_FechaReunion = reu_FechaReunion.format('YYYYMMDD');
         values.reu_HoraReunion = reu_FechaReunion.format('h:mm');
+        values.ReunionParticipante = ReunionParticipante.map(({key}) => ({per_Codigo : +key}));
         this.fetchPostSchedule(values);
       }
     })

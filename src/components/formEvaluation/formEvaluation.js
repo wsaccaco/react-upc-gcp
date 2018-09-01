@@ -12,7 +12,8 @@ export default class formEvaluation extends Component {
     super(props);
     let {visible} = props;
     this.state = {
-      visible
+      visible,
+      Requirement: []
     }
   }
 
@@ -22,21 +23,42 @@ export default class formEvaluation extends Component {
     }
   }
 
+  fetchEvaluarRequerimientos(){
+    let {rfc_id} = this.props;
+    http(`EvaluarRequerimientos/${rfc_id}`, 'GET', {}, (Requirement = []) => {
+
+      this.setState({
+        Requirement
+      })
+
+    }, (e) => {
+      console.error(e);
+    });
+  }
+
+  componentDidMount(){
+    this.fetchEvaluarRequerimientos()
+  }
 
   render() {
 
-    let {visible} = this.state;
+    let {visible, Requirement} = this.state;
     let {onClose} = this.props;
 
     return (
       <Modal
-        title="Title"
+        title="Evaluar Requerimiento"
         visible={visible}
         onCancel={onClose}
         width="650px"
         footer={null}
       >
-        <CardEvaluation />
+        {
+          Requirement.length > 0
+            ? Requirement.map((data, index) => <CardEvaluation key={index} data={data} />)
+            : <div>Loading..</div>
+        }
+
       </Modal>
     );
   };

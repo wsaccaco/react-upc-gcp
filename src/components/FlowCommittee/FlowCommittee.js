@@ -1,47 +1,52 @@
 import React, {Component} from 'react';
-import {Icon, Button, Col, Row, Table, Card} from 'antd';
-import {Link} from 'react-router-dom';
-import FormSchedule from './FormSchedule'
-import FormEvaluation from '../../components/formEvaluation/formEvaluation'
-import {RfcContext} from '../../context/RFC'
+import {Button, Col, Row, Table, Card, Tag} from 'antd';
+import FormSchedule from './FormSchedule';
+import {RfcContext} from '../../context/RFC';
 import http from '../../service/http';
 
 import './FlowCommittee.css';
 
-// public int acci { get; set; }
-// public int reu_Codigo { get; set; }
-// public int rfc_Codigo { get; set; }
-// public DateTime reu_FechaReunion { get; set; }
-// public DateTime reu_HoraReunion { get; set; }
-// public string reu_Lugar { get; set; }
-// public string reu_Comentario { get; set; }
 
-const columns = [{
-  title: 'Fecha',
-  dataIndex: 'reu_FechaReunion',
-  key: 'name',
-}, {
-  title: 'Lugar',
-  dataIndex: 'reu_Lugar',
-  key: 'age',
-}, {
-  title: 'Asunto',
-  dataIndex: 'reu_Comentario',
-  key: 'address',
-}, {
-  title: 'Participantes',
-  key: 'tags',
-  dataIndex: 'tags',
-}, {
-  title: 'Estado',
-  key: 'action'
-}];
+
+const columns = [
+  {
+    title: 'Fecha',
+    dataIndex: 'reu_FechaReunion',
+    key: 'date',
+  },
+  {
+    title: 'Fecha',
+    dataIndex: 'reu_HoraReunion',
+    key: 'time',
+  },
+  {
+    title: 'Lugar',
+    dataIndex: 'reu_Lugar',
+    key: 'age',
+  }, {
+    title: 'Asunto',
+    dataIndex: 'reu_Comentario',
+    key: 'address',
+  }, {
+    title: 'Participantes',
+    key: 'tags',
+    dataIndex: 'ReunionParticipante',
+    render: tags => (
+      <span>
+      {tags.map(
+        ({per_Email}) => <Tag color="blue" key={per_Email}>{per_Email.split(
+          '@')[0]}</Tag>)}
+    </span>
+    ),
+  }];
 
 export default class FlowCommittee extends Component {
 
   state = {
     visibleEvaluation: false,
-    rfc_id: this.props.rfc_id
+    rfc_id: this.props.rfc_id,
+    dataSource: [],
+    FormEvaluation: null
   };
 
   componentDidMount() {
@@ -52,11 +57,10 @@ export default class FlowCommittee extends Component {
     let {rfc_id} = this.props;
 
     this.setState({
-      loading: true
+      loading: true,
     });
 
     http(`Reunion/${rfc_id}`, 'GET', {}, (response) => {
-      console.log(response)
       this.setState({
         dataSource: response,
         loading: false,
@@ -67,42 +71,55 @@ export default class FlowCommittee extends Component {
   }
 
   _openEvaluation = () => {
+
+    import('../../components/formEvaluation/formEvaluation').then(FormEvaluation => {
+      this.setState({ FormEvaluation: FormEvaluation.default });
+    });
+
     this.setState({
-      visibleEvaluation : true
-    })
+      visibleEvaluation: true,
+    });
   };
 
   _closeEvaluation = () => {
     this.setState({
-      visibleEvaluation : false
-    })
+      visibleEvaluation: false,
+    });
   };
 
   render() {
-    let {visibleEvaluation, dataSource, loading} = this.state;
+    let {visibleEvaluation, dataSource, loading, FormEvaluation} = this.state;
     let {rfc_id} = this.props;
     return (
-      <div className="flow-committee component">
-        <Card title="Programar Reunión" type="inner">
-          <RfcContext.Provider value={rfc_id}>
-            <FormSchedule />
-          </RfcContext.Provider>
-          <div style={{padding: '15px 0'}}>
-            <Table
-              columns={columns}
-              dataSource={dataSource}
-              loading={loading}
-              footer={() => (
-                <Row justify="end" type="flex">
-                  <Col>
-                    <Button type="primary" icon="schedule" onClick={this._openEvaluation}>Evaluar</Button>
-                  </Col>
-                </Row>)
-              } />
-          </div>
-        </Card>
-          <FormEvaluation visible={visibleEvaluation} onClose={this._closeEvaluation} />
-      </div>
+      <RfcContext.Provider value={rfc_id}>
+        <div className="flow-committee component">
+          <Card title="Programar Reunión" type="inner">
+
+            <FormSchedule/>
+
+            <div style={{padding: '15px 0'}}>
+              <Table
+                columns={columns}
+                dataSource={dataSource}
+                loading={loading}
+                footer={() => (
+                  <Row justify="end" type="flex">
+                    <Col>
+                      <Button type="primary" icon="schedule"
+                              disabled={!(dataSource.length > 0)}
+                              onClick={this._openEvaluation}>Evaluar</Button>
+                    </Col>
+                  </Row>)
+                }/>
+            </div>
+          </Card>
+          {FormEvaluation
+            ? <FormEvaluation rfc_id={rfc_id}
+                              visible={visibleEvaluation}
+                              onClose={this._closeEvaluation} />
+            : null }
+        </div>
+      </RfcContext.Provider>
     );
   }
 
