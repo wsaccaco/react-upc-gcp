@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, DatePicker, Form, Input, message, Popconfirm, Radio, Select, Table, Row, Col, Modal} from 'antd';
+import {Button, Card, Col, DatePicker, Form, Input, message, Modal, Radio, Row, Select, Table} from 'antd';
 import moment from 'moment';
 
 import './Risk.css';
@@ -24,7 +24,7 @@ const formItemLayout = {
     },
 };
 const textEnviarRiesgo = 'Estas seguro de enviar la información a Evaluar en Riesgo?';
-const dateFormat = 'YYYY-MM-DD';
+const dateFormat = 'DD/MM/YYYY';
 //Cambios de Requerimientos
 const _column_template = [{
     title: 'Código',
@@ -54,32 +54,22 @@ class Risk extends Component {
     constructor(props) {
         super(props);
         this.fetchPrioridad = this.fetchPrioridad.bind(this);
-        this.fetchEstado = this.fetchEstado.bind(this);
-        this.fetchImpacto = this.fetchImpacto.bind(this);
+        //this.fetchEstado = this.fetchEstado.bind(this);
+        //this.fetchImpacto = this.fetchImpacto.bind(this);
     }
 
     state = {
         evr_Requiere: 0,
-        evr_FechaEnvio: '1900-01-01',
-        evr_Estado: 'Estado',
-        evr_FechaRespuesta: '1900-01-01',
-        evr_Informe: '',
-        evr_Impacto: 'Impacto',
-
         pri_Codigo: 'Prioridad',
         evr_Observacion: '',
+        evr_FechaEnvio: '',
+        esr_Descripcion: '',
+        evr_FechaRespuesta: '',
+        evr_Informe: '',
+        imp_Descripcion: '',
 
         evaluacionriesgoDisabled: false,
         enviarriesgoDisabled: true,
-        OptionEstado: [],
-        estadoDisabled: true,
-        fenvioDisabled: true,
-        frespuestaDisabled: true,
-        informeDisabled: true,
-        OptionImpacto: [],
-        impactoDisabled: true,
-        downloadDisabled: true,
-
         prioridadDisabled: true,
         OptionPrioridad: [],
         observacionDisabled: true,
@@ -126,13 +116,7 @@ class Risk extends Component {
                                 if (evr_Codigo > 0) {
                                     message.success('Se envio la información a Gestión de Riesgo.');
                                     let {evr_Requiere,
-                                        evr_FechaEnvio,
-                                        evr_Estado,
-                                        evr_FechaRespuesta,
-                                        evr_Informe,
-                                        evr_Impacto,
-                                        pri_Codigo,
-                                        evr_Observacion} = response;
+                                        pri_Codigo} = response;
                                     let {evaluacionriesgoDisabled,
                                         enviarriesgoDisabled,
                                         prioridadDisabled,
@@ -151,13 +135,7 @@ class Risk extends Component {
                                         prioridadDisabled,
                                         observacionDisabled,
                                         evr_Requiere,
-                                        evr_FechaEnvio,
-                                        evr_Estado,
-                                        evr_FechaRespuesta,
-                                        evr_Informe,
-                                        evr_Impacto,
-                                        pri_Codigo,
-                                        evr_Observacion
+                                        pri_Codigo
                                     });
                                 } else {
                                     message.warning('Ocurrió un error en el envió.');
@@ -190,51 +168,51 @@ class Risk extends Component {
         });
     }
 
-    fetchEstado(){
-        http('EstadoRiesgo', 'GET', {}, (response) => {
-            let OptionEstado = response.map(({esr_Descripcion:text, esr_Codigo:value}, index) => {
-                return <Option key={index} value={value}>{text}</Option>;
-            }, (err) => {
-                console.log(err);
-            });
-            this.setState({
-                OptionEstado
-            })
-        });
-    }
-
-    fetchImpacto(){
-        http('ImpactoRiesgo', 'GET', {}, (response) => {
-            let OptionImpacto = response.map(({imp_Descripcion:text, imp_Codigo:value}, index) => {
-                return <Option key={index} value={value}>{text}</Option>;
-            }, (err) => {
-                console.log(err);
-            });
-            this.setState({
-                OptionImpacto
-            })
-        });
-    }
+    // fetchEstado(){
+    //     http('EstadoRiesgo', 'GET', {}, (response) => {
+    //         let OptionEstado = response.map(({esr_Descripcion:text, esr_Codigo:value}, index) => {
+    //             return <Option key={index} value={value}>{text}</Option>;
+    //         }, (err) => {
+    //             console.log(err);
+    //         });
+    //         this.setState({
+    //             OptionEstado
+    //         })
+    //     });
+    // }
+    //
+    // fetchImpacto(){
+    //     http('ImpactoRiesgo', 'GET', {}, (response) => {
+    //         let OptionImpacto = response.map(({imp_Descripcion:text, imp_Codigo:value}, index) => {
+    //             return <Option key={index} value={value}>{text}</Option>;
+    //         }, (err) => {
+    //             console.log(err);
+    //         });
+    //         this.setState({
+    //             OptionImpacto
+    //         })
+    //     });
+    // }
 
     fetchEvaluacionRiesgo(){
         let {rfc_id} = this.props;
         http('EvaluacionRiesgo/' + rfc_id, 'GET', {}, (response) => {
             let {evr_Requiere,
+                pri_Codigo,
+                evr_Observacion,
                 evr_FechaEnvio,
-                evr_Estado,
+                esr_Descripcion,
                 evr_FechaRespuesta,
                 evr_Informe,
-                evr_Impacto,
-                pri_Codigo,
-                evr_Observacion} = response[0];
+                imp_Descripcion} = response[0];
             console.log(evr_Requiere,
+                pri_Codigo,
+                evr_Observacion,
                 evr_FechaEnvio,
-                evr_Estado,
+                esr_Descripcion,
                 evr_FechaRespuesta,
                 evr_Informe,
-                evr_Impacto,
-                pri_Codigo,
-                evr_Observacion);
+                imp_Descripcion);
             let {evaluacionriesgoDisabled,
                 enviarriesgoDisabled,
                 prioridadDisabled,
@@ -252,14 +230,13 @@ class Risk extends Component {
                 prioridadDisabled,
                 observacionDisabled,
                 evr_Requiere,
+                pri_Codigo,
+                evr_Observacion,
                 evr_FechaEnvio,
-                evr_Estado,
+                esr_Descripcion,
                 evr_FechaRespuesta,
                 evr_Informe,
-                evr_Impacto,
-                pri_Codigo,
-                evr_Observacion
-            });
+                imp_Descripcion});
         }, (e) => {
             console.error(e)
         });
@@ -271,7 +248,6 @@ class Risk extends Component {
         this.setState({
             loadingChange: true
         });
-
         http('/rfc/' + rfc_id + '/nuevosRequerimientos', 'GET', {}, (response) => {
             this.setState({
                 dataSourceChange: response,
@@ -291,8 +267,8 @@ class Risk extends Component {
 
     componentDidMount() {
         this.fetchPrioridad();
-        this.fetchEstado();
-        this.fetchImpacto();
+        //this.fetchEstado();
+        //this.fetchImpacto();
         this.fetchEvaluacionRiesgo();
         //Cambios de Requerimientos
         this.fetchRequerimentsChanged()
@@ -302,26 +278,16 @@ class Risk extends Component {
         let {form, rfc_id} = this.props;
         let {
             evr_Requiere,
-            evr_FechaEnvio,
-            evr_Estado,
-            evr_FechaRespuesta,
-            evr_Informe,
-            evr_Impacto,
-
             pri_Codigo,
             evr_Observacion,
+            evr_FechaEnvio,
+            esr_Descripcion,
+            evr_FechaRespuesta,
+            evr_Informe,
+            imp_Descripcion,
 
             evaluacionriesgoDisabled,
             enviarriesgoDisabled,
-            OptionEstado,
-            estadoDisabled,
-            fenvioDisabled,
-            frespuestaDisabled,
-            informeDisabled,
-            OptionImpacto,
-            impactoDisabled,
-            downloadDisabled,
-
             OptionPrioridad,
             prioridadDisabled,
             observacionDisabled,
@@ -334,189 +300,123 @@ class Risk extends Component {
 
         return (
             <Form onSubmit={this.handleSubmit} className="gcp-form" >
-                <div>
-                    <Row>
-                        <Col span={12}>
-                            <FormItem>
-                                {getFieldDecorator('rfc_Codigo', {
-                                    rules: [{required: true, message: 'Definir el RFC'}],
-                                    initialValue: rfc_id
-                                })(
-                                    <Input type="hidden"/>
-                                )}
-                            </FormItem>
+                <Row>
+                    <Col span={12}>
+                        <FormItem>
+                            {getFieldDecorator('rfc_Codigo', {
+                                rules: [{required: true, message: 'Definir el RFC'}],
+                                initialValue: rfc_id
+                            })(
+                                <Input type="hidden"/>
+                            )}
+                        </FormItem>
 
-                            <FormItem
-                                label={'Requiere evaluación'}
-                                {...formItemLayout}
-                                >
-                                {getFieldDecorator('evr_Requiere', {
-                                    rules: [{required: false, message: 'Definir Requiere'}],
-                                    initialValue: evr_Requiere
-                                })(
-                                    <RadioGroup
-                                        onChange={this.onChange}
-                                        disabled={evaluacionriesgoDisabled}>
-                                        <Radio value={0}>NO</Radio>
-                                        <Radio value={1}>SI</Radio>
-                                    </RadioGroup>
-                                )}
-                                <Button
-                                    type="primary"
-                                    htmlType="submit"
-                                    icon="rocket"
-                                    disabled={enviarriesgoDisabled}>
-                                    Enviar a Riesgo
-                                </Button>
-                            </FormItem>
-                        </Col>
-                        <Col span={12}>
-                            <FormItem
-                                label={'Fecha de Envio'}
-                                {...formItemLayout}
+                        <FormItem
+                            label={'Requiere evaluación'}
+                            {...formItemLayout}
                             >
-                                <DatePicker
-                                    disabled={fenvioDisabled}
-                                    value={moment(evr_FechaEnvio, this.dateformat)}
-                                    format={dateFormat}
-                                />
-                            </FormItem>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={12}>
-                            <FormItem
-                                label={'Prioridad'}
-                                {...formItemLayout}
-                                >
-                                {getFieldDecorator('pri_Codigo', {
-                                    rules: [{required: true, message: 'Seleccionar Prioridad'}],
-                                    initialValue: pri_Codigo
-                                })(
-                                    <Select
-                                        showSearch
-                                        disabled={prioridadDisabled}
-                                        placeholder="Seleccione Prioridad">
-                                        {OptionPrioridad}
-                                    </Select>
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={12}>
-                            <FormItem
-                                label={'Estado'}
-                                {...formItemLayout}
-                                >
-                                <Select
-                                    showSearch
-                                    disabled={estadoDisabled}
-                                    placeholder="Seleccione Estado"
-                                    defaultValue={evr_Estado}>
-                                    {OptionEstado}
-                                </Select>
-                            </FormItem>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={12}>
-                            <FormItem
-                                label={'Observación'}
-                                {...formItemLayout}
-                                >
-                                {getFieldDecorator('evr_Observacion', {
-                                    rules: [{required: true, message: 'Ingrese una observación'}],
-                                    initialValue: evr_Observacion
-                                })(
-                                    <TextArea
-                                        disabled={observacionDisabled}
-                                        placeholder="Observación"
-                                    />
-                                )}
-                            </FormItem>
-                        </Col>
-                        <Col span={12}>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={12}>
-                            <FormItem
-                                label={'Fecha de Respuesta'}
-                                {...formItemLayout}
-                                >
-                                <DatePicker
-                                    disabled={frespuestaDisabled}
-                                    value={moment(evr_FechaRespuesta, this.dateformat)}
-                                    format={dateFormat}
-                                />
-                            </FormItem>
-                        </Col>
-                        <Col span={12}>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={12}>
-                            <FormItem
-                                label={'Informe'}
-                                {...formItemLayout}
-                                >
+                            {getFieldDecorator('evr_Requiere', {
+                                rules: [{required: false, message: 'Definir Requiere'}],
+                                initialValue: evr_Requiere
+                            })(
+                                <RadioGroup
+                                    onChange={this.onChange}
+                                    disabled={evaluacionriesgoDisabled}>
+                                    <Radio value={0}>NO</Radio>
+                                    <Radio value={1}>SI</Radio>
+                                </RadioGroup>
+                            )}
+                            <Button
+                                type="primary"
+                                htmlType="submit"
+                                icon="rocket"
+                                disabled={enviarriesgoDisabled}>
+                                Enviar a Riesgo
+                            </Button>
+                        </FormItem>
+                    </Col>
+                    <Col span={12}>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={12}>
+                        <FormItem
+                            label={'Observación'}
+                            {...formItemLayout}>
+                            {getFieldDecorator('evr_Observacion', {
+                                rules: [{required: true, message: 'Ingrese una observación'}],
+                                initialValue: evr_Observacion
+                            })(
                                 <TextArea
-                                    disabled={informeDisabled}
-                                    placeholder="Resumen de informe emitido por Gestión de Riesgo"
-                                    value={evr_Informe}
+                                    disabled={observacionDisabled}
+                                    placeholder="Observación"
                                 />
-                            </FormItem>
-                        </Col>
-                        <Col span={12}>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={12}>
-                            <FormItem
-                                label={'Impacto'}
-                                {...formItemLayout}
-                                >
+                            )}
+                        </FormItem>
+                    </Col>
+                    <Col span={12}>
+                        <FormItem
+                            label={'Prioridad'}
+                            {...formItemLayout}
+                        >
+                            {getFieldDecorator('pri_Codigo', {
+                                rules: [{required: true, message: 'Seleccionar Prioridad'}],
+                                initialValue: pri_Codigo
+                            })(
                                 <Select
                                     showSearch
-                                    disabled={impactoDisabled}
-                                    placeholder="Seleccione Impacto"
-                                    defaultValue={evr_Impacto}>
-                                    {OptionImpacto}
+                                    disabled={prioridadDisabled}
+                                    placeholder="Seleccione Prioridad">
+                                    {OptionPrioridad}
                                 </Select>
-                            </FormItem>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={12}>
-                            <FormItem
-                                label={'Adjunto'}
-                                {...formItemLayout}
-                                >
-                                <Button
-                                    icon="download"
-                                    //onClick={}
-                                    disabled={downloadDisabled}>
-                                    Download
-                                </Button>
-                            </FormItem>
-                        </Col>
-                    </Row>
-                    {/*Cambios de Requerimientos*/}
-                    <FormItem>
-                        <div className="flow-requirement component">
-                            <div className="wrap-table">
-                                <Table
-                                    title={this.titleTable.bind(this)}
-                                    bordered
-                                    locale={{emptyText: 'No hay datos'}}
-                                    size="small"
-                                    scroll={{x: 800}}
-                                    loading={loadingChange}
-                                    dataSource={dataSourceChange}
-                                    columns={columns_requirement_change} />
-                            </div>
-                        </div>
-                    </FormItem>
-                </div>
+                            )}
+                        </FormItem>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={24}>
+                        <Card title="Evaluación">
+                            <Row>
+                                <Col span={12}>
+                                    <p>Fecha de Envio : </p>{evr_FechaEnvio}
+                                </Col>
+                                <Col span={12}>
+                                    <p>Estado : </p>{esr_Descripcion}
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={12}>
+                                    <p>Fecha de Repuesta : </p>{evr_FechaRespuesta}
+                                </Col>
+                                <Col span={12}>
+                                    <p>Informe : </p>{evr_Informe}
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={12}>
+                                    <p>Impacto : </p>{imp_Descripcion}
+                                </Col>
+                                <Col span={12}>
+                                </Col>
+                            </Row>
+                        </Card>
+                    </Col>
+                </Row>
+                {/*Cambios de Requerimientos*/}
+                <Row>
+                    <Col span={24}>
+                        <Card title="Cambios de Requerimientos">
+                            <Table
+                                bordered
+                                locale={{emptyText: 'No hay datos'}}
+                                size="small"
+                                scroll={{x: 800}}
+                                loading={loadingChange}
+                                dataSource={dataSourceChange}
+                                columns={columns_requirement_change} />
+                        </Card>
+                    </Col>
+                </Row>
             </Form>
         );
     }
