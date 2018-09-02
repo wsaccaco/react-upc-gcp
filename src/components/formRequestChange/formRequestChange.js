@@ -63,7 +63,7 @@ class FormRequestChange extends Component {
   }
 
   fetchApplicant() {
-    http('C0005G0001', 'GET', {}, (response) => {
+    http('Interesado', 'GET', {}, (response) => {
       let OptionApplicant = response.map(({text, value}, index) => {
         return <Option key={index} value={value}>{text}</Option>;
       });
@@ -76,7 +76,7 @@ class FormRequestChange extends Component {
   }
 
   fetchResponsable() {
-    http('C0005G0002', 'GET', {}, (response) => {
+    http('Responsable', 'GET', {}, (response) => {
       let OptionResponsable = response.map(({text, value}, index) => {
         return <Option key={index} value={value}>{text}</Option>;
       });
