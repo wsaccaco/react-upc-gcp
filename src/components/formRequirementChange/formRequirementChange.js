@@ -11,6 +11,7 @@ import {
   message,
   Divider,
 } from 'antd';
+import moment from 'moment'
 import http from '../../service/http';
 import './formRequirementChange.css';
 
@@ -32,7 +33,8 @@ class FormRequirementChange extends Component {
 
   state = {
     rfc_Codigo: this.props.rfc_Codigo,
-    requirementSource: this.props.requirementSource
+    requirementSource: this.props.requirementSource,
+    updateRequirement: false
   };
 
   handleSubmit = (e) => {
@@ -93,19 +95,9 @@ class FormRequirementChange extends Component {
     return isFieldTouched(name) && getFieldError(name);
   }
 
-  switchTitle(checked) {
-    this.setState({
-      updateRequirement: checked,
-    });
-  }
-
   TitleModal() {
-    let {updateRequirement} = this.state;
+    let {updateRequirement} = this.props;
     return <div className="">
-      <Switch
-        onChange={this.switchTitle.bind(this)}
-        defaultChecked={updateRequirement}/>
-      <Divider type="vertical"/>
       {updateRequirement ? <span>Modificar Requerimiento</span> : <span>Nuevo Requerimiento</span>}
     </div>;
   }
@@ -113,7 +105,7 @@ class FormRequirementChange extends Component {
   render() {
 
     let {visible, onOk, onCancel, form} = this.props;
-    let {updateRequirement, requirementSource} = this.state;
+    let {requirementSource} = this.state;
     const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = form;
 
 
@@ -121,8 +113,8 @@ class FormRequirementChange extends Component {
     const folderError = isFieldTouched('folder') && getFieldError('folder');
     const dateError = isFieldTouched('date') && getFieldError('date');
 
-    let {lir_Nombre} = requirementSource || {};
-    console.log(lir_Nombre);
+    let {lir_Nombre, lir_Resumen, lir_Prioridad, lir_EsFuncional,
+      lir_RequiereDocumentar, lir_FechaEntrega, ...props} = requirementSource || {};
 
     let {TitleModal} = this;
 
@@ -159,6 +151,7 @@ class FormRequirementChange extends Component {
             validateStatus={this.validateInput('delivery') ? 'error' : ''}
             help={this.validateInput('delivery') || '' || ''}>
             {getFieldDecorator('delivery', {
+              initialValue: moment(lir_FechaEntrega, 'DD-MM-YYYY') ,
               rules: [
                 {
                   required: true,
@@ -174,6 +167,7 @@ class FormRequirementChange extends Component {
             validateStatus={this.validateInput('description') ? 'error' : ''}
             help={this.validateInput('description') || ''}>
             {getFieldDecorator('description', {
+              initialValue: lir_Resumen,
               rules: [
                 {
                   required: true,
@@ -191,7 +185,7 @@ class FormRequirementChange extends Component {
                 validateStatus={this.validateInput('prioridad') ? 'error' : ''}
                 help={this.validateInput('project') || ''}>
                 {getFieldDecorator('prioridad', {
-                  initialValue: '2',
+                  initialValue: `${lir_Prioridad}`,
                   rules: [
                     {
                       required: true,
@@ -212,11 +206,11 @@ class FormRequirementChange extends Component {
                 labelCol={{span: 12, offset: 12}}
                 help={this.validateInput('applicant') || ''}>
                 {getFieldDecorator('isFunctional', {
-                  initialValue: true,
+                  valuePropName: 'checked',
+                  initialValue: lir_EsFuncional,
                   rules: [],
                 })(
-                  <Switch checkedChildren="Si" unCheckedChildren="No"
-                          onChange={() => {}}/>,
+                  <Switch checkedChildren="Si" unCheckedChildren="No"/>,
                 )}
               </FormItem>
 
@@ -225,11 +219,11 @@ class FormRequirementChange extends Component {
                 labelCol={{span: 12, offset: 12}}
                 help={this.validateInput('requireDocumentation') || ''}>
                 {getFieldDecorator('requireDocumentation', {
-                  initialValue: true,
+                  valuePropName: 'checked',
+                  initialValue: lir_RequiereDocumentar,
                   rules: [],
                 })(
-                  <Switch checkedChildren="Si" unCheckedChildren="No"
-                          onChange={() => {}}/>,
+                  <Switch checkedChildren="Si" unCheckedChildren="No" />,
                 )}
               </FormItem>
 

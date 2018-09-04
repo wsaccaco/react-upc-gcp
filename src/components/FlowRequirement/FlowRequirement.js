@@ -74,7 +74,8 @@ export default class FlowRequirement extends Component {
       this.setState({
         FormRequirementChange: FormRequirementChange.default,
         visibleModal: true,
-        requirementSource
+        requirementSource,
+        updateRequirement: true
       });
     });
 
@@ -107,6 +108,7 @@ export default class FlowRequirement extends Component {
         FormRequirementChange: FormRequirementChange.default,
         visibleModal: true,
         requirementSource: null,
+        updateRequirement: false
       });
     });
   }
@@ -137,7 +139,7 @@ export default class FlowRequirement extends Component {
   render() {
     let {dataSource, loadingChange,
       dataSourceChange, visibleModal, rfc_id, requirementSource,
-      FormRequirementChange} = this.state;
+      FormRequirementChange, updateRequirement} = this.state;
     return (
 
         <div className="flow-requirement component">
@@ -165,15 +167,15 @@ export default class FlowRequirement extends Component {
               columns={columns_current_requirement} />
           </div>
 
-          {FormRequirementChange
+          {FormRequirementChange && visibleModal
             ? <FormRequirementChange
               rfc_Codigo={rfc_id}
+              updateRequirement={updateRequirement}
               requirementSource={requirementSource}
               visible={visibleModal}
               onOk={this._onOk.bind(this)}
               onCancel={this.onCancel.bind(this)}/>
             : null }
-
 
         </div>
     );
