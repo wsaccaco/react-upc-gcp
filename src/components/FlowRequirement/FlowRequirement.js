@@ -55,10 +55,10 @@ export default class FlowRequirement extends Component {
         fixed: 'right',
         width: 100,
         render: (text, record) => (
-          <span>
-  <a href="javascript:;"
-     onClick={() => {this._updateRequirement(text);}}> Editar </a>
-  </span>
+        <span>
+            <a href="javascript:;"
+           onClick={() => {this._updateRequirement(text);}}> Editar </a>
+        </span>
         ),
       }]];
 
@@ -139,6 +139,10 @@ export default class FlowRequirement extends Component {
     });
   }
 
+  _refresh = () => {
+    this.fetchRequerimentsChanged();
+  };
+
   render() {
     let {
       dataSource, loadingChange,
@@ -178,6 +182,7 @@ export default class FlowRequirement extends Component {
             updateRequirement={updateRequirement}
             requirementSource={requirementSource}
             visible={visibleModal}
+            refresh={this._refresh}
             onOk={this._onOk.bind(this)}
             onCancel={this.onCancel.bind(this)}/>
           : null}

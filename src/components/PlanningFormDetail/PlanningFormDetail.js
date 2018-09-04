@@ -1,129 +1,139 @@
 import React, {Component} from 'react';
-import {Modal, Form, Input, Icon, Select, DatePicker, Col} from 'antd';
+import {Modal, Form, Input, InputNumber, Select, DatePicker, Col} from 'antd';
 import http from '../../service/http';
-import moment from "moment";
+import moment from 'moment';
 
 let FormItem = Form.Item;
 let Option = Select.Option;
 let TextArea = Input.TextArea;
 
 const formItemLayout = {
-    labelCol: {
-        xs: {span: 24},
-        sm: {span: 8},
-    },
-    wrapperCol: {
-        xs: {span: 24},
-        sm: {span: 16},
-    },
+  labelCol: {
+    xs: {span: 24},
+    sm: {span: 8},
+  },
+  wrapperCol: {
+    xs: {span: 24},
+    sm: {span: 16},
+  },
 };
 
 function hasErrors(fieldsError) {
-    return Object.keys(fieldsError).some(field => fieldsError[field]);
+  return Object.keys(fieldsError).some(field => fieldsError[field]);
 }
 
-const dateFormat = 'YYYY-MM-DD';
+const dateFormat = 'DD-MM-YYYY';
 
 class FormRequirementDetail extends Component {
 
-    constructor(props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
 
-    state = {
-        OptionPortafalio: [],
-        OptionResponsable: [],
-        projectDisabled: true
-    };
+  state = {
+    OptionPortafalio: [],
+    OptionResponsable: [],
+    projectDisabled: true,
+  };
 
-    handleSubmit = (e) => {
-        e.preventDefault();
-        let {form, onOk} = this.props;
 
-        form.validateFields((err, form) => {
-            if (!err) {
-                console.log('submit');
-                // let pathName = this.isNew ? 'C0001S0003' : 'C0001S0004';
+  onCreate = (e) => {
+    e.preventDefault();
+    let {onOk, form} = this.props;
+    let {validateFields, resetFields} = form;
 
-                this.http('C0001S0003', 'POST', form, (response) => {
-                    if (response === 'OK') {
-                        onOk(response);
-                    }
-                });
+    validateFields((err, form) => {
+      if (!err) {
 
-            }
+        http('RequerimientoPLanificar/update', 'POST', form, ({success}) => {
+          if (success) {
+            onOk();
+            resetFields();
+          }
         });
-    };
 
-    onCreate = (e) =>{
-        e.preventDefault();
-        let {onOk, form} = this.props;
-        let {validateFields, resetFields} = form;
+      }
+    });
+  };
 
-        validateFields((err, form) => {
-            if (!err) {
+  componentDidMount() {
+    this.props.form.validateFields();
+  }
 
-                // let pathName = this.isNew ? 'C0001S0003' : 'C0001S0004';
+  validateInput(name) {
+    let {form} = this.props;
+    const {getFieldError, isFieldTouched} = form;
+    return isFieldTouched(name) && getFieldError(name);
+  }
 
-                http('C0001S0003', 'POST', form, (response) => {
-                    if (response === 'OK') {
-                        onOk(response);
-                        resetFields();
-                    }
-                });
+  render() {
 
-            }
-        });
-    };
+    let {visible, onOk, onCancel, form, data} = this.props;
+    let {lir_Esfuerzo, lir_Desde, lir_Codigo} = data;
+    const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = form;
 
-    componentDidMount(){
-        this.props.form.validateFields();
-    }
+    const folderError = isFieldTouched('folder') && getFieldError('folder');
+    const dateError = isFieldTouched('date') && getFieldError('date');
 
-    validateInput(name){
-        let {form} = this.props;
-        const {getFieldError, isFieldTouched} = form;
-        return isFieldTouched(name) && getFieldError(name);
-    }
+    return (
+      <Modal
+        title="Detallar requerimiento"
+        visible={visible}
+        onOk={this.onCreate}
+        okText="Aceptar"
+        onCancel={onCancel}
+        okButtonProps={{disabled: hasErrors(getFieldsError())}}
+      >
+        <Form onSubmit={this.handleSubmit} className="gcp-form">
 
-    render() {
+          {getFieldDecorator('lir_Codigo', {
+            initialValue: lir_Codigo,
+            rules: [
+              {
+                required: true,
+                message: 'Se requiere el esfuerzo',
+              }],
+          })(
+            <Input type="hidden"/>
+          )}
 
-        let {visible, onOk, onCancel, form} = this.props;
-        let { OptionPortafalio, OptionProject,
-            projectDisabled, OptionApplicant,
-            OptionResponsable } = this.state;
-        const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = form;
+          <FormItem label={'Esfuerzo:'} {...formItemLayout}>
 
-        const folderError = isFieldTouched('folder') && getFieldError('folder');
-        const dateError = isFieldTouched('date') && getFieldError('date');
+            {getFieldDecorator('lir_Esfuerzo', {
+              initialValue: lir_Esfuerzo,
+              rules: [
+                {
+                  required: true,
+                  message: 'Se requiere el esfuerzo',
+                }],
+            })(
+              <InputNumber
+                formatter={value => `${value} horas`}
+                parser={value => value.replace(' horas', '')}
+                min={0} disabled={false}/>
+            )}
 
-        return (
-            <Modal
-                title="Detallar requerimiento"
-                visible={visible}
-                onOk={this.onCreate}
-                okText="Aceptar"
-                onCancel={onCancel}
-                okButtonProps={{ disabled: hasErrors(getFieldsError()) }}
-            >
-                <Form onSubmit={this.handleSubmit} className="gcp-form">
-                    <FormItem label={'Esfuerzo:'} {...formItemLayout}>
-                        <Input disabled={false} />
-                    </FormItem>
-                    <FormItem label={'Inicio:'} {...formItemLayout} >
-                        <DatePicker
-                            disabled={false}
-                            format={dateFormat} />
-                    </FormItem>
-                    <FormItem label={'Termino:'} {...formItemLayout} >
-                        <DatePicker
-                            disabled={false}
-                            format={dateFormat} />
-                    </FormItem>
-                </Form>
-            </Modal>
-        );
-    };
+          </FormItem>
+          <FormItem label={'Inicio:'} {...formItemLayout} >
+
+            {getFieldDecorator('lir_Desde', {
+              initialValue: lir_Desde ? moment( lir_Desde, dateFormat) : null,
+              rules: [
+                {
+                  required: true,
+                  message: 'Se requiere una fecha de inicio',
+                }],
+            })(
+              <DatePicker
+                disabled={false}
+                format={dateFormat}/>
+            )}
+
+          </FormItem>
+        </Form>
+      </Modal>
+    );
+  };
 }
 
-export default  Form.create()(FormRequirementDetail);
+export default Form.create()(FormRequirementDetail);
