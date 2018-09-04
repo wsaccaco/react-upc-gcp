@@ -114,7 +114,7 @@ class FormRequirementChange extends Component {
     const dateError = isFieldTouched('date') && getFieldError('date');
 
     let {lir_Nombre, lir_Resumen, lir_Prioridad, lir_EsFuncional,
-      lir_RequiereDocumentar, lir_FechaEntrega, ...props} = requirementSource || {};
+      lir_RequiereDocumentar, lir_FechaEntrega, lir_Codigo} = requirementSource || {};
 
     let {TitleModal} = this;
 
@@ -129,6 +129,12 @@ class FormRequirementChange extends Component {
       >
         <Form layout="vertical" onSubmit={this.handleSubmit}
               className="gcp-form">
+
+          {getFieldDecorator('lir_Codigo', {
+            initialValue: lir_Codigo
+          })(
+            <Input type="hidden"/>
+          )}
 
           <FormItem
             label={'Titulo del requerimiento'}
