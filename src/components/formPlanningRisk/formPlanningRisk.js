@@ -329,12 +329,14 @@ class FormPlanningRisk extends Component {
                             >
                                 {getFieldDecorator('evr_LineaBase', {
                                     rules: [],
+                                    valuePropName: 'checked',
                                     initialValue: evr_LineaBase
                                 })(
                                     <Checkbox disabled={lineabaseDisabled}>Línea Base</Checkbox>
                                 )}
                                 {getFieldDecorator('evr_Presupuesto', {
                                     rules: [],
+                                    valuePropName: 'checked',
                                     initialValue: evr_Presupuesto
                                 })(
                                     <Checkbox disabled={presupuestoDisabled}>Presupuesto</Checkbox>
