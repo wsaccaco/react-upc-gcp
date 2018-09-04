@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Card, Col, DatePicker, Form, Input, message, Modal, Radio, Row, Select, Table} from 'antd';
+import {Button, Card, Col, DatePicker, Form, Input, message, Modal, Radio, Row, Select, Table, Divider} from 'antd';
 import moment from 'moment';
 
 import './Risk.css';
@@ -70,6 +70,8 @@ class Risk extends Component {
         evr_FechaRespuesta: '',
         evr_Informe: '',
         imp_Descripcion: '',
+        evr_LineaBase: '',
+        evr_Presupuesto: '',
 
         evaluacionriesgoDisabled: false,
         enviarriesgoDisabled: true,
@@ -181,15 +183,10 @@ class Risk extends Component {
                 esr_Descripcion,
                 evr_FechaRespuesta,
                 evr_Informe,
-                imp_Descripcion} = response[0];
-            console.log(evr_Requiere,
-                pri_Codigo,
-                evr_Observacion,
-                evr_FechaEnvio,
-                esr_Descripcion,
-                evr_FechaRespuesta,
-                evr_Informe,
-                imp_Descripcion);
+                imp_Descripcion,
+                evr_LineaBase,
+                evr_Presupuesto} = response[0];
+            console.log(evr_Requiere,pri_Codigo,evr_Observacion,evr_FechaEnvio,esr_Descripcion,evr_FechaRespuesta,evr_Informe,imp_Descripcion,evr_LineaBase,evr_Presupuesto);
             let {evaluacionriesgoDisabled,
                 enviarriesgoDisabled,
                 prioridadDisabled,
@@ -200,6 +197,12 @@ class Risk extends Component {
                 enviarriesgoDisabled = true;
                 prioridadDisabled = true;
                 observacionDisabled = true;
+            }
+            if (evr_LineaBase === true){
+                evr_LineaBase = 'Linea Base';
+            }
+            if (evr_Presupuesto === true){
+                evr_Presupuesto = 'Presupuesto';
             }
             this.setState({
                 evaluacionriesgoDisabled,
@@ -213,7 +216,9 @@ class Risk extends Component {
                 esr_Descripcion,
                 evr_FechaRespuesta,
                 evr_Informe,
-                imp_Descripcion});
+                imp_Descripcion,
+                evr_LineaBase,
+                evr_Presupuesto});
         }, (e) => {
             console.error(e)
         });
@@ -260,6 +265,8 @@ class Risk extends Component {
             evr_FechaRespuesta,
             evr_Informe,
             imp_Descripcion,
+            evr_LineaBase,
+            evr_Presupuesto,
 
             evaluacionriesgoDisabled,
             enviarriesgoDisabled,
@@ -372,6 +379,7 @@ class Risk extends Component {
                                     <p>Impacto : </p>{imp_Descripcion}
                                 </Col>
                                 <Col span={12}>
+                                    <p>Afectación : </p>{evr_LineaBase}<Divider type="vertical"/>{evr_Presupuesto}
                                 </Col>
                             </Row>
                         </Card>
