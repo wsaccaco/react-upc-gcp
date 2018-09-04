@@ -94,7 +94,7 @@ class FormPlanningRisk extends Component {
                 title={"Evaluación de Riesgo"}
                 visible={visible}
                 onOk={this.onCreate}
-                okText="Crear"
+                okText="Guardar"
                 onCancel={onCancel}
                 // okButtonProps={{disabled: hasErrors(getFieldsError())}}
             >
