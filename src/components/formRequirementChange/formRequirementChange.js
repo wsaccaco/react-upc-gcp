@@ -31,8 +31,8 @@ class FormRequirementChange extends Component {
   }
 
   state = {
-    updateRequirement: false,
-    rfc_Codigo: this.props.rfc_Codigo
+    rfc_Codigo: this.props.rfc_Codigo,
+    requirementSource: this.props.requirementSource
   };
 
   handleSubmit = (e) => {
@@ -80,6 +80,13 @@ class FormRequirementChange extends Component {
     this.props.form.validateFields();
   }
 
+  static getDerivedStateFromProps(nextProps, prevState){
+    let { requirementSource } = nextProps;
+    return {
+      requirementSource
+    }
+  }
+
   validateInput(name) {
     let {form} = this.props;
     const {getFieldError, isFieldTouched} = form;
@@ -106,11 +113,16 @@ class FormRequirementChange extends Component {
   render() {
 
     let {visible, onOk, onCancel, form} = this.props;
-    let {updateRequirement} = this.state;
+    let {updateRequirement, requirementSource} = this.state;
     const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = form;
+
+
 
     const folderError = isFieldTouched('folder') && getFieldError('folder');
     const dateError = isFieldTouched('date') && getFieldError('date');
+
+    let {lir_Nombre} = requirementSource || {};
+    console.log(lir_Nombre);
 
     let {TitleModal} = this;
 
@@ -131,17 +143,14 @@ class FormRequirementChange extends Component {
             validateStatus={folderError ? 'error' : ''}
             help={folderError || ''}>
             {getFieldDecorator('title', {
+              initialValue: lir_Nombre,
               rules: [
                 {
                   required: true,
                   message: 'Por favor ingresé un titulo',
                 }],
             })(
-              updateRequirement
-                ? <Select showSearch={true} placeholder="Busca un requerimiento existente">
-                  <Option value="lucy">Lucy</Option>
-                </Select>
-                : <Input type="text" placeholder="Ejemplo. Agregar nuevo estado al usuario."/>
+              <Input type="text" placeholder="Ejemplo. Agregar nuevo estado al usuario."/>
             )}
           </FormItem>
 

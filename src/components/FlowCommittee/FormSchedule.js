@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Form, Icon, Col, Button, Row, Input, DatePicker, TimePicker, Tag, Select} from 'antd';
-import {Link} from 'react-router-dom';
+import {RfcContext} from '../../context/RFC'
 import './FlowCommittee.css';
 
 import http from '../../service/http';
@@ -46,11 +46,26 @@ class FlowCommittee extends Component {
     });
   }
 
+  fetchPostSchedule(values){
+    http(`Reunion`, 'POST', values, ({success}) => {
+
+      if(success){
+        this.props.refresh();
+      }
+
+    }, (e) => {
+      console.error(e);
+    });
+  }
+
   handleSubmit = (e) => {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields((err, {reu_FechaReunion, reu_HoraReunion, ReunionParticipante, ...values}) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        values.reu_FechaReunion = reu_FechaReunion.format('YYYYMMDD');
+        values.reu_HoraReunion = reu_FechaReunion.format('h:mm');
+        values.ReunionParticipante = ReunionParticipante.map(({key}) => ({per_Codigo : +key}));
+        this.fetchPostSchedule(values);
       }
     })
   };
@@ -69,8 +84,17 @@ class FlowCommittee extends Component {
         >
           <Row gutter={16}>
             <Col span={8}>
+              <RfcContext.Consumer>
+                {
+                  rfc_id => getFieldDecorator(`rfc_Codigo`, {
+                    initialValue: rfc_id
+                  })(
+                    <Input type="hidden"/>
+                  )
+                }
+              </RfcContext.Consumer>
               <FormItem label={`F. Reunión :`} {...formItemLayout} >
-                {getFieldDecorator(`meeting`, {
+                {getFieldDecorator(`reu_FechaReunion`, {
                   rules: [{
                     required: true,
                     message: 'Ingresa una fecha',
@@ -82,19 +106,19 @@ class FlowCommittee extends Component {
             </Col>
             <Col span={8}>
               <FormItem label={`Hora`} {...formItemLayout}>
-                {getFieldDecorator(`Hour`, {
+                {getFieldDecorator(`reu_HoraReunion`, {
                   rules: [{
                     required: true,
                     message: 'Ingresa una Hora',
                   }],
                 })(
-                  <TimePicker />
+                  <TimePicker placeholder={'hh:mm'} format={'HH:mm'} />
                 )}
               </FormItem>
             </Col>
             <Col span={8}>
               <FormItem label={`Lugar`} {...formItemLayout}>
-                {getFieldDecorator(`place`, {
+                {getFieldDecorator(`reu_Lugar`, {
                   rules: [{
                     required: true,
                     message: 'Ingresa un lugar o ambiente'
@@ -108,10 +132,8 @@ class FlowCommittee extends Component {
           <Row gutter={24}>
             <Col span={12}>
               <FormItem label={`Descripción`} {...formItemLayout} >
-                {getFieldDecorator(`description`, {
-                  rules: [{
-                    required: true
-                  }],
+                {getFieldDecorator(`reu_Comentario`, {
+                  rules: [],
                 })(
                   <Input style={{width: '100%'}}/>
                 )}
@@ -119,7 +141,7 @@ class FlowCommittee extends Component {
             </Col>
             <Col span={12}>
               <FormItem label={`Participantes`} {...formItemLayout}>
-                {getFieldDecorator(`participants`, {
+                {getFieldDecorator(`ReunionParticipante`, {
                   rules: [{
                     required: true,
                     message: 'Ingresa a los participantes'
@@ -143,7 +165,7 @@ class FlowCommittee extends Component {
           </Row>
           <Row>
             <Col span={24} style={{ textAlign: 'right' }}>
-              <Button type="primary" htmlType="submit">Enviar y Agendar</Button>
+              <Button type="default" htmlType="submit">Enviar y Agendar</Button>
             </Col>
           </Row>
         </Form>
