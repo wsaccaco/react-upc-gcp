@@ -136,7 +136,7 @@ export default class FlowRequirement extends Component {
     })
   }
 
-  _refresh(){
+  _refresh = () => {
     this.fetchRequerimentsChanged();
   }
 

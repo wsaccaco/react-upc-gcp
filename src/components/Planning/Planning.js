@@ -36,7 +36,10 @@ class Planning extends Component {
         dataIndex: 'lir_Nombre'
     }, {
         title: 'Esfuerzo',
-        dataIndex: 'lir_Esfuerzo'
+        dataIndex: 'lir_Esfuerzo',
+        render(text, record){
+          return `${text} hrs`
+        }
     }, {
         title: 'Inicio',
         dataIndex: 'lir_Desde'
@@ -234,7 +237,7 @@ class Planning extends Component {
         return (
             <Form onSubmit={this.handleSubmit} className="gcp-form" >
                 <div>
-                    <Row>
+                    <Row gutter={16}>
                         <Col>
                             {getFieldDecorator('rfc_Codigo', {
                                 rules: [{required: true, message: 'Definir el RFC'}],
@@ -244,13 +247,13 @@ class Planning extends Component {
                             )}
                         </Col>
                     </Row>
-                    <Row>
-                        <Col span={6}>
+                    <Row gutter={16}>
+                        <Col span={8}>
                             <FormItem label={'Codigo de informe:'} {...formItemLayout}>
                                 <Input disabled={true} />
                             </FormItem>
                         </Col>
-                        <Col span={6}>
+                        <Col span={12}>
                             <FormItem label={'Fecha de reporte:'} {...formItemLayout} >
                                 <DatePicker
                                     disabled={true}
@@ -258,7 +261,7 @@ class Planning extends Component {
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row gutter={16}>
                         <Col span={24}>
                             <FormItem label={'Responsable:'}
                                       labelCol={{xs: {span: 24},sm: {span: 3}}}
@@ -267,7 +270,7 @@ class Planning extends Component {
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row gutter={16}>
                         <Col span={24}>
                             <FormItem>
                                 <div className="new-requirement-list component">
@@ -277,18 +280,22 @@ class Planning extends Component {
                                             bordered
                                             locale={{emptyText: 'No hay datos'}}
                                             size="small"
-                                            scroll={{x: 800}}
+                                            scroll={{x: 1300}}
                                             loading={loadingChange}
                                             dataSource={dataSourceChange}
                                             columns={this.columns_requirement} />
-                                        <FormRequirementDetail visible={visible} onOk={this.onOk}
-                                                               onCancel={this.closeDetailRequirement}/>
+
+                                        <FormRequirementDetail
+                                          visible={visible}
+                                          onOk={this.onOk}
+                                          onCancel={this.closeDetailRequirement}/>
+
                                     </div>
                                 </div>
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row gutter={16}>
                         <Col span={24}>
                             <FormItem>
                                 <div className="new-requirement-list component">
@@ -298,7 +305,7 @@ class Planning extends Component {
                                             bordered
                                             locale={{emptyText: 'No hay datos'}}
                                             size="small"
-                                            scroll={{x: 800}}
+                                            scroll={{x: 1300}}
                                             loading={loadingChange}
                                             dataSource={dataSourceChange}
                                             columns={this.columns_rrhh} />
@@ -309,7 +316,7 @@ class Planning extends Component {
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row gutter={16}>
                         <Col span={24}>
                             <FormItem>
                                 <div className="new-requirement-list component">
@@ -319,7 +326,7 @@ class Planning extends Component {
                                             bordered
                                             locale={{emptyText: 'No hay datos'}}
                                             size="small"
-                                            scroll={{x: 800}}
+                                            scroll={{x: 1300}}
                                             loading={loadingChange}
                                             dataSource={dataSourceChange}
                                             columns={this.columns_requirement_add} />
@@ -330,19 +337,19 @@ class Planning extends Component {
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row gutter={16}>
                         <Col span={24}>
                             <FormItem label={'Consideraciones adicionales:'}>
                                 <TextArea rows={5} />
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row gutter={16}>
                         <Col>
                             Afectación a la línea base del proyecto
                         </Col>
                     </Row>
-                    <Row>
+                    <Row gutter={16}>
                         <Col span={8}>
                             <FormItem label={'Termino:'} {...formItemLayout} >
                                 <DatePicker
@@ -363,7 +370,7 @@ class Planning extends Component {
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row gutter={16}>
                         <Col span={8}>
                             <FormItem label={'Costo (S/):'} {...formItemLayout}>
                                 <Input disabled={true} />
@@ -380,7 +387,7 @@ class Planning extends Component {
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row gutter={16}>
                         <Button type="primary">Guardar</Button>
                     </Row>
                 </div>

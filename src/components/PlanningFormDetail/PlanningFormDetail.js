@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Form, Input, Icon, Select, DatePicker, Col} from 'antd';
+import {Modal, Form, Input, InputNumber, Select, DatePicker, Col} from 'antd';
 import http from '../../service/http';
 import moment from "moment";
 
@@ -108,7 +108,11 @@ class FormRequirementDetail extends Component {
             >
                 <Form onSubmit={this.handleSubmit} className="gcp-form">
                     <FormItem label={'Esfuerzo:'} {...formItemLayout}>
-                        <Input disabled={false} />
+                        <InputNumber
+                          formatter={value => `${value} horas`}
+                          parser={value => value.replace(' horas', '')}
+                          min={0}
+                          defaultValue={1} disabled={false} />
                     </FormItem>
                     <FormItem label={'Inicio:'} {...formItemLayout} >
                         <DatePicker

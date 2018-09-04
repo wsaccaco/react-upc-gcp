@@ -70,17 +70,15 @@ class FormRequirementChange extends Component {
           service = 'Requerimiento/update';
         }
 
-        console.log(form);
-
-        // http(service, 'POST', form, ({success, data}) => {
-        //   if (success) {
-        //     onOk(data);
-        //     resetFields();
-        //     this.props.refresh();
-        //   }else{
-        //     message.error("Ups, vuelva a intentarlo nuevamente")
-        //   }
-        // });
+        http(service, 'POST', form, ({success, data}) => {
+          if (success) {
+            onOk(data);
+            resetFields();
+            this.props.refresh();
+          }else{
+            message.error("Ups, vuelva a intentarlo nuevamente")
+          }
+        });
 
       }
     });
