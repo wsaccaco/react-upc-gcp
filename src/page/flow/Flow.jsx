@@ -72,8 +72,8 @@ export default class FlowPage extends Component {
     requirement: <FlowRequirement rfc_id={this.props.match.params.id}/>,
     technique: <FlowTechnical rfc_id={this.props.match.params.id}/>,
     risk: <Risk rfc_id={this.props.match.params.id}/>,
-    planning: <Planning rfc_id={this.props.match.params.id}/>,
     committee: <FlowCommittee rfc_id={this.props.match.params.id} />,
+    planning: <Planning rfc_id={this.props.match.params.id}/>,
     report: <div>3</div>,
   };
 

@@ -65,14 +65,22 @@ class FormRequirementChange extends Component {
       if (!err) {
         form.delivery = _delivery.format('YYYYMMDD');
         form.rfc_Codigo = rfc_Codigo;
-        http('Requerimiento', 'POST', form, ({success, data}) => {
-          if (success) {
-            onOk(data);
-            resetFields();
-          }else{
-            message.error("Ups, vuelva a intentarlo nuevamente")
-          }
-        });
+        let service = 'Requerimiento';
+        if (form.lir_Codigo) {
+          service = 'Requerimiento/update';
+        }
+
+        console.log(form);
+
+        // http(service, 'POST', form, ({success, data}) => {
+        //   if (success) {
+        //     onOk(data);
+        //     resetFields();
+        //     this.props.refresh();
+        //   }else{
+        //     message.error("Ups, vuelva a intentarlo nuevamente")
+        //   }
+        // });
 
       }
     });
@@ -157,14 +165,14 @@ class FormRequirementChange extends Component {
             validateStatus={this.validateInput('delivery') ? 'error' : ''}
             help={this.validateInput('delivery') || '' || ''}>
             {getFieldDecorator('delivery', {
-              initialValue: moment(lir_FechaEntrega, 'DD-MM-YYYY') ,
+              initialValue: lir_FechaEntrega ? moment(lir_FechaEntrega, 'DD-MM-YYYY') : null ,
               rules: [
                 {
                   required: true,
                   message: 'Seleccione una fecha',
                 }],
             })(
-              <DatePicker/>,
+              <DatePicker format={'DD-MM-YYYY'}/>,
             )}
           </FormItem>
 
@@ -191,7 +199,7 @@ class FormRequirementChange extends Component {
                 validateStatus={this.validateInput('prioridad') ? 'error' : ''}
                 help={this.validateInput('project') || ''}>
                 {getFieldDecorator('prioridad', {
-                  initialValue: `${lir_Prioridad}`,
+                  initialValue: `${lir_Prioridad || 2}`,
                   rules: [
                     {
                       required: true,
@@ -213,7 +221,7 @@ class FormRequirementChange extends Component {
                 help={this.validateInput('applicant') || ''}>
                 {getFieldDecorator('isFunctional', {
                   valuePropName: 'checked',
-                  initialValue: lir_EsFuncional,
+                  initialValue: lir_EsFuncional || false,
                   rules: [],
                 })(
                   <Switch checkedChildren="Si" unCheckedChildren="No"/>,
@@ -226,7 +234,7 @@ class FormRequirementChange extends Component {
                 help={this.validateInput('requireDocumentation') || ''}>
                 {getFieldDecorator('requireDocumentation', {
                   valuePropName: 'checked',
-                  initialValue: lir_RequiereDocumentar,
+                  initialValue: lir_RequiereDocumentar || false,
                   rules: [],
                 })(
                   <Switch checkedChildren="Si" unCheckedChildren="No" />,
