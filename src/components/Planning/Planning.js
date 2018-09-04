@@ -4,7 +4,7 @@ import {
   DatePicker,
   Form,
   Input,
-  message,
+  Icon,
   Popconfirm,
   Radio,
   Select,
@@ -18,7 +18,6 @@ import {
 import './Planning.css';
 import '../NewRequirementList/NewRequirementList.css';
 
-import FormRequirementDetail from '../PlanningFormDetail/PlanningFormDetail';
 import FormRRHH from '../PlanningFormDetail/PlanningFormRRHH';
 import FormResource from '../PlanningFormDetail/PlanningFormResource';
 
@@ -58,18 +57,18 @@ class Planning extends Component {
       title: 'Inicio',
       dataIndex: 'lir_Desde',
     }, {
-      title: 'Termino',
+      title: 'Entrega',
       dataIndex: 'lir_Hasta',
     }, {
       title: 'Action',
       key: 'action',
       fixed: 'right',
       width: 150,
-      render: (text, record) => (
+      render: (data, record) => (
         <span>
                 <a href="javascript:;" onClick={() => {
-                  this.openDetailRequirement();
-                }}> Detallar </a>
+                  this.openDetailRequirement(data);
+                }}> <Icon type="edit" theme="outlined" /> Planing </a>
             </span>
       ),
     }];
@@ -155,12 +154,19 @@ class Planning extends Component {
     visible: false,
     visibleRRHH: false,
     visibleResource: false,
+    FormRequirementDetail: null
   };
 
-  openDetailRequirement() {
-    this.setState({
-      visible: true,
-    });
+  openDetailRequirement(data) {
+
+    import('../PlanningFormDetail/PlanningFormDetail').then(
+      FormRequirementDetail => {
+        this.setState({
+          FormRequirementDetail: FormRequirementDetail.default,
+          visible: true,
+          data
+        });
+      });
   }
 
   closeDetailRequirement() {
@@ -248,9 +254,14 @@ class Planning extends Component {
     this.fetchRequerimentsChanged();
   }
 
+  onOk(){
+    this.closeDetailRequirement();
+    this.fetchRequerimentsChanged();
+  }
+
   render() {
     let {form, rfc_id} = this.props;
-    let {visible, visibleRRHH, visibleResource, data, loading} = this.state;
+    let {visible, visibleRRHH, visibleResource, data, loading, FormRequirementDetail} = this.state;
     let {
       dataSourceChange,
       loadingChange,
@@ -309,10 +320,13 @@ class Planning extends Component {
                       dataSource={dataSourceChange}
                       columns={this.columns_requirement}/>
 
-                    <FormRequirementDetail
-                      visible={visible}
-                      onOk={this.onOk}
-                      onCancel={this.closeDetailRequirement}/>
+                    {FormRequirementDetail && visible
+                      ? <FormRequirementDetail
+                        visible={visible}
+                        onOk={this.onOk.bind(this)}
+                        data={data}
+                        onCancel={this.closeDetailRequirement}/>
+                      : null}
 
                   </div>
                 </div>
