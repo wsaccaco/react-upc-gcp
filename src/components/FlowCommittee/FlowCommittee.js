@@ -89,7 +89,7 @@ export default class FlowCommittee extends Component {
 
   _refresh = () => {
     this.fetchSchedule();
-  }
+  };
 
   render() {
     let {visibleEvaluation, dataSource, loading, FormEvaluation} = this.state;

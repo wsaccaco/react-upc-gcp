@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {Button, Col, Row, Steps, Card, Table} from 'antd';
 import {Link} from 'react-router-dom';
 import {getPrioridad} from '../../tools/tools'
-import FormRequirementChange from '../formRequirementChange/formRequirementChange'
 import './FlorRequirement.css'
 
 import http from '../../service/http';
@@ -36,18 +35,6 @@ const _column_template = [{
 
 let columns_current_requirement = [..._column_template];
 
-let columns_requirement_change = [..._column_template, ...[{
-  title: 'Action',
-  key: 'action',
-  fixed: 'right',
-  width: 100,
-  render: (text, record) => (
-    <span>
-      <a href="javascript:;" onClick={() => {}}> Editar </a>
-    </span>
-  ),
-}]];
-
 
 
 export default class FlowRequirement extends Component {
@@ -57,14 +44,40 @@ export default class FlowRequirement extends Component {
     dataSourceChange: [],
     loadingChange: true,
     visibleModal: false,
-    rfc_id: this.props.rfc_id
+    rfc_id: this.props.rfc_id,
+    requirementSource: null,
+    FormRequirementChange: null
   };
+
+  columns_requirement_change = [..._column_template, ...[{
+    title: 'Action',
+    key: 'action',
+    fixed: 'right',
+    width: 100,
+    render: (text, record) => (
+      <span>
+      <a href="javascript:;" onClick={() => {this._updateRequirement(text)}}> Editar </a>
+    </span>
+    ),
+  }]];
 
   static getDerivedStateFromProps(nextProps, prevState){
     let { requirements } = nextProps;
     return {
       dataSource : requirements
     }
+  }
+
+  _updateRequirement(requirementSource){
+
+    import('../formRequirementChange/formRequirementChange').then(FormRequirementChange => {
+      this.setState({
+        FormRequirementChange: FormRequirementChange.default,
+        visibleModal: true,
+        requirementSource
+      });
+    });
+
   }
 
   fetchRequerimentsChanged() {
@@ -88,9 +101,14 @@ export default class FlowRequirement extends Component {
   }
 
   openChangeRequirement(){
-    this.setState({
-      visibleModal: true
-    })
+
+    import('../formRequirementChange/formRequirementChange').then(FormRequirementChange => {
+      this.setState({
+        FormRequirementChange: FormRequirementChange.default,
+        visibleModal: true,
+        requirementSource: null,
+      });
+    });
   }
 
   onCancel(){
@@ -117,7 +135,9 @@ export default class FlowRequirement extends Component {
   }
 
   render() {
-    let {dataSource, loadingChange, dataSourceChange, visibleModal, rfc_id} = this.state;
+    let {dataSource, loadingChange,
+      dataSourceChange, visibleModal, rfc_id, requirementSource,
+      FormRequirementChange} = this.state;
     return (
 
         <div className="flow-requirement component">
@@ -131,7 +151,7 @@ export default class FlowRequirement extends Component {
               scroll={{x: 800}}
               loading={loadingChange}
               dataSource={dataSourceChange}
-              columns={columns_requirement_change} />
+              columns={this.columns_requirement_change} />
           </div>
 
           <div className="wrap-table">
@@ -144,8 +164,17 @@ export default class FlowRequirement extends Component {
               dataSource={dataSource}
               columns={columns_current_requirement} />
           </div>
-          <FormRequirementChange rfc_Codigo={rfc_id} visible={visibleModal} onOk={this._onOk.bind(this)}
-                             onCancel={this.onCancel.bind(this)}/>
+
+          {FormRequirementChange
+            ? <FormRequirementChange
+              rfc_Codigo={rfc_id}
+              requirementSource={requirementSource}
+              visible={visibleModal}
+              onOk={this._onOk.bind(this)}
+              onCancel={this.onCancel.bind(this)}/>
+            : null }
+
+
         </div>
     );
   }
