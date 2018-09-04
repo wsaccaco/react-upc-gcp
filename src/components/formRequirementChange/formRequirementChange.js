@@ -11,6 +11,7 @@ import {
   message,
   Divider,
 } from 'antd';
+import moment from 'moment'
 import http from '../../service/http';
 import './formRequirementChange.css';
 
@@ -31,8 +32,9 @@ class FormRequirementChange extends Component {
   }
 
   state = {
-    updateRequirement: false,
-    rfc_Codigo: this.props.rfc_Codigo
+    rfc_Codigo: this.props.rfc_Codigo,
+    requirementSource: this.props.requirementSource,
+    updateRequirement: false
   };
 
   handleSubmit = (e) => {
@@ -80,25 +82,22 @@ class FormRequirementChange extends Component {
     this.props.form.validateFields();
   }
 
+  static getDerivedStateFromProps(nextProps, prevState){
+    let { requirementSource } = nextProps;
+    return {
+      requirementSource
+    }
+  }
+
   validateInput(name) {
     let {form} = this.props;
     const {getFieldError, isFieldTouched} = form;
     return isFieldTouched(name) && getFieldError(name);
   }
 
-  switchTitle(checked) {
-    this.setState({
-      updateRequirement: checked,
-    });
-  }
-
   TitleModal() {
-    let {updateRequirement} = this.state;
+    let {updateRequirement} = this.props;
     return <div className="">
-      <Switch
-        onChange={this.switchTitle.bind(this)}
-        defaultChecked={updateRequirement}/>
-      <Divider type="vertical"/>
       {updateRequirement ? <span>Modificar Requerimiento</span> : <span>Nuevo Requerimiento</span>}
     </div>;
   }
@@ -106,11 +105,16 @@ class FormRequirementChange extends Component {
   render() {
 
     let {visible, onOk, onCancel, form} = this.props;
-    let {updateRequirement} = this.state;
+    let {requirementSource} = this.state;
     const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = form;
+
+
 
     const folderError = isFieldTouched('folder') && getFieldError('folder');
     const dateError = isFieldTouched('date') && getFieldError('date');
+
+    let {lir_Nombre, lir_Resumen, lir_Prioridad, lir_EsFuncional,
+      lir_RequiereDocumentar, lir_FechaEntrega, lir_Codigo} = requirementSource || {};
 
     let {TitleModal} = this;
 
@@ -126,22 +130,25 @@ class FormRequirementChange extends Component {
         <Form layout="vertical" onSubmit={this.handleSubmit}
               className="gcp-form">
 
+          {getFieldDecorator('lir_Codigo', {
+            initialValue: lir_Codigo
+          })(
+            <Input type="hidden"/>
+          )}
+
           <FormItem
             label={'Titulo del requerimiento'}
             validateStatus={folderError ? 'error' : ''}
             help={folderError || ''}>
             {getFieldDecorator('title', {
+              initialValue: lir_Nombre,
               rules: [
                 {
                   required: true,
                   message: 'Por favor ingresé un titulo',
                 }],
             })(
-              updateRequirement
-                ? <Select showSearch={true} placeholder="Busca un requerimiento existente">
-                  <Option value="lucy">Lucy</Option>
-                </Select>
-                : <Input type="text" placeholder="Ejemplo. Agregar nuevo estado al usuario."/>
+              <Input type="text" placeholder="Ejemplo. Agregar nuevo estado al usuario."/>
             )}
           </FormItem>
 
@@ -150,6 +157,7 @@ class FormRequirementChange extends Component {
             validateStatus={this.validateInput('delivery') ? 'error' : ''}
             help={this.validateInput('delivery') || '' || ''}>
             {getFieldDecorator('delivery', {
+              initialValue: moment(lir_FechaEntrega, 'DD-MM-YYYY') ,
               rules: [
                 {
                   required: true,
@@ -165,6 +173,7 @@ class FormRequirementChange extends Component {
             validateStatus={this.validateInput('description') ? 'error' : ''}
             help={this.validateInput('description') || ''}>
             {getFieldDecorator('description', {
+              initialValue: lir_Resumen,
               rules: [
                 {
                   required: true,
@@ -182,7 +191,7 @@ class FormRequirementChange extends Component {
                 validateStatus={this.validateInput('prioridad') ? 'error' : ''}
                 help={this.validateInput('project') || ''}>
                 {getFieldDecorator('prioridad', {
-                  initialValue: '2',
+                  initialValue: `${lir_Prioridad}`,
                   rules: [
                     {
                       required: true,
@@ -203,11 +212,11 @@ class FormRequirementChange extends Component {
                 labelCol={{span: 12, offset: 12}}
                 help={this.validateInput('applicant') || ''}>
                 {getFieldDecorator('isFunctional', {
-                  initialValue: true,
+                  valuePropName: 'checked',
+                  initialValue: lir_EsFuncional,
                   rules: [],
                 })(
-                  <Switch checkedChildren="Si" unCheckedChildren="No"
-                          onChange={() => {}}/>,
+                  <Switch checkedChildren="Si" unCheckedChildren="No"/>,
                 )}
               </FormItem>
 
@@ -216,11 +225,11 @@ class FormRequirementChange extends Component {
                 labelCol={{span: 12, offset: 12}}
                 help={this.validateInput('requireDocumentation') || ''}>
                 {getFieldDecorator('requireDocumentation', {
-                  initialValue: true,
+                  valuePropName: 'checked',
+                  initialValue: lir_RequiereDocumentar,
                   rules: [],
                 })(
-                  <Switch checkedChildren="Si" unCheckedChildren="No"
-                          onChange={() => {}}/>,
+                  <Switch checkedChildren="Si" unCheckedChildren="No" />,
                 )}
               </FormItem>
 

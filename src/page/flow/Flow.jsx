@@ -3,6 +3,7 @@ import {Button, Col, Row, Steps, Card, List} from 'antd';
 import {Link} from 'react-router-dom';
 
 import Risk from '../../components/Risk/Risk';
+import Planning from '../../components/Planning/Planning';
 import DetailsFlow from '../../components/DetailsFlow/DetailsFlow';
 import FlowRequirement from '../../components/FlowRequirement/FlowRequirement';
 import FlowTechnical from '../../components/FlowTechnical/FlowTechnical';
@@ -10,6 +11,7 @@ import FlowTechnical from '../../components/FlowTechnical/FlowTechnical';
 import './Flow.css';
 import http from '../../service/http';
 import {message} from 'antd/lib/index';
+import FlowCommittee from '../../components/FlowCommittee/FlowCommittee';
 
 const Step = Steps.Step;
 
@@ -70,8 +72,8 @@ export default class FlowPage extends Component {
     requirement: <FlowRequirement rfc_id={this.props.match.params.id}/>,
     technique: <FlowTechnical rfc_id={this.props.match.params.id}/>,
     risk: <Risk rfc_id={this.props.match.params.id}/>,
-    planning: <Risk/>,
-    committee: <div>2</div>,
+    planning: <Planning rfc_id={this.props.match.params.id}/>,
+    committee: <FlowCommittee rfc_id={this.props.match.params.id} />,
     report: <div>3</div>,
   };
 
@@ -97,7 +99,7 @@ export default class FlowPage extends Component {
               per_Nombre,
               rfc_Asunto,
             },
-            requirement: <FlowRequirement requirements={LST_REQU}  />,
+            requirement: <FlowRequirement rfc_id={this.props.match.params.id} requirements={LST_REQU}  />,
             loading: false,
           });
         }, (e) => {
