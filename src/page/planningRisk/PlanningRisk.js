@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Table} from 'antd';
 
-import FormPlanningRisk from '../../components/formPlanningRisk/formPlanningRisk'
 import './PlanningRisk.css';
 import http from "../../service/http";
 
@@ -40,7 +39,7 @@ class PlanningRisk extends Component {
             width: 150,
             render: (text, record) => (
                 <span>
-                  <a href="javascript:;" onClick={() => {this.openRequest(text.rfc_Codigo);}}> Evaluar </a>
+                  <a href="javascript:;" onClick={() => {this._updateRiskPlaning(text.rfc_Codigo,1);}}> Evaluar </a>
                 </span>
             ),
         }];
@@ -74,39 +73,57 @@ class PlanningRisk extends Component {
             width: 150,
             render: (text, record) => (
                 <span>
-                  <a href="javascript:;" onClick={() => {this.openRequest(text.rfc_Codigo);}}> Ver </a>
+                  <a href="javascript:;" onClick={() => {this._updateRiskPlaning(text.rfc_Codigo,3);}}> Ver </a>
                 </span>
             ),
         }];
 
     constructor(props) {
         super(props);
-        this.openRequest = this.openRequest.bind(this);
+        this._updateRiskPlaning = this._updateRiskPlaning.bind(this);
         this.closeRequest = this.closeRequest.bind(this);
-        this.titleTableRiskPending = this.titleTableRiskPending.bind(this);
-        this.titleTableRiskAttended = this.titleTableRiskAttended.bind(this);
         this.onOk = this.onOk.bind(this);
     }
 
     state = {
-        rfc_Codigo: 0,
-        visible: false,
+        rfc_Codigo: null,
+        esr_Codigo: null,
+        visibleModal: false,
         loading: true,
         dataRiskPending: [],
-        dataRiskAttended: []
+        dataRiskAttended: [],
+        FormPlanningRisk: null
     };
 
-    openRequest(rfc_Codigo) {
-        this.setState({
-            rfc_Codigo,
-            visible: true,
+    _updateRiskPlaning(rfc_Codigo,esr_Codigo){
+        import('../../components/formPlanningRisk/formPlanningRisk').then(FormPlanningRisk => {
+            this.setState({
+                FormPlanningRisk: FormPlanningRisk.default,
+                visibleModal: true,
+                rfc_Codigo,
+                esr_Codigo
+            });
         });
     }
 
     closeRequest() {
         this.setState({
-            visible: false,
+            visibleModal: false,
         });
+    }
+
+    onOk = () => {
+        this.fetchListRiskPending();
+        this.fetchListRiskAttended();
+        this.closeRequest();
+    };
+
+    title() {
+        return (
+            <div className="title-table">
+                <strong> GESTION DE RIESGO </strong>
+            </div>
+        );
     }
 
     titleTableRiskPending() {
@@ -148,17 +165,12 @@ class PlanningRisk extends Component {
         this.fetchListRiskAttended();
     }
 
-    onOk = (response) => {
-        this.fetchListRiskPending();
-        this.fetchListRiskAttended();
-        this.closeRequest();
-    };
-
     render() {
-        let {rfc_Codigo, visible, dataRiskPending, dataRiskAttended, loading} = this.state;
+        let {rfc_Codigo, esr_Codigo, visibleModal, dataRiskPending, dataRiskAttended, loading, FormPlanningRisk} = this.state;
         return (
             <div className="flow-requirement component">
-              <div className="wrap-table">
+                <this.title />
+                <div className="wrap-table">
                   <Table
                       title={this.titleTableRiskPending}
                       columns={this.columnsRiskPending}
@@ -167,23 +179,27 @@ class PlanningRisk extends Component {
                       loading={loading}
                       bordered
                       scroll={{x: 1300}}/>
-              </div>
+                </div>
 
-              <div className="wrap-table">
+                <div className="wrap-table">
                   <Table
                       title={this.titleTableRiskAttended}
-                    columns={this.columnsRiskAttended}
-                    dataSource={dataRiskAttended}
-                    size="middle"
-                    loading={loading}
-                    bordered
-                    scroll={{x: 1300}}/>
-              </div>
+                      columns={this.columnsRiskAttended}
+                      dataSource={dataRiskAttended}
+                      size="middle"
+                      loading={loading}
+                      bordered
+                      scroll={{x: 1300}}/>
+                </div>
 
-                <FormPlanningRisk rfc_Codigo={rfc_Codigo}
-                                  visible={visible}
-                                  onOk={this.onOk}
-                                  onCancel={this.closeRequest}/>
+                {FormPlanningRisk && visibleModal
+                    ? <FormPlanningRisk
+                        rfc_Codigo={rfc_Codigo}
+                        esr_Codigo={esr_Codigo}
+                        visible={visibleModal}
+                        onOk={this.onOk}
+                        onCancel={this.closeRequest}/>
+                    : null }
             </div>
         );
     }

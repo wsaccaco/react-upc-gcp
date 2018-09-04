@@ -4,6 +4,7 @@ import moment from 'moment';
 
 import './Risk.css';
 import '../FlowRequirement/FlorRequirement.css'
+import {getPrioridad} from '../../tools/tools'
 
 import http from '../../service/http';
 
@@ -38,6 +39,10 @@ const _column_template = [{
     title: 'Prioridad',
     dataIndex: 'lir_Prioridad',
     key: 'lir_Prioridad',
+    render: (_text, record) => {
+        let {text} = getPrioridad(_text)
+        return text
+    }
 }, {
     title: 'Estado',
     dataIndex: 'est_Estado',
@@ -54,8 +59,6 @@ class Risk extends Component {
     constructor(props) {
         super(props);
         this.fetchPrioridad = this.fetchPrioridad.bind(this);
-        //this.fetchEstado = this.fetchEstado.bind(this);
-        //this.fetchImpacto = this.fetchImpacto.bind(this);
     }
 
     state = {
@@ -168,32 +171,6 @@ class Risk extends Component {
         });
     }
 
-    // fetchEstado(){
-    //     http('EstadoRiesgo', 'GET', {}, (response) => {
-    //         let OptionEstado = response.map(({esr_Descripcion:text, esr_Codigo:value}, index) => {
-    //             return <Option key={index} value={value}>{text}</Option>;
-    //         }, (err) => {
-    //             console.log(err);
-    //         });
-    //         this.setState({
-    //             OptionEstado
-    //         })
-    //     });
-    // }
-    //
-    // fetchImpacto(){
-    //     http('ImpactoRiesgo', 'GET', {}, (response) => {
-    //         let OptionImpacto = response.map(({imp_Descripcion:text, imp_Codigo:value}, index) => {
-    //             return <Option key={index} value={value}>{text}</Option>;
-    //         }, (err) => {
-    //             console.log(err);
-    //         });
-    //         this.setState({
-    //             OptionImpacto
-    //         })
-    //     });
-    // }
-
     fetchEvaluacionRiesgo(){
         let {rfc_id} = this.props;
         http('EvaluacionRiesgo/' + rfc_id, 'GET', {}, (response) => {
@@ -267,8 +244,6 @@ class Risk extends Component {
 
     componentDidMount() {
         this.fetchPrioridad();
-        //this.fetchEstado();
-        //this.fetchImpacto();
         this.fetchEvaluacionRiesgo();
         //Cambios de Requerimientos
         this.fetchRequerimentsChanged()
@@ -300,7 +275,7 @@ class Risk extends Component {
 
         return (
             <Form onSubmit={this.handleSubmit} className="gcp-form" >
-                <Row>
+                <Row gutter={16}>
                     <Col span={12}>
                         <FormItem>
                             {getFieldDecorator('rfc_Codigo', {
@@ -338,7 +313,7 @@ class Risk extends Component {
                     <Col span={12}>
                     </Col>
                 </Row>
-                <Row>
+                <Row gutter={16}>
                     <Col span={12}>
                         <FormItem
                             label={'Observación'}
@@ -373,7 +348,7 @@ class Risk extends Component {
                         </FormItem>
                     </Col>
                 </Row>
-                <Row>
+                <Row gutter={16}>
                     <Col span={24}>
                         <Card title="Evaluación">
                             <Row>
@@ -403,7 +378,7 @@ class Risk extends Component {
                     </Col>
                 </Row>
                 {/*Cambios de Requerimientos*/}
-                <Row>
+                <Row gutter={16}>
                     <Col span={24}>
                         <Card title="Cambios de Requerimientos">
                             <Table
