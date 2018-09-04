@@ -63,7 +63,7 @@ class Risk extends Component {
 
     state = {
         evr_Requiere: 0,
-        pri_Codigo: 'Prioridad',
+        pri_Codigo: null,
         evr_Observacion: '',
         evr_FechaEnvio: '',
         esr_Descripcion: '',
@@ -324,7 +324,7 @@ class Risk extends Component {
                             })(
                                 <TextArea
                                     disabled={observacionDisabled}
-                                    placeholder="Observación"
+                                    placeholder="Ingrese una observación"
                                 />
                             )}
                         </FormItem>
@@ -335,7 +335,7 @@ class Risk extends Component {
                             {...formItemLayout}
                         >
                             {getFieldDecorator('pri_Codigo', {
-                                rules: [{required: true, message: 'Seleccionar Prioridad'}],
+                                rules: [{required: true, message: 'Seleccione Prioridad'}],
                                 initialValue: pri_Codigo
                             })(
                                 <Select
