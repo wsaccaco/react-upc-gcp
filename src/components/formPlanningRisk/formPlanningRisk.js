@@ -76,9 +76,9 @@ class FormPlanningRisk extends Component {
         impactoDisabled: false,
         OptionImpacto: [],
         lineabaseDisabled: false,
-        evr_LineaBase: 0,
+        evr_LineaBase: false,
         presupuestoDisabled: false,
-        evr_Presupuesto: 0,
+        evr_Presupuesto: false,
         informeDisabled: false,
         evr_Informe: null
     };
@@ -150,9 +150,10 @@ class FormPlanningRisk extends Component {
         let {rfc_Codigo, esr_Codigo} = this.props;
         http('EvaluacionRiesgo/' + rfc_Codigo, 'GET', {}, (response) => {
             let {imp_Codigo,
-                evr_Informe} = response[0];
-            console.log(imp_Codigo,
-                evr_Informe);
+                evr_Informe,
+                evr_LineaBase,
+                evr_Presupuesto} = response[0];
+            console.log(imp_Codigo,evr_Informe,evr_LineaBase,evr_Presupuesto);
             let {impactoDisabled,
                 informeDisabled,
                 lineabaseDisabled,
@@ -169,7 +170,9 @@ class FormPlanningRisk extends Component {
                 informeDisabled,
                 evr_Informe,
                 lineabaseDisabled,
-                presupuestoDisabled});
+                evr_LineaBase,
+                presupuestoDisabled,
+                evr_Presupuesto});
         }, (e) => {
             console.error(e)
         });
@@ -181,19 +184,6 @@ class FormPlanningRisk extends Component {
         let {validateFields, resetFields} = form;
 
         validateFields((err, form) => {
-            // if (!err) {
-            //     console.log(values);
-            //     form.delivery = _delivery.format('YYYYMMDD');
-            //     form.rfc_Codigo = rfc_Codigo;
-            //     http('Requerimiento', 'POST', form, ({success, data}) => {
-            //         if (success) {
-            //             onOk(data);
-            //             resetFields();
-            //         }else{
-            //             message.error("Ups, vuelva a intentarlo nuevamente")
-            //         }
-            //     });
-            // }
             if (!err) {
                 console.log('Received values of form: ', form);
 
@@ -337,20 +327,20 @@ class FormPlanningRisk extends Component {
                             <FormItem
                                 label={'Afectación'}
                             >
-                                {/*{getFieldDecorator('evr_LineaBase', {*/}
-                                    {/*rules: [],*/}
-                                    {/*initialValue: evr_LineaBase*/}
-                                {/*})(*/}
-                                    {/*<Checkbox disabled={lineabaseDisabled}>Línea Base</Checkbox>*/}
-                                {/*)}*/}
-                                {/*{getFieldDecorator('evr_Presupuesto', {*/}
-                                    {/*rules: [],*/}
-                                    {/*initialValue: evr_Presupuesto*/}
-                                {/*})(*/}
-                                    {/*<Checkbox disabled={presupuestoDisabled}>Presupuesto</Checkbox>*/}
-                                {/*)}*/}
-                                <Checkbox disabled={lineabaseDisabled}>Línea Base</Checkbox>
-                                <Checkbox disabled={presupuestoDisabled}>Presupuesto</Checkbox>
+                                {getFieldDecorator('evr_LineaBase', {
+                                    rules: [],
+                                    valuePropName: 'checked',
+                                    initialValue: evr_LineaBase
+                                })(
+                                    <Checkbox disabled={lineabaseDisabled}>Línea Base</Checkbox>
+                                )}
+                                {getFieldDecorator('evr_Presupuesto', {
+                                    rules: [],
+                                    valuePropName: 'checked',
+                                    initialValue: evr_Presupuesto
+                                })(
+                                    <Checkbox disabled={presupuestoDisabled}>Presupuesto</Checkbox>
+                                )}
                             </FormItem>
                         </Col>
                     </Row>

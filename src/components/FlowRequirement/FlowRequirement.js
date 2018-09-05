@@ -28,8 +28,8 @@ const _column_template = [
     dataIndex: 'est_Estado',
     key: 'est_Estado',
   }, {
-    title: 'Fecha',
-    dataIndex: 'lir_Fecha',
+    title: 'Fecha Entrega',
+    dataIndex: 'lir_FechaEntrega',
     key: 'lir_Fecha',
   }];
 
@@ -159,7 +159,7 @@ export default class FlowRequirement extends Component {
             bordered
             locale={{emptyText: 'No hay datos'}}
             size="small"
-            scroll={{x: 800}}
+            scroll={{x: 1300}}
             loading={loadingChange}
             dataSource={dataSourceChange}
             columns={this.columns_requirement_change}/>
