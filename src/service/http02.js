@@ -1,4 +1,4 @@
-const http = (
+const http02 = (
     pathName, method = 'GET', body = {}, callback,
     callbackError = () => {}) => {
     //let _url = `http://25.3.69.136/${pathName}`;
@@ -34,4 +34,4 @@ const http = (
   });
 };
 
-export default http;
+export default http02;
