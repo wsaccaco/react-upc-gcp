@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Form, Input, Icon, Select, DatePicker, Col} from 'antd';
+import {Modal, Form, Input, Icon, Select, DatePicker, Col, InputNumber} from 'antd';
 import http from '../../service/http';
 import moment from "moment";
 
@@ -42,9 +42,8 @@ class FormRRHH extends Component {
 
         form.validateFields((err, form) => {
             if (!err) {
-                console.log('submit');
+                console.log(form);
                 // let pathName = this.isNew ? 'C0001S0003' : 'C0001S0004';
-
                 this.http('C0001S0003', 'POST', form, (response) => {
                     if (response === 'OK') {
                         onOk(response);
@@ -55,7 +54,7 @@ class FormRRHH extends Component {
         });
     };
 
-    onCreate = (e) =>{
+    onCreate = (e) => {
         e.preventDefault();
         let {onOk, form} = this.props;
         let {validateFields, resetFields} = form;
@@ -64,9 +63,9 @@ class FormRRHH extends Component {
             if (!err) {
 
                 // let pathName = this.isNew ? 'C0001S0003' : 'C0001S0004';
-
-                http('C0001S0003', 'POST', form, (response) => {
-                    if (response === 'OK') {
+                console.log(form);
+                http('rrhh', 'POST', form, (response) => {
+                    if (response) {
                         onOk(response);
                         resetFields();
                     }
@@ -76,11 +75,11 @@ class FormRRHH extends Component {
         });
     };
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.form.validateFields();
     }
 
-    validateInput(name){
+    validateInput(name) {
         let {form} = this.props;
         const {getFieldError, isFieldTouched} = form;
         return isFieldTouched(name) && getFieldError(name);
@@ -88,10 +87,12 @@ class FormRRHH extends Component {
 
     render() {
 
-        let {visible, onOk, onCancel, form} = this.props;
-        let { OptionPortafalio, OptionProject,
+        let {visible, onOk, onCancel, form,rfc_Codigo} = this.props;
+        let {
+            OptionPortafalio, OptionProject,
             projectDisabled, OptionApplicant,
-            OptionResponsable } = this.state;
+            OptionResponsable
+        } = this.state;
         const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = form;
 
         const folderError = isFieldTouched('folder') && getFieldError('folder');
@@ -104,47 +105,124 @@ class FormRRHH extends Component {
                 onOk={this.onCreate}
                 okText="Aceptar"
                 onCancel={onCancel}
-                okButtonProps={{ disabled: hasErrors(getFieldsError()) }}
+                okButtonProps={{disabled: hasErrors(getFieldsError())}}
             >
                 <Form onSubmit={this.handleSubmit} className="gcp-form">
                     <FormItem label={'Identificador:'} {...formItemLayout}>
-                        <Input disabled={false} />
+                        {getFieldDecorator('rfc_Codigo', {
+                            initialValue: rfc_Codigo
+                        })(
+                            <Input type={'hidden'}
+                                min={0} disabled={false}/>
+                        )}
+                        {getFieldDecorator('rrhh_Identificador', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere el identificador',
+                                }],
+                        })(
+                            <Input
+                                min={0} disabled={false}/>
+                        )}
                     </FormItem>
                     <FormItem label={'Perfil'} {...formItemLayout}>
+                        {getFieldDecorator('tip_Codigo', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere el perfil',
+                                }],
+                        })(
                             <Select
                                 showSearch
-                                placeholder="Seleccione Prioridad">
+                                placeholder="Seleccione perfil">
                                 <Option value="1">Analista funcional</Option>
                                 <Option value="2">Desarrollador</Option>
                                 <Option value="3">Jefe de proyecto</Option>
                             </Select>
+                        )}
                     </FormItem>
                     <FormItem label={'Cantidad:'} {...formItemLayout}>
-                        <Input disabled={false} />
+                        {getFieldDecorator('rrhh_Cantidad', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere la cantidad',
+                                }],
+                        })(
+                            <InputNumber
+                                min={0} disabled={false}/>
+                        )}
                     </FormItem>
                     <FormItem label={'Nivel'} {...formItemLayout}>
-                        <Select
-                            showSearch
-                            placeholder="Seleccione Prioridad">
-                            <Option value="1">Junior</Option>
-                            <Option value="2">Senior</Option>
-                        </Select>
+                        {getFieldDecorator('niv_Codigo', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere el nivel',
+                                }],
+                        })(
+                            <Select
+                                showSearch
+                                placeholder="Seleccione nivel">
+                                <Option value="1">Junior</Option>
+                                <Option value="2">Senior</Option>
+                            </Select>
+                        )}
                     </FormItem>
                     <FormItem label={'Esfuerzo:'} {...formItemLayout}>
-                        <Input disabled={false} />
+                        {getFieldDecorator('rrhh_Esfuerzo', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere el esfuerzo',
+                                }],
+                        })(
+                            <InputNumber
+                                formatter={value => `${value} horas`}
+                                parser={value => value.replace(' horas', '')}
+                                min={0} disabled={false}/>
+                        )}
                     </FormItem>
                     <FormItem label={'Inicio:'} {...formItemLayout} >
-                        <DatePicker
-                            disabled={false}
-                            format={dateFormat} />
+                        {getFieldDecorator('rrhh_FecInicio', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere una fecha de inicio',
+                                }],
+                        })(
+                            <DatePicker
+                                disabled={false}
+                                format={dateFormat}/>
+                        )}
                     </FormItem>
                     <FormItem label={'Termino:'} {...formItemLayout} >
-                        <DatePicker
-                            disabled={false}
-                            format={dateFormat} />
+                        {getFieldDecorator('rrhh_FechaTermino', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere una fecha de termino',
+                                }],
+                        })(
+                            <DatePicker
+                                disabled={false}
+                                format={dateFormat}/>
+                        )}
                     </FormItem>
                     <FormItem label={'Presupuesto:'} {...formItemLayout}>
-                        <Input disabled={false} />
+                        {getFieldDecorator('rrhh_Presupuesto', {
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere el presupuesto',
+                                }],
+                        })(
+                            <InputNumber
+                                min={0} disabled={false}/>
+                        )}
+
                     </FormItem>
                 </Form>
             </Modal>
