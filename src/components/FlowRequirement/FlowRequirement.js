@@ -5,6 +5,7 @@ import {getPrioridad} from '../../tools/tools';
 import './FlorRequirement.css';
 
 import http from '../../service/http';
+import {message} from 'antd/lib/index';
 
 const _column_template = [
   {
@@ -137,6 +138,7 @@ export default class FlowRequirement extends Component {
     this.setState({
       visibleModal: false,
     });
+    message.success('Se guardo correctamente!');
   }
 
   _refresh = () => {
