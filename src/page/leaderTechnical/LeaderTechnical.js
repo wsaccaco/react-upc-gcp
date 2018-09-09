@@ -45,7 +45,7 @@ export default class LeaderTechnical extends Component {
                     <LimitacionesList items={this.state.items} />
                     <form onSubmit={this.handleSubmit}>
                         <label htmlFor="new-limitaciones">
-                            What needs to be done?
+                            Qué falta hacer?
                         </label>
                         <input
                             id="new-limitaciones"
