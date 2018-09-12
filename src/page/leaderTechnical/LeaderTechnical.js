@@ -1,86 +1,134 @@
-import React, { Component } from 'react';
-import {Col, Row, Card, InputNumber} from 'antd';
+import React, {Component} from 'react';
+import {Col, Row, Card, InputNumber, Table} from 'antd';
+import LeaderTechnicalLayout from '../../layout/leaderTechnical/leaderTechnical';
 
-import './LeaderTechnical.css'
-
+import './LeaderTechnical.css';
 
 export default class LeaderTechnical extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = { items: [], text: '' };
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+  constructor(props) {
+    super(props);
+    this.state = {
+      items: [],
+      text: '',
+      FormTechnicalEvalue: '',
+      visibleModal: true,
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  columnsRiskPending = [
+    {
+      title: 'Código',
+      dataIndex: 'rfc_Codigo',
+      key: 'rfc_Codigo',
+      render: text => `P00${text}`,
+    }, {
+      title: 'Fecha Recepción',
+      dataIndex: 'evr_FechaEnvio',
+      key: 'evr_FechaEnvio',
+    }, {
+      title: 'Fecha Límite',
+      dataIndex: 'evr_FechaLimite',
+      key: 'evr_FechaLimite',
+    }, {
+      title: 'Asunto',
+      dataIndex: 'rfc_Asunto',
+      key: 'rfc_Asunto',
+    }, {
+      title: 'Prioridad',
+      dataIndex: 'pri_Descripcion',
+      key: 'pri_Descripcion',
+    }, {
+      title: 'Estado',
+      dataIndex: 'esr_Descripcion',
+      key: 'esr_Descripcion',
+    }, {
+      title: 'Acciones',
+      render: text => {
+        return <a href="#" onClick={this._openModal.bind(this)}>Evaluar</a>;
+      },
+    }];
+
+  fakeData = [
+    {
+      pri_Descripcion: 'Asunto',
+    },
+  ];
+
+  _openModal() {
+    import('../../components/formEvalueTechnical/formEvalueTechnical.js').then(
+      Component => {
+        this.setState({
+          FormTechnicalEvalue: Component.default,
+          visibleModal: true,
+        });
+      });
+  }
+
+  _close(){
+    this.setState({
+      visibleModal:false
+    })
+  }
+
+  render() {
+    let {loading, FormTechnicalEvalue, visibleModal} = this.state;
+    return (
+      <LeaderTechnicalLayout>
+        <Row justify="center" type="flex">
+          <Col>
+            <Table
+              title={() => <strong>Lista de Evaluaciones tecnicas
+                Pendientes</strong>}
+              columns={this.columnsRiskPending}
+              dataSource={this.fakeData}
+              size="middle"
+              loading={loading}
+              bordered
+              scroll={{x: 1300}}/>
+          </Col>
+
+          <Col>
+            <Table
+              style={{marginTop: '25px'}}
+              title={() => <strong>Historial de evaluaciones</strong>}
+              columns={this.columnsRiskPending}
+              dataSource={[]}
+              size="middle"
+              loading={loading}
+              bordered
+              scroll={{x: 1300}}/>
+          </Col>
+        </Row>
+        {FormTechnicalEvalue && visibleModal
+          ? <FormTechnicalEvalue
+            visible={visibleModal}
+            onOk={() => {}}
+            onCancel={this._close.bind(this)}/>
+          : null}
+      </LeaderTechnicalLayout>
+    );
+  }
+
+  handleChange(e) {
+    this.setState({text: e.target.value});
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    if (!this.state.text.length) {
+      return;
     }
-
-
-    render() {
-
-        return (
-            <Row>
-              <Col span={12}>
-                Hola Mundo
-                {/*<div className="leader-page page">*/}
-                  {/*<Card title="Evaluación Técnica" className="card-leader" style={{width: 400}}>*/}
-                    {/*<label>Tiempo: </label>*/}
-                    {/*<InputNumber*/}
-                      {/*min={0}*/}
-                      {/*max={50}*/}
-                      {/*defaultValue={1}*/}
-                      {/*size={"small"}*/}
-                    {/*/><p></p>*/}
-                    {/*<label>Recursos adicionales: </label>*/}
-                    {/*<input/><p></p>*/}
-                    {/*<label>Limitaciones: </label>*/}
-
-                    {/*<LimitacionesList items={this.state.items} />*/}
-                    {/*<form onSubmit={this.handleSubmit}>*/}
-                      {/*<label htmlFor="new-limitaciones">*/}
-                        {/*What needs to be done?*/}
-                      {/*</label>*/}
-                      {/*<input*/}
-                        {/*id="new-limitaciones"*/}
-                        {/*onChange={this.handleChange}*/}
-                        {/*value={this.state.text}*/}
-                      {/*/>*/}
-                      {/*<button>*/}
-                        {/*Add #{this.state.items.length + 1}*/}
-                      {/*</button>*/}
-                    {/*</form>*/}
-                  {/*</Card>*/}
-                {/*</div>*/}
-              </Col>
-            </Row>
-        );
-    }
-    handleChange(e) {
-        this.setState({ text: e.target.value });
-    }
-
-    handleSubmit(e) {
-        e.preventDefault();
-        if (!this.state.text.length) {
-            return;
-        }
-        const newItem = {
-            text: this.state.text,
-            id: Date.now()
-        };
-        this.setState(prevState => ({
-            items: prevState.items.concat(newItem),
-            text: ''
-        }));
-    }
+    const newItem = {
+      text: this.state.text,
+      id: Date.now(),
+    };
+    this.setState(prevState => ({
+      items: prevState.items.concat(newItem),
+      text: '',
+    }));
+  }
 }
 
-class LimitacionesList extends React.Component {
-    render() {
-        return (
-            <ul>
-                {this.props.items.map(item => (
-                    <li key={item.id}>{item.text}</li>
-                ))}
-            </ul>
-        );
-    }
-}
