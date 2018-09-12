@@ -19,35 +19,36 @@ export default class LeaderTechnical extends Component {
         return (
             <Row>
               <Col span={12}>
-                <div className="leader-page page">
-                  <Card title="Evaluación Técnica" className="card-leader" style={{width: 400}}>
-                    <label>Tiempo: </label>
-                    <InputNumber
-                      min={0}
-                      max={50}
-                      defaultValue={1}
-                      size={"small"}
-                    /><p></p>
-                    <label>Recursos adicionales: </label>
-                    <input/><p></p>
-                    <label>Limitaciones: </label>
+                Hola Mundo
+                {/*<div className="leader-page page">*/}
+                  {/*<Card title="Evaluación Técnica" className="card-leader" style={{width: 400}}>*/}
+                    {/*<label>Tiempo: </label>*/}
+                    {/*<InputNumber*/}
+                      {/*min={0}*/}
+                      {/*max={50}*/}
+                      {/*defaultValue={1}*/}
+                      {/*size={"small"}*/}
+                    {/*/><p></p>*/}
+                    {/*<label>Recursos adicionales: </label>*/}
+                    {/*<input/><p></p>*/}
+                    {/*<label>Limitaciones: </label>*/}
 
-                    <LimitacionesList items={this.state.items} />
-                    <form onSubmit={this.handleSubmit}>
-                      <label htmlFor="new-limitaciones">
-                        What needs to be done?
-                      </label>
-                      <input
-                        id="new-limitaciones"
-                        onChange={this.handleChange}
-                        value={this.state.text}
-                      />
-                      <button>
-                        Add #{this.state.items.length + 1}
-                      </button>
-                    </form>
-                  </Card>
-                </div>
+                    {/*<LimitacionesList items={this.state.items} />*/}
+                    {/*<form onSubmit={this.handleSubmit}>*/}
+                      {/*<label htmlFor="new-limitaciones">*/}
+                        {/*What needs to be done?*/}
+                      {/*</label>*/}
+                      {/*<input*/}
+                        {/*id="new-limitaciones"*/}
+                        {/*onChange={this.handleChange}*/}
+                        {/*value={this.state.text}*/}
+                      {/*/>*/}
+                      {/*<button>*/}
+                        {/*Add #{this.state.items.length + 1}*/}
+                      {/*</button>*/}
+                    {/*</form>*/}
+                  {/*</Card>*/}
+                {/*</div>*/}
               </Col>
             </Row>
         );
