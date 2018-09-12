@@ -1,20 +1,8 @@
 import React, { Component } from 'react';
-import {Form, Input, Card, InputNumber} from 'antd';
+import {Col, Row, Card, InputNumber} from 'antd';
 
 import './LeaderTechnical.css'
 
-
-const FormItem = Form.Item;
-const formItemLayout = {
-    labelCol: {
-        xs: {span: 24},
-        sm: {span: 8},
-    },
-    wrapperCol: {
-        xs: {span: 24},
-        sm: {span: 16},
-    },
-};
 
 export default class LeaderTechnical extends Component {
 
@@ -29,14 +17,16 @@ export default class LeaderTechnical extends Component {
     render() {
 
         return (
-            <div className="leader-page page">
-                <Card title="Evaluación Técnica" className="card-leader" style={{width: 400}}>
+            <Row>
+              <Col span={12}>
+                <div className="leader-page page">
+                  <Card title="Evaluación Técnica" className="card-leader" style={{width: 400}}>
                     <label>Tiempo: </label>
                     <InputNumber
-                        min={0}
-                        max={50}
-                        defaultValue={1}
-                        size={"small"}
+                      min={0}
+                      max={50}
+                      defaultValue={1}
+                      size={"small"}
                     /><p></p>
                     <label>Recursos adicionales: </label>
                     <input/><p></p>
@@ -44,20 +34,22 @@ export default class LeaderTechnical extends Component {
 
                     <LimitacionesList items={this.state.items} />
                     <form onSubmit={this.handleSubmit}>
-                        <label htmlFor="new-limitaciones">
-                            What needs to be done?
-                        </label>
-                        <input
-                            id="new-limitaciones"
-                            onChange={this.handleChange}
-                            value={this.state.text}
-                        />
-                        <button>
-                            Add #{this.state.items.length + 1}
-                        </button>
+                      <label htmlFor="new-limitaciones">
+                        What needs to be done?
+                      </label>
+                      <input
+                        id="new-limitaciones"
+                        onChange={this.handleChange}
+                        value={this.state.text}
+                      />
+                      <button>
+                        Add #{this.state.items.length + 1}
+                      </button>
                     </form>
-                </Card>
-            </div>
+                  </Card>
+                </div>
+              </Col>
+            </Row>
         );
     }
     handleChange(e) {

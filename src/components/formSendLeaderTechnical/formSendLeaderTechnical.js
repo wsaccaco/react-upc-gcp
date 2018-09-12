@@ -27,14 +27,15 @@ class FormSendLeaderTechnical extends Component {
 
     form.validateFields((err, form) => {
       if (!err) {
-        console.log('submit');
-        // let pathName = this.isNew ? 'C0001S0003' : 'C0001S0004';
-
-        this.http('C0001S0003', 'POST', form, (response) => {
-          if (response === 'OK') {
-            onOk(response);
-          }
-        });
+        console.log(form);
+        // console.log('submit');
+        // // let pathName = this.isNew ? 'C0001S0003' : 'C0001S0004';
+        //
+        // this.http('C0001S0003', 'POST', form, (response) => {
+        //   if (response === 'OK') {
+        //     onOk(response);
+        //   }
+        // });
 
       }
     });
