@@ -5,7 +5,7 @@ import LeaderTechnicalLayout from '../../layout/leaderTechnical/leaderTechnical'
 import './LeaderTechnical.css';
 import http from '../../service/http';
 
-template = [
+const template = [
   {
     title: 'Codigo',
     dataIndex: 'rfc_Codigo',
