@@ -62,7 +62,7 @@ export default class FlowTechnical extends Component {
         <span>
           {text}
           <Tooltip title="Prioridad">
-            <Icon type="question-circle"/>
+            <Icon type="question-circle" style={{marginLeft: '5px'}}/>
           </Tooltip>
         </span>}/>
     </span>);

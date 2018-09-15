@@ -41,8 +41,6 @@ export default class RequestChange extends Component {
       render: (text, record) => (
         <span>
           <Link to={`flow/${text.rfc_Codigo}`}>Ir al Flujo</Link>
-          <Divider type="vertical"/>
-          <a href="javascript:;" onClick={() => {this.openNewRequest();}}> Editar </a>
         </span>
       ),
     }];

@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
-import {Button, Col, Row, Steps, Card, Table} from 'antd';
+import {Button, Col, Row, Steps, Divider, Table, Modal} from 'antd';
 import {Link} from 'react-router-dom';
 import {getPrioridad} from '../../tools/tools';
 import './FlorRequirement.css';
 
 import http from '../../service/http';
+import {message} from 'antd/lib/index';
+
+const confirm = Modal.confirm;
 
 const _column_template = [
   {
@@ -53,11 +56,12 @@ export default class FlowRequirement extends Component {
         title: 'Action',
         key: 'action',
         fixed: 'right',
-        width: 100,
+        width: 150,
         render: (text, record) => (
         <span>
-            <a href="javascript:;"
-           onClick={() => {this._updateRequirement(text);}}> Editar </a>
+            <a href="javascript:;" onClick={() => {this._updateRequirement(text);}}> Editar </a>
+          <Divider type="vertical" />
+            <a href="javascript:;" onClick={() => {this._deleteRequirement(text);}}> Eliminar </a>
         </span>
         ),
       }]];
@@ -67,6 +71,33 @@ export default class FlowRequirement extends Component {
     return {
       dataSource: requirements,
     };
+  }
+
+  fetchDeleteRequerimient(lir_Codigo){
+    http(`Requerimiento/Eliminar`, 'POST', {lir_Codigo}, ({success}) => {
+
+      if(success){
+          this.fetchRequerimentsChanged();
+      }
+
+    }, (e) => {
+        console.error(e);
+    });
+  }
+
+  _deleteRequirement({lir_Codigo}) {
+
+    confirm({
+      title: '¿Esta seguro de eliminar?',
+      content: 'Si acepta no se podra restarurar el requerimiento',
+      onOk: () => {
+        this.fetchDeleteRequerimient(lir_Codigo);
+      },
+      onCancel() {
+
+      },
+    });
+
   }
 
   _updateRequirement(requirementSource) {
@@ -137,6 +168,7 @@ export default class FlowRequirement extends Component {
     this.setState({
       visibleModal: false,
     });
+    message.success('Se guardo correctamente!');
   }
 
   _refresh = () => {
