@@ -31,13 +31,6 @@ const template = [
     title: 'Estado',
     dataIndex: 'est_Estado',
     key: 'est_Estado',
-  }, {
-    title: 'Acciones',
-    width: 100,
-    fixed: 'right',
-    render: text => {
-      return <a href="#" onClick={this._openModal.bind(this)}>Evaluar</a>;
-    },
   }];
 
 export default class LeaderTechnical extends Component {
@@ -56,6 +49,16 @@ export default class LeaderTechnical extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    template.push({
+      title: 'Acciones',
+      width: 100,
+      fixed: 'right',
+      render: text => {
+        return <a href="#" onClick={this._openModal.bind(this)}>Evaluar</a>;
+      },
+    });
+
+    this.columns = template;
   }
 
   _openModal() {
@@ -108,7 +111,7 @@ export default class LeaderTechnical extends Component {
               <Table
                 title={() => <strong>Lista de Evaluaciones tecnicas
                   Pendientes</strong>}
-                columns={this.columnsRiskPending}
+                columns={this.columns}
                 dataSource={dataSource}
                 size="middle"
                 loading={loading}
@@ -123,7 +126,7 @@ export default class LeaderTechnical extends Component {
               <Table
                 style={{marginTop: '25px'}}
                 title={() => <strong>Historial de evaluaciones</strong>}
-                columns={this.columnsRiskPending}
+                columns={template}
                 dataSource={dataSourcePendiente}
                 size="middle"
                 loading={loading}
