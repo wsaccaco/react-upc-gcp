@@ -24,7 +24,7 @@ function hasErrors(fieldsError) {
 
 const dateFormat = 'YYYY-MM-DD';
 
-class FormRRHH extends Component {
+class FormEditingRRHH extends Component {
 
     constructor(props) {
         super(props);
@@ -87,7 +87,7 @@ class FormRRHH extends Component {
 
     render() {
 
-        let {visible, onOk, onCancel, form,rfc_Codigo} = this.props;
+        let {visible, onOk, onCancel, form, rfc_Codigo, data} = this.props;
         let {
             OptionPortafalio, OptionProject,
             projectDisabled, OptionApplicant,
@@ -230,4 +230,4 @@ class FormRRHH extends Component {
     };
 }
 
-export default  Form.create()(FormRRHH);
+export default  Form.create()(FormEditingRRHH);
