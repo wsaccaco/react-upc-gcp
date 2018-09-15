@@ -80,25 +80,20 @@ export default class FlowTechnical extends Component {
           grid={{gutter: 16, xs: 1, sm: 2}}
           dataSource={dataSource}
           renderItem={(
-            {lir_Nombre, lir_Resumen, lir_Prioridad, ...props}, index) => {
+            {lir_Nombre, lir_Resumen, lir_Prioridad, lit_Codigo, ...props}, index) => {
             return (
               <List.Item
                 key={index}
-                actions={[
-                  <IconText type="star-o" text="156"/>,
-                  <IconText type="like-o" text="156"/>,
-                  <IconText type="message" text="2"/>]}
+                style={{border: '2px solid #efefef !important;'}}
               >
                 <LeaderTechnical.Provider value={leaders}>
                   <List.Item.Meta
                     className="item-meta"
-                    title={[
-                      <TitleMeta key={index} title={lir_Nombre}
-                                 prioridad={lir_Prioridad}/>]}
-                    description={<DescriptionMeta data={props}/>}
+                    title={[<TitleMeta key={index} title={lir_Nombre} prioridad={lir_Prioridad}/>]}
+                    description={<DescriptionMeta data={props} lit_Codigo={lit_Codigo}/>}
                   />
                 </LeaderTechnical.Provider>
-                {lir_Resumen}
+                  <p><strong>Resumen : </strong>strong>{lir_Resumen}</p>
               </List.Item>
             );
           }}

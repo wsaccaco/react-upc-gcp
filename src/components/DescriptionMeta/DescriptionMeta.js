@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
-import {List, Icon, Card, Badge, Switch} from 'antd';
+import {List, Icon, Card, Badge, Switch, Divider} from 'antd';
 import FormSendLeaderTechnical from '../formSendLeaderTechnical/formSendLeaderTechnical'
 
 export default class DescriptionMeta extends Component {
-
-
   constructor(props) {
     super(props);
     let {data} = props;
@@ -21,28 +19,24 @@ export default class DescriptionMeta extends Component {
   };
 
   render() {
-    let {needEvaluation, data : {lir_RequiereDocumentar, lir_EsFuncional, ...props}} = this.state;
+    let {needEvaluation, data : {lir_RequiereDocumentar, lir_EsFuncional, lir_Codigo, lit_Codigo, ...props}} = this.state;
 
     return (
-      <Card className="card-details-technical" bordered={false}>
-        <p>
-          <strong>Documentar : </strong>
-          {lir_RequiereDocumentar ? "Si" : "No"}
-        </p>
-        <p>
-          <strong>Requerimiento Funcional : </strong>
-          {lir_EsFuncional ? "Si" : "No"}
-        </p>
-        <p>
-          <strong>Evaluar : </strong>
-          <Switch
-            checkedChildren={<Icon type="check" />}
-            defaultChecked={needEvaluation}
-            onChange={this.onChange} unCheckedChildren={<Icon type="cross" />} />
-        </p>
-        <FormSendLeaderTechnical disabled={needEvaluation} />
+      <Card className="card-details-technical" bordered={true}>
+          <div style={{display: 'inline-flex'}}>
+              <p><strong>Documentar : </strong>{lir_RequiereDocumentar ? "Si" : "No"}</p>
+              <p> <Divider type={"vertical"} /> </p>
+              <p><strong>Requerimiento Funcional : </strong>{lir_EsFuncional ? "Si" : "No"}</p>
+          </div>
+          <p>
+              <strong>Evaluar : </strong>
+              <Switch
+                  checkedChildren={<Icon type="check" />}
+                  defaultChecked={needEvaluation}
+                  onChange={this.onChange} unCheckedChildren={<Icon type="cross" />} />
+          </p>
+          <FormSendLeaderTechnical disabled={needEvaluation} lir_Codigo={lir_Codigo} lit_Codigo={lit_Codigo} />
       </Card>
     );
   }
-
 }

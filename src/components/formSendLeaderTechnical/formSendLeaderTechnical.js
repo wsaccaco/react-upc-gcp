@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
 import {
-  Form,
-  Select,
-  Button,
-  Switch,
-  Icon,
+    Form,
+    Select,
+    Button, Input, message
 } from 'antd';
 import {LeaderTechnical} from '../../context/LeaderTechnical';
 import './formSendLeaderTechnical.css';
@@ -27,15 +25,16 @@ class FormSendLeaderTechnical extends Component {
 
     form.validateFields((err, form) => {
       if (!err) {
-        console.log('submit');
-        // let pathName = this.isNew ? 'C0001S0003' : 'C0001S0004';
+        console.log('Received values of form: ', form);
 
-        this.http('C0001S0003', 'POST', form, (response) => {
-          if (response === 'OK') {
-            onOk(response);
-          }
+        this.http('RequerimientoTecnico/update', 'POST', form, (response) => {
+            let {sucess} = response;
+            if (sucess === true) {
+                message.success('Se envio la información al Lider Tecnico.');
+            } else {
+                message.warning('Ocurrió un error en el envió.');
+            }
         });
-
       }
     });
   };
@@ -48,56 +47,62 @@ class FormSendLeaderTechnical extends Component {
   }
 
   render() {
-
     const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = this.props.form;
 
     let {disabled} = this.state;
+    let {lir_Codigo, lit_Codigo} = this.props;
 
     // Only show error after a field is touched.
-    const userNameError = isFieldTouched('userName') &&
-      getFieldError('userName');
+    const userNameError = isFieldTouched('userName') && getFieldError('userName');
 
     return (
       <LeaderTechnical.Consumer>
         {leaders => {
-
-
-  console.log(leaders)
           return (
             <Form onSubmit={this.handleSubmit} layout="inline">
+                <FormItem>
+                    {getFieldDecorator('lir_Codigo', {
+                        rules: [{required: true, message: 'Definir ID'}],
+                        initialValue: lir_Codigo
+                    })(
+                        <Input type="hidden"/>
+                    )}
+                </FormItem>
 
-              <FormItem
-                validateStatus={userNameError ? 'error' : ''}
-                help={userNameError || ''}
-              >
-                {getFieldDecorator('userName', {
-                  rules: [
-                    {
-                      required: true,
-                      message: 'Please input your username!',
-                    }],
-                })(
-                  <Select
-                    showSearch={true}
-                    style={{width: '200px'}}
-                    placeholder="Lider Tecnicos"
+                <FormItem
+                  validateStatus={userNameError ? 'error' : ''}
+                  help={userNameError || ''}
+                >
+                  {getFieldDecorator('lit_Codigo', {
+                      rules: [{required: true,message: 'Selecciones Lider Tecnico',}],
+                      initialValue: lit_Codigo
+                  })(
+                    <Select
+                      showSearch={true}
+                      style={{width: '200px'}}
+                      placeholder="Lider Tecnico"
+                      disabled={!disabled}
+                    >
+                      {
+                        leaders.map(
+                            ({lit_Codigo, per_Nombre, per_Email}, index) =>
+                                <Option key={index} value={lit_Codigo}>{`${per_Nombre} < ${per_Email} >`}</Option>
+                        )
+                      }
+                    </Select>
+                  )}
+                </FormItem>
+
+                <FormItem>
+                  <Button
+                    type="primary"
+                    icon="mail"
+                    htmlType="submit"
                     disabled={!disabled}
                   >
-                    {leaders.map(({per_Nombre, per_Email}, index) => <Option key={index} value={per_Email}>{`${per_Nombre} < ${per_Email} >`}</Option>)}
-                  </Select>,
-                )}
-              </FormItem>
-
-              <FormItem>
-                <Button
-                  type="primary"
-                  icon="mail"
-                  htmlType="submit"
-                  disabled={!disabled}
-                >
-                  Enviar
-                </Button>
-              </FormItem>
+                    Enviar
+                  </Button>
+                </FormItem>
             </Form>
           );
         }}
