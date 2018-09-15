@@ -73,6 +73,10 @@ export default class LeaderTechnical extends Component {
     })
   }
 
+  componentDidMount(){
+    this._openModal();
+  }
+
   render() {
     let {loading, FormTechnicalEvalue, visibleModal} = this.state;
     return (
