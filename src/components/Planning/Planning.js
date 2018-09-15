@@ -18,10 +18,10 @@ import {
 import './Planning.css';
 import '../NewRequirementList/NewRequirementList.css';
 
-import FormRRHH from '../PlanningFormDetail/PlanningFormRRHH';
 import FormResource from '../PlanningFormDetail/PlanningFormResource';
 
 import http from '../../service/http';
+import http02 from '../../service/http02';
 
 let FormItem = Form.Item;
 let TextArea = Input.TextArea;
@@ -74,53 +74,68 @@ class Planning extends Component {
     }];
 
   columns_rrhh = [
-    {
-      title: 'Identificador',
-      dataIndex: 'lir_Codigo',
-    }, {
-      title: 'Perfil',
-      dataIndex: 'lir_Nombre',
-    }, {
-      title: 'Cantidad',
-      dataIndex: 'lir_Prioridad',
-    }, {
-      title: 'Nivel',
-      dataIndex: 'est_Estado',
-    }, {
-      title: 'Desde',
-    }, {
-      title: 'Hasta',
-    }, {
-      title: 'Presupuesto',
-    }, {
-      title: 'Action',
-      key: 'action',
-      fixed: 'right',
-      width: 150,
-      render: (text, record) => (
-        <span>
-            <a href="javascript:;" onClick={() => {}}> Editar </a>
+      {
+          title: 'id',
+          dataIndex: 'rrhh_Codigo',
+          key: 'rrhh_Codigo',
+      },{
+          title: 'Identificador',
+          dataIndex: 'rrhh_Identificador',
+      }, {
+          title: 'Perfil',
+          dataIndex: 'tip_Nombre',
+      }, {
+          title: 'Cantidad',
+          dataIndex: 'rrhh_Cantidad',
+      }, {
+          title: 'Nivel',
+          dataIndex: 'niv_Nivel',
+      }, {
+          title: 'Desde',
+          dataIndex: 'rrhh_FecInicio',
+      }, {
+          title: 'Hasta',
+          dataIndex: 'rrhh_FechaTermino',
+      }, {
+          title: 'Presupuesto',
+          dataIndex: 'rrhh_Presupuesto',
+      }, {
+          title: 'Action',
+          key: 'action',
+          fixed: 'right',
+          width: 150,
+          render: (data, record) => (
+              <span>
+                <a href="javascript:;" onClick={() => {
+                    this.openEditingRRHH(data);
+                }}> <Icon type="edit" theme="outlined"/> Editar </a>
             <Divider type="vertical"/>
-            <a href="javascript:;" onClick={() => {}}> Quitar </a>
+            <a href="javascript:;" onClick={() => {
+            }}> Quitar </a>
         </span>
-      ),
-    }];
+          ),
+      }];
 
   columns_requirement_add = [
-    {
+      {
+          title: 'id',
+          dataIndex: 'rad_Codigo',
+          key: 'rad_Codigo',
+      },{
       title: 'Recurso',
-      dataIndex: 'lir_Codigo',
+      dataIndex: 'rad_Identificador',
     }, {
       title: 'Cantidad',
-      dataIndex: 'lir_Nombre',
+      dataIndex: 'rad_Cantidad',
     }, {
       title: 'Desde',
-      dataIndex: 'lir_Prioridad',
+      dataIndex: 'rad_FecInicio',
     }, {
       title: 'Hasta',
-      dataIndex: 'est_Estado',
+      dataIndex: 'rad_FechaTermino',
     }, {
       title: 'Presupuesto',
+          dataIndex:'rad_Presupuesto',
     }, {
       title: 'Action',
       key: 'action',
@@ -136,29 +151,36 @@ class Planning extends Component {
     }];
 
   constructor(props) {
-    super(props);
-    this.openDetailRequirement = this.openDetailRequirement.bind(this);
-    this.closeDetailRequirement = this.closeDetailRequirement.bind(this);
-    this.openRRHH = this.openRRHH.bind(this);
-    this.closeRRHH = this.closeRRHH.bind(this);
-    this.openResource = this.openResource.bind(this);
-    this.closeResource = this.closeResource.bind(this);
-    this.titleRRHHTable = this.titleRRHHTable.bind(this);
-    this.titleRequirementTable = this.titleRequirementTable.bind(this);
-    this.titleAgreementTable = this.titleAgreementTable.bind(this);
+      super(props);
+      this.openDetailRequirement = this.openDetailRequirement.bind(this);
+      this.closeDetailRequirement = this.closeDetailRequirement.bind(this);
+      this.openRRHH = this.openRRHH.bind(this);
+      this.closeRRHH = this.closeRRHH.bind(this);
+      this.openEditingRRHH = this.openEditingRRHH.bind(this);
+      this.closeEditingRRHH = this.closeEditingRRHH.bind(this);
+      this.openResource = this.openResource.bind(this);
+      this.closeResource = this.closeResource.bind(this);
+      this.titleRRHHTable = this.titleRRHHTable.bind(this);
+      this.titleRequirementTable = this.titleRequirementTable.bind(this);
+      this.titleAgreementTable = this.titleAgreementTable.bind(this);
   }
 
   state = {
-    dataSourceChange: [],
-    loadingChange: true,
-    visible: false,
-    visibleRRHH: false,
-    visibleResource: false,
-    FormRequirementDetail: null
+      dataSourceChange: [],
+      dataSourceRRHH: [],
+      dataSourceResourceAdd: [],
+      loadingChange: true,
+      visible: false,
+      visibleRRHH: false,
+      visibleResource: false,
+      visibleEditingRRHH: false,
+      FormRequirementDetail: null,
+      FormRRHH: null,
+      FormEditingRRHH: null
   };
 
   openDetailRequirement(data) {
-
+    console.log(data);
     import('../PlanningFormDetail/PlanningFormDetail').then(
       FormRequirementDetail => {
         this.setState({
@@ -169,25 +191,46 @@ class Planning extends Component {
       });
   }
 
-  closeDetailRequirement() {
+    closeDetailRequirement() {
     this.setState({
       visible: false,
     });
-  }
+    }
 
-  openRRHH() {
-    this.setState({
-      visibleRRHH: true,
-    });
-  }
+    openRRHH() {
+        import('../PlanningFormDetail/PlanningFormRRHH').then(
+            FormRRHH => {
+                this.setState({
+                    FormRRHH: FormRRHH.default,
+                    visibleRRHH: true
+                });
+            });
+    }
 
-  closeRRHH() {
-    this.setState({
-      visibleRRHH: false,
-    });
-  }
+    closeRRHH() {
+        this.setState({
+            visibleRRHH: false,
+        });
+    }
 
-  openResource() {
+    openEditingRRHH(data) {
+        import('../PlanningFormDetail/PlanningEditingFormRRHH').then(
+            FormEditingRRHH => {
+                this.setState({
+                    FormEditingRRHH: FormEditingRRHH.default,
+                    visibleEditingRRHH: true,
+                    data
+                });
+            });
+    }
+
+    closeEditingRRHH() {
+        this.setState({
+            visibleEditingRRHH: false,
+        });
+    }
+
+    openResource() {
     this.setState({
       visibleResource: true,
     });
@@ -233,38 +276,79 @@ class Planning extends Component {
   }
 
   //Cambios de Requerimientos
-  fetchRequerimentsChanged() {
-    const {rfc_id} = this.props;
-    this.setState({
-      loadingChange: true,
-    });
+    fetchRequerimentsChanged() {
+        const {rfc_id} = this.props;
+        this.setState({
+            loadingChange: true,
+        });
 
-    http('/PlanificarRequerimientos/' + rfc_id, 'GET', {}, (response) => {
-      this.setState({
-        dataSourceChange: response,
-        loadingChange: false,
-      });
-    }, (e) => {
-      console.error(e);
-    });
-  }
+        http('/PlanificarRequerimientos/' + rfc_id, 'GET', {}, (response) => {
+            this.setState({
+                dataSourceChange: response,
+                loadingChange: false,
+            });
+        }, (e) => {
+            console.error(e);
+        });
+    }
 
-  componentDidMount() {
+    fetchRRHH() {
+        const {rfc_id} = this.props;
+        this.setState({
+            loadingChange: true,
+        });
+
+        http02('/rrhh/' + rfc_id, 'GET', {}, (response) => {
+            this.setState({
+                dataSourceRRHH: response,
+                loadingChange: false,
+            });
+        }, (e) => {
+            console.error(e);
+        });
+    }
+
+    fetchResourceAdd() {
+        const {rfc_id} = this.props;
+        this.setState({
+            loadingChange: true,
+        });
+
+        http02('/RecursoAdicional/' + rfc_id, 'GET', {}, (response) => {
+            this.setState({
+                dataSourceResourceAdd: response,
+                loadingChange: false,
+            });
+        }, (e) => {
+            console.error(e);
+        });
+    }
+
+    componentDidMount() {
     //Cambios de Requerimientos
     this.fetchRequerimentsChanged();
+    this.fetchRRHH();
+    this.fetchResourceAdd();
   }
 
-  onOk(){
-    this.closeDetailRequirement();
-    this.fetchRequerimentsChanged();
-  }
+    onOk(){
+        this.closeDetailRequirement();
+        this.fetchRequerimentsChanged();
+    }
 
-  render() {
+    onOkRRHH(){
+        this.closeRRHH();
+        this.fetchRRHH();
+    }
+
+    render() {
     let {form, rfc_id} = this.props;
-    let {visible, visibleRRHH, visibleResource, data, loading, FormRequirementDetail} = this.state;
+    let {visible, visibleRRHH, visibleEditingRRHH, visibleResource, data, loading, FormRequirementDetail, FormRRHH, FormEditingRRHH} = this.state;
     let {
-      dataSourceChange,
-      loadingChange,
+        dataSourceChange,
+        dataSourceRRHH,
+        dataSourceResourceAdd,
+        loadingChange,
     } = this.state;
 
     const {getFieldDecorator} = form;
@@ -283,35 +367,12 @@ class Planning extends Component {
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={8}>
-              <FormItem label={'Codigo de informe:'} {...formItemLayout}>
-                <Input disabled={true}/>
-              </FormItem>
-            </Col>
-            <Col span={12}>
-              <FormItem label={'Fecha de reporte:'} {...formItemLayout} >
-                <DatePicker
-                  disabled={true}
-                  format={dateFormat}/>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <FormItem label={'Responsable:'}
-                        labelCol={{xs: {span: 24}, sm: {span: 3}}}
-                        wrapperCol={{xs: {span: 24}, sm: {span: 21}}}>
-                <Input disabled={true}/>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={16}>
             <Col span={24}>
               <FormItem>
                 <div className="new-requirement-list component">
                   <div className="wrap-table">
                     <Table
-                      title={() => 'Lista de requerimientos'}
+                      title={() => 'Lista de requerimientos desglosados e la RFC'}
                       bordered
                       locale={{emptyText: 'No hay datos'}}
                       size="small"
@@ -345,10 +406,26 @@ class Planning extends Component {
                       size="small"
                       scroll={{x: 1300}}
                       loading={loadingChange}
-                      dataSource={dataSourceChange}
+                      dataSource={dataSourceRRHH}
                       columns={this.columns_rrhh}/>
-                    <FormRRHH visible={visibleRRHH} onOk={this.onOk}
+
+                      {FormRRHH && visibleRRHH
+                          ? <FormRRHH
+                              visible={visibleRRHH}
+                              onOk={this.onOkRRHH.bind(this)}
+                              rfc_Codigo={rfc_id}
                               onCancel={this.closeRRHH}/>
+                          : null}
+
+
+                      {FormEditingRRHH && visibleEditingRRHH
+                          ? <FormEditingRRHH
+                              visible={visibleEditingRRHH}
+                              onOk={this.onOk.bind(this)}
+                              data={data}
+                              onCancel={this.closeEditingRRHH()}/>
+                          : null}
+
                   </div>
                 </div>
               </FormItem>
@@ -366,7 +443,7 @@ class Planning extends Component {
                       size="small"
                       scroll={{x: 1300}}
                       loading={loadingChange}
-                      dataSource={dataSourceChange}
+                      dataSource={dataSourceResourceAdd}
                       columns={this.columns_requirement_add}/>
                     <FormResource visible={visibleResource} onOk={this.onOk}
                                   onCancel={this.closeResource}/>

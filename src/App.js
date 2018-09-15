@@ -15,7 +15,7 @@ class App extends Component {
           <Switch>
 
             <Route path="/change" component={Change}/>
-            <Route path="/loader-technical" component={LeaderTechnical}/>
+            <Route path="/loader-technical/:id" component={LeaderTechnical}/>
             <Route path="/planning-risk" component={PlanningRisk}/>
 
           </Switch>

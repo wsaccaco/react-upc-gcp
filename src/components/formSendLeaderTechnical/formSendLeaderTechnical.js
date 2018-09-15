@@ -74,7 +74,7 @@ class FormSendLeaderTechnical extends Component {
                   help={userNameError || ''}
                 >
                   {getFieldDecorator('lit_Codigo', {
-                      rules: [{required: true,message: 'Selecciones Lider Tecnico',}],
+                      rules: [{required: true,message: 'Seleccione Lider Tecnico',}],
                       initialValue: lit_Codigo
                   })(
                     <Select
