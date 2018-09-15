@@ -1,0 +1,15 @@
+.pending{
+    color: #000;
+}
+
+.evaluating{
+    color: #CCC;
+}
+
+.approved{
+    color: #2ECC40;
+}
+
+.disapproved{
+    color: #FF4136;
+}

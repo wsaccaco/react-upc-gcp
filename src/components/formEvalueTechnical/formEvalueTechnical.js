@@ -56,7 +56,7 @@ class FormEvalueTechnical extends Component {
   state = {
     rfc_Codigo: this.props.rfc_Codigo,
 
-    dataSource: [],
+    dataResource: [],
     loading: false,
 
     cantidad: 1,
@@ -71,9 +71,12 @@ class FormEvalueTechnical extends Component {
     e.preventDefault();
     let {onOk, form, rfc_Codigo} = this.props;
     let {validateFields, resetFields} = form;
+    let {dataResource}  = this.state;
 
     validateFields((err, form) => {
       if (!err) {
+        form.est_Codigo = form.status ? 5 : 6;
+        form.resources = dataResource;
         console.log('Received values of form: ', form);
       }
     });
@@ -87,16 +90,16 @@ class FormEvalueTechnical extends Component {
 
   _add() {
     this.setState((prevState, Props) => {
-      let {rol, cantidad, dataSource} = prevState;
+      let {rol, cantidad, dataResource} = prevState;
 
-      dataSource.push({
+      dataResource.push({
         rol,
         cantidad,
-        key: dataSource.length,
+        key: dataResource.length,
       });
 
       return {
-        dataSource,
+        dataResource,
       };
     });
   }
@@ -109,9 +112,9 @@ class FormEvalueTechnical extends Component {
   }
 
   render() {
-    let {rfc_Codigo, visible, onOk, onCancel, form} = this.props;
-    let {dataSource, status} = this.state;
-
+    let {modalData, visible, onOk, onCancel, form} = this.props;
+    let {dataResource, status} = this.state;
+    let {pro_Nombre, rfc_Asunto, lir_Nombre, lir_Codigo, ...props} = modalData;
     const {getFieldDecorator} = form;
 
     return (
@@ -125,13 +128,20 @@ class FormEvalueTechnical extends Component {
       >
 
         <Form layout="vertical" onSubmit={() => {}} className="gcp-form">
+
+          {getFieldDecorator('lir_Codigo', {
+              initialValue: lir_Codigo
+          })(
+            <input type="hidden"/>
+          )}
+
           <Row gutter={16}>
             <Col span={8}>
               <FormItem
                 {...formItemLayout}
                 label="Proyecto"
               >
-                <span>Hola</span>
+                <span>{pro_Nombre}</span>
               </FormItem>
             </Col>
             <Col span={8}>
@@ -139,7 +149,7 @@ class FormEvalueTechnical extends Component {
                 {...formItemLayout}
                 label="RFC"
               >
-                <span>Hola</span>
+                <span>{rfc_Asunto}</span>
               </FormItem>
             </Col>
             <Col span={8}>
@@ -147,7 +157,7 @@ class FormEvalueTechnical extends Component {
                 {...formItemLayout}
                 label="Requerimiento"
               >
-                <span>Hola</span>
+                <span>{lir_Nombre}</span>
               </FormItem>
             </Col>
           </Row>
@@ -157,7 +167,7 @@ class FormEvalueTechnical extends Component {
                 {...formItemLayout}
                 label="F. Entrega"
               >
-                <span>Hola</span>
+                <span>ALEXANDER ENVIA ESTE CAMPO PENDEJO</span>
               </FormItem>
             </Col>
             <Col span={8}>
@@ -165,7 +175,7 @@ class FormEvalueTechnical extends Component {
                 {...formItemLayout}
                 label="Prioridad"
               >
-                <span>Hola</span>
+                <span>ALEXANDER ENVIA ESTE CAMPO PENDEJO</span>
               </FormItem>
             </Col>
           </Row>
@@ -179,7 +189,7 @@ class FormEvalueTechnical extends Component {
                         <FormItem
                           label="Aprobado">
 
-                          {getFieldDecorator('userName', {
+                          {getFieldDecorator('status', {
                             valuePropName: 'checked',
                             initialValue: true,
                           })(
@@ -192,12 +202,16 @@ class FormEvalueTechnical extends Component {
                         <FormItem
                           label="Tiempo de Desarrollo">
 
-                          <InputNumber
-                            disabled={!status}
-                            formatter={value => `${value} horas`}
-                            parser={value => value.replace('horas', '')}
-                            style={{width: '150px'}}
-                            min={1}/>
+                          {getFieldDecorator('lir_TiempoDesarrollo', {
+                            rules: [{required: true, message: 'Definir cantidad de tiempo'}],
+                          })(
+                            <InputNumber
+                              disabled={!status}
+                              formatter={value => `${value} horas`}
+                              parser={value => value.replace('horas', '')}
+                              style={{width: '150px'}}
+                              min={1}/>
+                          )}
 
                         </FormItem>
                       </Col>
@@ -251,7 +265,7 @@ class FormEvalueTechnical extends Component {
                       </Col>
                     </Row>
                     <Row>
-                      <Table size="small" dataSource={dataSource}
+                      <Table size="small" dataSource={dataResource}
                              columns={_column_template}/>
                     </Row>
                   </Col>

@@ -84,7 +84,7 @@ export default class FlowTechnical extends Component {
             return (
               <List.Item
                 key={index}
-                style={{border: '2px solid #efefef !important;'}}
+                style={{border: "2px solid #efefef !important"}}
               >
                 <LeaderTechnical.Provider value={leaders}>
                   <List.Item.Meta
@@ -93,7 +93,9 @@ export default class FlowTechnical extends Component {
                     description={<DescriptionMeta data={props} lit_Codigo={lit_Codigo}/>}
                   />
                 </LeaderTechnical.Provider>
-                  <p><strong>Resumen : </strong>strong>{lir_Resumen}</p>
+                  <p>
+                    <strong>Resumen : </strong>{lir_Resumen}
+                    </p>
               </List.Item>
             );
           }}
