@@ -104,10 +104,11 @@ class Planning extends Component {
           key: 'action',
           fixed: 'right',
           width: 150,
-          render: (text, record) => (
+          render: (data, record) => (
               <span>
-            <a href="javascript:;" onClick={() => {
-            }}> Editar </a>
+                <a href="javascript:;" onClick={() => {
+                    this.openEditingRRHH(data);
+                }}> <Icon type="edit" theme="outlined"/> Editar </a>
             <Divider type="vertical"/>
             <a href="javascript:;" onClick={() => {
             }}> Quitar </a>
@@ -150,16 +151,18 @@ class Planning extends Component {
     }];
 
   constructor(props) {
-    super(props);
-    this.openDetailRequirement = this.openDetailRequirement.bind(this);
-    this.closeDetailRequirement = this.closeDetailRequirement.bind(this);
-    this.openRRHH = this.openRRHH.bind(this);
-    this.closeRRHH = this.closeRRHH.bind(this);
-    this.openResource = this.openResource.bind(this);
-    this.closeResource = this.closeResource.bind(this);
-    this.titleRRHHTable = this.titleRRHHTable.bind(this);
-    this.titleRequirementTable = this.titleRequirementTable.bind(this);
-    this.titleAgreementTable = this.titleAgreementTable.bind(this);
+      super(props);
+      this.openDetailRequirement = this.openDetailRequirement.bind(this);
+      this.closeDetailRequirement = this.closeDetailRequirement.bind(this);
+      this.openRRHH = this.openRRHH.bind(this);
+      this.closeRRHH = this.closeRRHH.bind(this);
+      this.openEditingRRHH = this.openEditingRRHH.bind(this);
+      this.closeEditingRRHH = this.closeEditingRRHH.bind(this);
+      this.openResource = this.openResource.bind(this);
+      this.closeResource = this.closeResource.bind(this);
+      this.titleRRHHTable = this.titleRRHHTable.bind(this);
+      this.titleRequirementTable = this.titleRequirementTable.bind(this);
+      this.titleAgreementTable = this.titleAgreementTable.bind(this);
   }
 
   state = {
@@ -170,12 +173,14 @@ class Planning extends Component {
       visible: false,
       visibleRRHH: false,
       visibleResource: false,
+      visibleEditingRRHH: false,
       FormRequirementDetail: null,
-      FormRRHH: null
+      FormRRHH: null,
+      FormEditingRRHH: null
   };
 
   openDetailRequirement(data) {
-
+    console.log(data);
     import('../PlanningFormDetail/PlanningFormDetail').then(
       FormRequirementDetail => {
         this.setState({
@@ -186,29 +191,46 @@ class Planning extends Component {
       });
   }
 
-  closeDetailRequirement() {
+    closeDetailRequirement() {
     this.setState({
       visible: false,
     });
-  }
+    }
 
-  openRRHH() {
-      import('../PlanningFormDetail/PlanningFormRRHH').then(
-          FormRRHH => {
-              this.setState({
-                  FormRRHH: FormRRHH.default,
-                  visibleRRHH: true
-              });
-          });
-  }
+    openRRHH() {
+        import('../PlanningFormDetail/PlanningFormRRHH').then(
+            FormRRHH => {
+                this.setState({
+                    FormRRHH: FormRRHH.default,
+                    visibleRRHH: true
+                });
+            });
+    }
 
-  closeRRHH() {
-    this.setState({
-      visibleRRHH: false,
-    });
-  }
+    closeRRHH() {
+        this.setState({
+            visibleRRHH: false,
+        });
+    }
 
-  openResource() {
+    openEditingRRHH(data) {
+        import('../PlanningFormDetail/PlanningEditingFormRRHH').then(
+            FormEditingRRHH => {
+                this.setState({
+                    FormEditingRRHH: FormEditingRRHH.default,
+                    visibleEditingRRHH: true,
+                    data
+                });
+            });
+    }
+
+    closeEditingRRHH() {
+        this.setState({
+            visibleEditingRRHH: false,
+        });
+    }
+
+    openResource() {
     this.setState({
       visibleResource: true,
     });
@@ -321,7 +343,7 @@ class Planning extends Component {
 
     render() {
     let {form, rfc_id} = this.props;
-    let {visible, visibleRRHH, visibleResource, data, loading, FormRequirementDetail, FormRRHH} = this.state;
+    let {visible, visibleRRHH, visibleEditingRRHH, visibleResource, data, loading, FormRequirementDetail, FormRRHH, FormEditingRRHH} = this.state;
     let {
         dataSourceChange,
         dataSourceRRHH,
@@ -394,6 +416,16 @@ class Planning extends Component {
                               rfc_Codigo={rfc_id}
                               onCancel={this.closeRRHH}/>
                           : null}
+
+
+                      {FormEditingRRHH && visibleEditingRRHH
+                          ? <FormEditingRRHH
+                              visible={visibleEditingRRHH}
+                              onOk={this.onOk.bind(this)}
+                              data={data}
+                              onCancel={this.closeEditingRRHH()}/>
+                          : null}
+
                   </div>
                 </div>
               </FormItem>
