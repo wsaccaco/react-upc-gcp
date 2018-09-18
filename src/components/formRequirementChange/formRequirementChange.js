@@ -107,6 +107,13 @@ class FormRequirementChange extends Component {
     </div>;
   }
 
+  disabledStartDate(startValue){
+    if(!startValue){
+      return false
+    }
+    return startValue.valueOf() <= moment().subtract(1,'days').startOf('day').valueOf();
+  }
+
   render() {
 
     let {visible, onOk, onCancel, form} = this.props;
@@ -169,7 +176,9 @@ class FormRequirementChange extends Component {
                   message: 'Seleccione una fecha',
                 }],
             })(
-              <DatePicker format={'DD-MM-YYYY'}/>,
+              <DatePicker
+                disabledDate={this.disabledStartDate.bind(this)}
+                format={'DD-MM-YYYY'}/>,
             )}
           </FormItem>
 
