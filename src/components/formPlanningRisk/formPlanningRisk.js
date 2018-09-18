@@ -180,7 +180,7 @@ class FormPlanningRisk extends Component {
 
     onCreate = (e) => {
         e.preventDefault();
-        let {onOk, form, rfc_Codigo} = this.props;
+        let {onOk, form} = this.props;
         let {validateFields, resetFields} = form;
 
         validateFields((err, form) => {

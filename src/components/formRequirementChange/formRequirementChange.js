@@ -107,6 +107,13 @@ class FormRequirementChange extends Component {
     </div>;
   }
 
+  disabledStartDate(startValue){
+    if(!startValue){
+      return false
+    }
+    return startValue.valueOf() <= moment().subtract(1,'days').startOf('day').valueOf();
+  }
+
   render() {
 
     let {visible, onOk, onCancel, form} = this.props;
@@ -169,7 +176,9 @@ class FormRequirementChange extends Component {
                   message: 'Seleccione una fecha',
                 }],
             })(
-              <DatePicker format={'DD-MM-YYYY'}/>,
+              <DatePicker
+                disabledDate={this.disabledStartDate.bind(this)}
+                format={'DD-MM-YYYY'}/>,
             )}
           </FormItem>
 
@@ -215,8 +224,8 @@ class FormRequirementChange extends Component {
               <FormItem
                 label={'¿Es requerimiento funcional?'}
                 labelCol={{span: 12, offset: 12}}
-                help={this.validateInput('applicant') || ''}>
-                {getFieldDecorator('isFunctional', {
+                help={this.validateInput('lir_EsFuncional') || ''}>
+                {getFieldDecorator('lir_EsFuncional', {
                   valuePropName: 'checked',
                   initialValue: lir_EsFuncional || false,
                   rules: [],
@@ -228,8 +237,8 @@ class FormRequirementChange extends Component {
               <FormItem
                 label={'¿Requiere documentar?'}
                 labelCol={{span: 12, offset: 12}}
-                help={this.validateInput('requireDocumentation') || ''}>
-                {getFieldDecorator('requireDocumentation', {
+                help={this.validateInput('lir_RequiereDocumentar') || ''}>
+                {getFieldDecorator('lir_RequiereDocumentar', {
                   valuePropName: 'checked',
                   initialValue: lir_RequiereDocumentar || false,
                   rules: [],

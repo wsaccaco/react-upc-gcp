@@ -31,13 +31,6 @@ const template = [
     title: 'Estado',
     dataIndex: 'est_Estado',
     key: 'est_Estado',
-  }, {
-    title: 'Acciones',
-    width: 100,
-    fixed: 'right',
-    render: text => {
-      return <a href="#" onClick={this._openModal.bind(this)}>Evaluar</a>;
-    },
   }];
 
 export default class LeaderTechnical extends Component {
@@ -52,18 +45,34 @@ export default class LeaderTechnical extends Component {
       text: '',
       FormTechnicalEvalue: '',
       visibleModal: true,
-      id
+      id,
+      modalData: {}
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    let _template = Array.from(template);
+    _template.push({
+      title: 'Acciones',
+      width: 100,
+      fixed: 'right',
+      render: text => {
+        return <a href="#" onClick={this._openModal.bind(this, text)}>Evaluar</a>;
+      },
+    });
+
+    this.columns = _template;
+
+    this._close = this._close.bind(this);
+    this.onOk = this.onOk.bind(this);
   }
 
-  _openModal() {
+  _openModal(data) {
     import('../../components/formEvalueTechnical/formEvalueTechnical.js').then(
       Component => {
         this.setState({
           FormTechnicalEvalue: Component.default,
           visibleModal: true,
+          modalData: data,
         });
       });
   }
@@ -73,6 +82,12 @@ export default class LeaderTechnical extends Component {
       visibleModal:false
     })
   }
+
+  onOk = () => {
+      this.fetchRequerimientoTecnico();
+      this.fetchRequerimientoTecnicoPendiente();
+      this._close();
+  };
 
   fetchRequerimientoTecnico() {
     let {id} = this.state;
@@ -93,13 +108,16 @@ export default class LeaderTechnical extends Component {
   }
 
   componentDidMount(){
-    this._openModal();
     this.fetchRequerimientoTecnico();
     this.fetchRequerimientoTecnicoPendiente();
   }
 
   render() {
-    let {loading, FormTechnicalEvalue, visibleModal, dataSource, dataSourcePendiente} = this.state;
+    let {
+      loading, FormTechnicalEvalue, visibleModal,
+      dataSource, dataSourcePendiente, modalData
+    } = this.state;
+
     return (
       <LeaderTechnicalLayout>
         <Row justify="center" type="flex">
@@ -108,8 +126,8 @@ export default class LeaderTechnical extends Component {
               <Table
                 title={() => <strong>Lista de Evaluaciones tecnicas
                   Pendientes</strong>}
-                columns={this.columnsRiskPending}
-                dataSource={dataSource}
+                columns={this.columns}
+                dataSource={dataSourcePendiente}
                 size="middle"
                 loading={loading}
                 bordered
@@ -123,8 +141,8 @@ export default class LeaderTechnical extends Component {
               <Table
                 style={{marginTop: '25px'}}
                 title={() => <strong>Historial de evaluaciones</strong>}
-                columns={this.columnsRiskPending}
-                dataSource={dataSourcePendiente}
+                columns={template}
+                dataSource={dataSource}
                 size="middle"
                 loading={loading}
                 bordered
@@ -134,8 +152,9 @@ export default class LeaderTechnical extends Component {
         </Row>
         {FormTechnicalEvalue && visibleModal
           ? <FormTechnicalEvalue
+            modalData={modalData}
             visible={visibleModal}
-            onOk={() => {}}
+            onOk={this.onOk}
             onCancel={this._close.bind(this)}/>
           : null}
       </LeaderTechnicalLayout>

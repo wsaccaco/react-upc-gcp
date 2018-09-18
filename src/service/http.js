@@ -1,8 +1,13 @@
 const http = (
     pathName, method = 'GET', body = {}, callback,
     callbackError = () => {}) => {
+<<<<<<< HEAD
     let _url = `http://upctp3-des02.azurewebsites.net/${pathName}`;
     //let _url = `https://upctp3-des.azurewebsites.net/${pathName}`;
+=======
+    //let _url = `http://25.3.69.136/${pathName}`;
+    let _url = `https://upctp3-des.azurewebsites.net/${pathName}`;
+>>>>>>> 81ee7eccf5a4607468a13af06dd6a37664bcdba8
 
   if (method === 'GET') {
     _url = new URL(_url);

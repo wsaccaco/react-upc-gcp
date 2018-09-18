@@ -78,9 +78,12 @@ export default class FlowRequirement extends Component {
 
       if(success){
           this.fetchRequerimentsChanged();
+      }else{
+        message.warning('Ocurrió un error a la hora de eliminar');
       }
 
     }, (e) => {
+        message.warning('Ocurrió un error a la hora de eliminar');
         console.error(e);
     });
   }
