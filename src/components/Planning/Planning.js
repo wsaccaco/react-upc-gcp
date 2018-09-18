@@ -17,8 +17,7 @@ import {
 
 import './Planning.css';
 import '../NewRequirementList/NewRequirementList.css';
-
-import FormResource from '../PlanningFormDetail/PlanningFormResource';
+import '../PlanningFormDetail/PlanningFormBaseLine';
 
 import http from '../../service/http';
 import http02 from '../../service/http02';
@@ -81,24 +80,31 @@ class Planning extends Component {
       },{
           title: 'Identificador',
           dataIndex: 'rrhh_Identificador',
+          key: 'rrhh_Identificador',
       }, {
           title: 'Perfil',
           dataIndex: 'tip_Nombre',
+          key: 'tip_Nombre',
       }, {
           title: 'Cantidad',
           dataIndex: 'rrhh_Cantidad',
+          key: 'rrhh_Cantidad',
       }, {
           title: 'Nivel',
           dataIndex: 'niv_Nivel',
+          key: 'niv_Nivel',
       }, {
           title: 'Desde',
           dataIndex: 'rrhh_FecInicio',
+          key: 'rrhh_FecInicio',
       }, {
           title: 'Hasta',
           dataIndex: 'rrhh_FechaTermino',
+          key: 'rrhh_FechaTermino',
       }, {
           title: 'Presupuesto',
           dataIndex: 'rrhh_Presupuesto',
+          key: 'rrhh_Presupuesto',
       }, {
           title: 'Action',
           key: 'action',
@@ -106,13 +112,10 @@ class Planning extends Component {
           width: 150,
           render: (data, record) => (
               <span>
-                <a href="javascript:;" onClick={() => {
-                    this.openEditingRRHH(data);
-                }}> <Icon type="edit" theme="outlined"/> Editar </a>
-            <Divider type="vertical"/>
-            <a href="javascript:;" onClick={() => {
-            }}> Quitar </a>
-        </span>
+                <a href="javascript:;" onClick={() => {this.openEditingRRHH(data);}}><Icon type="edit" theme="outlined"/> Editar </a>
+                <Divider type="vertical"/>
+                <a href="javascript:;" onClick={() => {this.deleteRRHH(data);}}> Quitar </a>
+              </span>
           ),
       }];
 
@@ -141,11 +144,11 @@ class Planning extends Component {
       key: 'action',
       fixed: 'right',
       width: 150,
-      render: (text, record) => (
+      render: (data, record) => (
         <span>
-            <a href="javascript:;" onClick={() => {}}> Editar </a>
+            <a href="javascript:;" onClick={() => {this.openEditingResource(data);}}><Icon type="edit" theme="outlined"/> Editar </a>
             <Divider type="vertical"/>
-            <a href="javascript:;" onClick={() => {}}> Quitar </a>
+            <a href="javascript:;" onClick={() => {this.deleteResource(data);}}> Quitar </a>
         </span>
       ),
     }];
@@ -176,11 +179,16 @@ class Planning extends Component {
       visibleEditingRRHH: false,
       FormRequirementDetail: null,
       FormRRHH: null,
-      FormEditingRRHH: null
+      FormResource: null,
+      FormEditingRRHH: null,
+      dataRRHH: null,
+      updateRRHH:false,
+      dataResource: null,
+      updateResource:false,
+      FormBaseLine:null
   };
 
   openDetailRequirement(data) {
-    console.log(data);
     import('../PlanningFormDetail/PlanningFormDetail').then(
       FormRequirementDetail => {
         this.setState({
@@ -197,12 +205,40 @@ class Planning extends Component {
     });
     }
 
+    deleteRRHH (data) {
+        this.setState({
+            loadingChange: true,
+        });
+
+        http('rrhh/delete', 'POST', data, (response) => {
+            if (response) {
+                this.fetchRRHH();
+            }
+            loadingChange: false
+        });
+    };
+
+    deleteResource (data) {
+        this.setState({
+            loadingChange: true,
+        });
+
+        http('RecursoAdicional/delete', 'POST', data, (response) => {
+            if (response) {
+                this.fetchResourceAdd();
+            }
+            loadingChange: false
+        });
+    };
+
     openRRHH() {
         import('../PlanningFormDetail/PlanningFormRRHH').then(
             FormRRHH => {
                 this.setState({
                     FormRRHH: FormRRHH.default,
-                    visibleRRHH: true
+                    visibleRRHH: true,
+                    dataRRHH: null,
+                    updateRRHH:false
                 });
             });
     }
@@ -213,13 +249,14 @@ class Planning extends Component {
         });
     }
 
-    openEditingRRHH(data) {
-        import('../PlanningFormDetail/PlanningEditingFormRRHH').then(
-            FormEditingRRHH => {
+    openEditingRRHH(dataRRHH) {
+        import('../PlanningFormDetail/PlanningFormRRHH').then(
+            FormRRHH => {
                 this.setState({
-                    FormEditingRRHH: FormEditingRRHH.default,
-                    visibleEditingRRHH: true,
-                    data
+                    FormRRHH: FormRRHH.default,
+                    visibleRRHH: true,
+                    updateRRHH:true,
+                    dataRRHH
                 });
             });
     }
@@ -231,10 +268,28 @@ class Planning extends Component {
     }
 
     openResource() {
-    this.setState({
-      visibleResource: true,
-    });
-  }
+        import('../PlanningFormDetail/PlanningFormResource').then(
+            FormResource => {
+                this.setState({
+                    FormResource: FormResource.default,
+                    visibleResource: true,
+                    dataResource: null,
+                    updateResource:false
+                });
+            });
+    }
+
+    openEditingResource(dataResource) {
+        import('../PlanningFormDetail/PlanningFormResource').then(
+            FormResource => {
+                this.setState({
+                    FormResource: FormResource.default,
+                    visibleResource: true,
+                    updateResource:true,
+                    dataResource
+                });
+            });
+    }
 
   closeResource() {
     this.setState({
@@ -341,11 +396,16 @@ class Planning extends Component {
         this.fetchRRHH();
     }
 
+    onOkResource(){
+        this.closeResource();
+        this.fetchResourceAdd();
+    }
+
     render() {
     let {form, rfc_id} = this.props;
-    let {visible, visibleRRHH, visibleEditingRRHH, visibleResource, data, loading, FormRequirementDetail, FormRRHH, FormEditingRRHH} = this.state;
     let {
-        dataSourceChange,
+        visible, visibleRRHH, visibleResource, data, dataRRHH, FormRequirementDetail, FormRRHH,
+        dataSourceChange, updateRRHH,updateResource,dataResource,FormResource,
         dataSourceRRHH,
         dataSourceResourceAdd,
         loadingChange,
@@ -408,25 +468,16 @@ class Planning extends Component {
                       loading={loadingChange}
                       dataSource={dataSourceRRHH}
                       columns={this.columns_rrhh}/>
-
-                      {FormRRHH && visibleRRHH
-                          ? <FormRRHH
-                              visible={visibleRRHH}
-                              onOk={this.onOkRRHH.bind(this)}
-                              rfc_Codigo={rfc_id}
-                              onCancel={this.closeRRHH}/>
-                          : null}
-
-
-                      {FormEditingRRHH && visibleEditingRRHH
-                          ? <FormEditingRRHH
-                              visible={visibleEditingRRHH}
-                              onOk={this.onOk.bind(this)}
-                              data={data}
-                              onCancel={this.closeEditingRRHH()}/>
-                          : null}
-
                   </div>
+                    {FormRRHH && visibleRRHH
+                        ? <FormRRHH
+                            visible={visibleRRHH}
+                            onOk={this.onOkRRHH.bind(this)}
+                            rfc_Codigo={rfc_id}
+                            dataRRHH={dataRRHH}
+                            dataUpdate={updateRRHH}
+                            onCancel={this.closeRRHH}/>
+                        : null}
                 </div>
               </FormItem>
             </Col>
@@ -445,65 +496,19 @@ class Planning extends Component {
                       loading={loadingChange}
                       dataSource={dataSourceResourceAdd}
                       columns={this.columns_requirement_add}/>
-                    <FormResource visible={visibleResource} onOk={this.onOk}
-                                  onCancel={this.closeResource}/>
                   </div>
+                    {FormResource && visibleResource
+                        ? <FormResource
+                            visible={visibleResource}
+                            onOk={this.onOkResource.bind(this)}
+                            rfc_Codigo={rfc_id}
+                            dataResource={dataResource}
+                            dataUpdate={updateResource}
+                            onCancel={this.closeResource}/>
+                        : null}
                 </div>
               </FormItem>
             </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <FormItem label={'Consideraciones adicionales:'}>
-                <TextArea rows={5}/>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col>
-              Afectación a la línea base del proyecto
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={8}>
-              <FormItem label={'Termino:'} {...formItemLayout} >
-                <DatePicker
-                  disabled={true}
-                  format={dateFormat}/>
-              </FormItem>
-            </Col>
-            <Col span={8}>
-              <FormItem label={'Tiempo adicional(dias):'} {...formItemLayout}>
-                <Input/>
-              </FormItem>
-            </Col>
-            <Col span={8}>
-              <FormItem label={'Nuevo termino:'} {...formItemLayout} >
-                <DatePicker
-                  disabled={true}
-                  format={dateFormat}/>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={8}>
-              <FormItem label={'Costo (S/):'} {...formItemLayout}>
-                <Input disabled={true}/>
-              </FormItem>
-            </Col>
-            <Col span={8}>
-              <FormItem label={'Costos adicionales (S/):'} {...formItemLayout}>
-                <Input/>
-              </FormItem>
-            </Col>
-            <Col span={8}>
-              <FormItem label={'Nuevo Costo (S/):'} {...formItemLayout}>
-                <Input disabled={true}/>
-              </FormItem>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Button type="primary">Guardar</Button>
           </Row>
         </div>
       </Form>

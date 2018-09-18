@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
-import {Modal, Form, Input, Icon, Select, DatePicker, Col} from 'antd';
+import {Modal, Form, Input, Icon, Select, DatePicker, Col, InputNumber} from 'antd';
 import http from '../../service/http';
 import moment from "moment";
 
 let FormItem = Form.Item;
-let Option = Select.Option;
-let TextArea = Input.TextArea;
 
 const formItemLayout = {
     labelCol: {
@@ -31,9 +29,9 @@ class FormResource extends Component {
     }
 
     state = {
-        OptionPortafalio: [],
-        OptionResponsable: [],
-        projectDisabled: true
+        projectDisabled: true,
+        dataResource: this.props.dataResource,
+        dataUpdate:this.props.dataUpdate,
     };
 
     handleSubmit = (e) => {
@@ -59,19 +57,15 @@ class FormResource extends Component {
         e.preventDefault();
         let {onOk, form} = this.props;
         let {validateFields, resetFields} = form;
-
         validateFields((err, form) => {
             if (!err) {
-
-                // let pathName = this.isNew ? 'C0001S0003' : 'C0001S0004';
-
-                http('C0001S0003', 'POST', form, (response) => {
-                    if (response === 'OK') {
+                let pathName = this.props.dataUpdate ? 'RecursoAdicional/update' : 'RecursoAdicional';
+                http(pathName, 'POST', form, (response) => {
+                    if (response) {
                         onOk(response);
                         resetFields();
                     }
                 });
-
             }
         });
     };
@@ -87,16 +81,8 @@ class FormResource extends Component {
     }
 
     render() {
-
         let {visible, onOk, onCancel, form} = this.props;
-        let { OptionPortafalio, OptionProject,
-            projectDisabled, OptionApplicant,
-            OptionResponsable } = this.state;
-        const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = form;
-
-        const folderError = isFieldTouched('folder') && getFieldError('folder');
-        const dateError = isFieldTouched('date') && getFieldError('date');
-
+        const {getFieldDecorator, getFieldsError} = form;
         return (
             <Modal
                 title="Detallar requerimiento"
@@ -108,23 +94,83 @@ class FormResource extends Component {
             >
                 <Form onSubmit={this.handleSubmit} className="gcp-form">
                     <FormItem label={'Recurso:'} {...formItemLayout}>
-                        <Input disabled={false} />
+                        {getFieldDecorator('rfc_Codigo', {
+                            initialValue: this.props.rfc_Codigo
+                        })(
+                            <Input type={'hidden'}
+                                   min={0} disabled={false}/>
+                        )}
+                        {getFieldDecorator('rad_Codigo', {
+                            initialValue: this.props.dataResource===null?'':this.props.dataResource.rad_Codigo,
+                        })(
+                            <Input type={'hidden'}
+                                   min={0} disabled={false}/>
+                        )}
+                        {getFieldDecorator('rad_Identificador', {
+                            initialValue: this.props.dataResource===null?'':this.props.dataResource.rad_Identificador,
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere el identificador',
+                                }],
+                        })(
+                            <Input
+                                min={0} disabled={false}/>
+                        )}
                     </FormItem>
                     <FormItem label={'Cantidad:'} {...formItemLayout}>
-                        <Input disabled={false} />
+                        {getFieldDecorator('rad_Cantidad', {
+                            initialValue: this.props.dataResource===null?'':this.props.dataResource.rad_Cantidad,
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere la cantidad',
+                                }],
+                        })(
+                            <InputNumber
+                                min={0} disabled={false}/>
+                        )}
                     </FormItem>
                     <FormItem label={'Inicio:'} {...formItemLayout} >
-                        <DatePicker
-                            disabled={false}
-                            format={dateFormat} />
+                        {getFieldDecorator('rad_FecInicio', {
+                            initialValue: this.props.dataResource===null? null:moment(this.props.dataResource.rad_FecInicio, 'DD-MM-YYYY'),
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere una fecha de inicio',
+                                }],
+                        })(
+                            <DatePicker
+                                disabled={false}
+                                format={dateFormat}/>
+                        )}
                     </FormItem>
                     <FormItem label={'Termino:'} {...formItemLayout} >
-                        <DatePicker
-                            disabled={false}
-                            format={dateFormat} />
+                        {getFieldDecorator('rad_FechaTermino', {
+                            initialValue: this.props.dataResource===null? null:moment(this.props.dataResource.rad_FechaTermino, 'DD-MM-YYYY'),
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere una fecha de termino',
+                                }],
+                        })(
+                            <DatePicker
+                                disabled={false}
+                                format={dateFormat}/>
+                        )}
                     </FormItem>
                     <FormItem label={'Presupuesto:'} {...formItemLayout}>
-                        <Input disabled={false} />
+                        {getFieldDecorator('rad_Presupuesto', {
+                            initialValue: this.props.dataResource===null?'':this.props.dataResource.rad_Presupuesto,
+                            rules: [
+                                {
+                                    required: true,
+                                    message: 'Se requiere el presupuesto',
+                                }],
+                        })(
+                            <InputNumber
+                                min={0} disabled={false}/>
+                        )}
                     </FormItem>
                 </Form>
             </Modal>
