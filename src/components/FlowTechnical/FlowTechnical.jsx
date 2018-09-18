@@ -71,8 +71,8 @@ export default class FlowTechnical extends Component {
   render() {
     let {dataSource, loading, leaders} = this.state;
     let {IconText, TitleMeta} = this;
-    return (
 
+    return (
       <div className="flow-technical component">
         <List
           itemLayout="vertical"
@@ -90,7 +90,7 @@ export default class FlowTechnical extends Component {
                   <List.Item.Meta
                     className="item-meta"
                     title={[<TitleMeta key={index} title={lir_Nombre} prioridad={lir_Prioridad}/>]}
-                    description={<DescriptionMeta data={props} lit_Codigo={lit_Codigo}/>}
+                    description={<DescriptionMeta data={props} lit_Codigo={lit_Codigo} />}
                   />
                 </LeaderTechnical.Provider>
                   <p>

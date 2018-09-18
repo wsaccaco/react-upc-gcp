@@ -61,6 +61,9 @@ export default class LeaderTechnical extends Component {
     });
 
     this.columns = _template;
+
+    this._close = this._close.bind(this);
+    this.onOk = this.onOk.bind(this);
   }
 
   _openModal(data) {
@@ -79,6 +82,12 @@ export default class LeaderTechnical extends Component {
       visibleModal:false
     })
   }
+
+  onOk = () => {
+      this.fetchRequerimientoTecnico();
+      this.fetchRequerimientoTecnicoPendiente();
+      this._close();
+  };
 
   fetchRequerimientoTecnico() {
     let {id} = this.state;
@@ -118,7 +127,7 @@ export default class LeaderTechnical extends Component {
                 title={() => <strong>Lista de Evaluaciones tecnicas
                   Pendientes</strong>}
                 columns={this.columns}
-                dataSource={dataSource}
+                dataSource={dataSourcePendiente}
                 size="middle"
                 loading={loading}
                 bordered
@@ -133,7 +142,7 @@ export default class LeaderTechnical extends Component {
                 style={{marginTop: '25px'}}
                 title={() => <strong>Historial de evaluaciones</strong>}
                 columns={template}
-                dataSource={dataSourcePendiente}
+                dataSource={dataSource}
                 size="middle"
                 loading={loading}
                 bordered
@@ -145,7 +154,7 @@ export default class LeaderTechnical extends Component {
           ? <FormTechnicalEvalue
             modalData={modalData}
             visible={visibleModal}
-            onOk={() => {}}
+            onOk={this.onOk}
             onCancel={this._close.bind(this)}/>
           : null}
       </LeaderTechnicalLayout>

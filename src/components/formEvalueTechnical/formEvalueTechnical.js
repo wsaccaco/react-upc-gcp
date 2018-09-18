@@ -1,22 +1,9 @@
 import React, {Component} from 'react';
-import {
-  Modal,
-  Form,
-  Input,
-  Select,
-  Row,
-  Col,
-  Card,
-  InputNumber,
-  Table,
-  Switch,
-  Button,
-} from 'antd';
+import {Button, Card, Col, Form, Input, InputNumber, message, Modal, Row, Select, Switch, Table,} from 'antd';
 
 import http from '../../service/http';
 import './formEvalueTechnical.css';
-import DetailsFlow from '../DetailsFlow/DetailsFlow';
-import {getPrioridad} from '../../tools/tools';
+import {getPrioridad,getTipoRecurso} from '../../tools/tools';
 
 let FormItem = Form.Item;
 let Option = Select.Option;
@@ -38,12 +25,16 @@ const formItemLayout = {
 const _column_template = [
   {
     title: 'Rol',
-    dataIndex: 'rol',
-    key: 'rol',
+    dataIndex: 'ltr_Tipo',
+    key: 'ltr_Tipo',
+    render: (_text, record) => {
+        let {text} = getTipoRecurso(_text);
+        return text;
+    },
   }, {
     title: 'Cantidad',
-    dataIndex: 'cantidad',
-    key: 'cantidad',
+    dataIndex: 'lrr_Cantidad',
+    key: 'lrr_Cantidad',
   }];
 
 class FormEvalueTechnical extends Component {
@@ -59,8 +50,8 @@ class FormEvalueTechnical extends Component {
     dataResource: [],
     loading: false,
 
-    cantidad: 1,
-    rol: 'FrontEnd',
+    ltr_Tipo: 1,
+    lrr_Cantidad: 1,
     status: true,
 
     dataSourceChange: [],
@@ -69,15 +60,30 @@ class FormEvalueTechnical extends Component {
 
   onCreate = (e) => {
     e.preventDefault();
-    let {onOk, form, rfc_Codigo} = this.props;
+    let {onOk, form} = this.props;
     let {validateFields, resetFields} = form;
     let {dataResource}  = this.state;
 
     validateFields((err, form) => {
       if (!err) {
         form.est_Codigo = form.status ? 5 : 6;
-        form.resources = dataResource;
+        form.RequerimientoRecurso = dataResource;
         console.log('Received values of form: ', form);
+
+          http('RequerimientoTecnicoEvaluar/update', 'POST', form, (response) => {
+              let {success} = response;
+              console.log(response);
+              if (success === true) {
+                  message.success('Se grabo la información.');
+                  let {disabled} = this.state;
+                  disabled = true;
+                  this.state({disabled});
+
+                  onOk();
+              } else {
+                  message.warning('Ocurrió un error en la actualización.');
+              }
+          });
       }
     });
   };
@@ -90,12 +96,12 @@ class FormEvalueTechnical extends Component {
 
   _add() {
     this.setState((prevState, Props) => {
-      let {rol, cantidad, dataResource} = prevState;
+      let {ltr_Tipo, lrr_Cantidad, dataResource} = prevState;
 
       dataResource.push({
-        rol,
-        cantidad,
-        key: dataResource.length,
+          key: dataResource.length,
+          ltr_Tipo,
+          lrr_Cantidad
       });
 
       return {
@@ -114,12 +120,13 @@ class FormEvalueTechnical extends Component {
   render() {
     let {modalData, visible, onOk, onCancel, form} = this.props;
     let {dataResource, status} = this.state;
-    let {pro_Nombre, rfc_Asunto, lir_Nombre, lir_Codigo, ...props} = modalData;
+    let {pro_Nombre, rfc_Asunto, lir_Nombre, lir_FechaEntrega, lir_Prioridad, lir_Codigo, ...props} = modalData;
     const {getFieldDecorator} = form;
+    let {text} = getPrioridad(lir_Prioridad);
 
     return (
       <Modal
-        title={'Evaluación de Riesgo'}
+        title={'Evaluación Técnica'}
         visible={visible}
         onOk={this.onCreate}
         okText="Guardar"
@@ -128,13 +135,11 @@ class FormEvalueTechnical extends Component {
       >
 
         <Form layout="vertical" onSubmit={() => {}} className="gcp-form">
-
           {getFieldDecorator('lir_Codigo', {
               initialValue: lir_Codigo
           })(
             <input type="hidden"/>
           )}
-
           <Row gutter={16}>
             <Col span={8}>
               <FormItem
@@ -167,7 +172,7 @@ class FormEvalueTechnical extends Component {
                 {...formItemLayout}
                 label="F. Entrega"
               >
-                <span>ALEXANDER ENVIA ESTE CAMPO PENDEJO</span>
+                <span>{lir_FechaEntrega}</span>
               </FormItem>
             </Col>
             <Col span={8}>
@@ -175,7 +180,7 @@ class FormEvalueTechnical extends Component {
                 {...formItemLayout}
                 label="Prioridad"
               >
-                <span>ALEXANDER ENVIA ESTE CAMPO PENDEJO</span>
+                <span>{text}</span>
               </FormItem>
             </Col>
           </Row>
@@ -188,20 +193,17 @@ class FormEvalueTechnical extends Component {
                       <Col>
                         <FormItem
                           label="Aprobado">
-
                           {getFieldDecorator('status', {
                             valuePropName: 'checked',
                             initialValue: true,
                           })(
                             <Switch onChange={this._setStatus} checkedChildren="Si" unCheckedChildren="No " />
                           )}
-
                         </FormItem>
                       </Col>
                       <Col>
                         <FormItem
                           label="Tiempo de Desarrollo">
-
                           {getFieldDecorator('lir_TiempoDesarrollo', {
                             rules: [{required: true, message: 'Definir cantidad de tiempo'}],
                           })(
@@ -212,7 +214,6 @@ class FormEvalueTechnical extends Component {
                               style={{width: '150px'}}
                               min={1}/>
                           )}
-
                         </FormItem>
                       </Col>
                     </Row>
@@ -230,17 +231,16 @@ class FormEvalueTechnical extends Component {
                             placeholder="Escoja Rol"
                             defaultValue="FrontEnd"
                             optionFilterProp="children"
-                            onChange={this._onChange.bind(this, 'rol')}
+                            onChange={this._onChange.bind(this, 'ltr_Tipo')}
                             filterOption={(
                               input,
                               option) => option.props.children.toLowerCase().
                               indexOf(input.toLowerCase()) >= 0}
                           >
-                            <Option value="FrontEnd">FrontEnd</Option>
-                            <Option value="BackEnd">BackEnd</Option>
-                            <Option value="Analista">Analista de
-                              Sistemas</Option>
-                            <Option value="Design UX">Diseñador UX</Option>
+                            <Option value="1">FrontEnd</Option>
+                            <Option value="2">BackEnd</Option>
+                            <Option value="3">Analista de Sistemas</Option>
+                            <Option value="4">Diseñador UX</Option>
                           </Select>
                         </FormItem>
                       </Col>
@@ -251,7 +251,7 @@ class FormEvalueTechnical extends Component {
                         >
                           <InputNumber min={1} max={10} disabled={!status} defaultValue={1}
                                        onChange={this._onChange.bind(this,
-                                         'cantidad')}/>
+                                         'lrr_Cantidad')}/>
 
                           <div style={{
                             display: 'inline-flex',

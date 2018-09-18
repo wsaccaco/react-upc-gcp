@@ -6,10 +6,11 @@ import './DescriptionMeta.css'
 export default class DescriptionMeta extends Component {
   constructor(props) {
     super(props);
-    let {data} = props;
+    let {data, lit_Codigo} = props;
     this.state = {
       data,
-      needEvaluation: false
+      needEvaluation: false,
+      lit_Codigo: lit_Codigo
     }
   }
 
@@ -35,7 +36,7 @@ export default class DescriptionMeta extends Component {
   }
 
   render() {
-    let {needEvaluation, data : {lir_RequiereDocumentar, lir_EsFuncional, lir_Codigo, lit_Codigo, est_Estado, ...props}} = this.state;
+    let {needEvaluation, lit_Codigo, data : {lir_RequiereDocumentar, lir_EsFuncional, lir_Codigo, est_Estado, ...props}} = this.state;
 
     return (
       <Card className="card-details-technical" bordered={true}>

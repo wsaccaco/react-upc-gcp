@@ -4,8 +4,10 @@ import {
     Select,
     Button, Input, message
 } from 'antd';
-import {LeaderTechnical} from '../../context/LeaderTechnical';
+
+import http from '../../service/http';
 import './formSendLeaderTechnical.css';
+import {LeaderTechnical} from '../../context/LeaderTechnical';
 
 let FormItem = Form.Item;
 const Option = Select.Option;
@@ -22,15 +24,20 @@ class FormSendLeaderTechnical extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     let {form, onOk} = this.props;
+    let {validateFields, resetFields} = form;
 
-    form.validateFields((err, form) => {
+    validateFields((err, form) => {
       if (!err) {
         console.log('Received values of form: ', form);
 
-        this.http('RequerimientoTecnico/update', 'POST', form, (response) => {
-            let {sucess} = response;
-            if (sucess === true) {
+        http('RequerimientoTecnico/update', 'POST', form, (response) => {
+            let {success} = response;
+            console.log(response);
+            if (success === true) {
                 message.success('Se envio la información al Lider Tecnico.');
+                let {disabled} = this.state;
+                disabled = true;
+                this.state({disabled});
             } else {
                 message.warning('Ocurrió un error en el envió.');
             }
@@ -56,6 +63,7 @@ class FormSendLeaderTechnical extends Component {
     const userNameError = isFieldTouched('userName') && getFieldError('userName');
 
     return (
+
       <LeaderTechnical.Consumer>
         {leaders => {
           return (
