@@ -37,11 +37,14 @@ class PlanningRisk extends Component {
             key: 'action',
             fixed: 'right',
             width: 150,
-            render: (text, record) => (
-                <span>
-                  <a href="javascript:;" onClick={() => {this._updateRiskPlaning(text.rfc_Codigo,1);}}> Evaluar </a>
+            render: (text, record) => {
+                let {esr_Codigo, rfc_Codigo} = text;
+                return (
+                  <span>
+                  <a href="javascript:;" onClick={() => {this._updateRiskPlaning(rfc_Codigo, esr_Codigo);}}> Evaluar </a>
                 </span>
-            ),
+                )
+            },
         }];
 
     columnsRiskAttended = [
@@ -71,11 +74,14 @@ class PlanningRisk extends Component {
             key: 'action',
             fixed: 'right',
             width: 150,
-            render: (text, record) => (
+            render: (text, record) => {
+              let {esr_Codigo, rfc_Codigo} = text;
+              return (
                 <span>
-                  <a href="javascript:;" onClick={() => {this._updateRiskPlaning(text.rfc_Codigo,3);}}> Ver </a>
-                </span>
-            ),
+                      <a href="javascript:;" onClick={() => {this._updateRiskPlaning(rfc_Codigo, esr_Codigo);}}> Ver </a>
+                    </span>
+              )
+            },
         }];
 
     constructor(props) {
@@ -95,7 +101,7 @@ class PlanningRisk extends Component {
         FormPlanningRisk: null
     };
 
-    _updateRiskPlaning(rfc_Codigo,esr_Codigo){
+    _updateRiskPlaning(rfc_Codigo, esr_Codigo){
         import('../../components/formPlanningRisk/formPlanningRisk').then(FormPlanningRisk => {
             this.setState({
                 FormPlanningRisk: FormPlanningRisk.default,
