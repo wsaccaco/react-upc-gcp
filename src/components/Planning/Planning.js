@@ -353,7 +353,7 @@ class Planning extends Component {
             loadingChange: true,
         });
 
-        http02('rrhh/' + rfc_id, 'GET', {}, (response) => {
+        http('rrhh/' + rfc_id, 'GET', {}, (response) => {
             this.setState({
                 dataSourceRRHH: response,
                 loadingChange: false,
@@ -369,7 +369,7 @@ class Planning extends Component {
             loadingChange: true,
         });
 
-        http02('RecursoAdicional/' + rfc_id, 'GET', {}, (response) => {
+        http('RecursoAdicional/' + rfc_id, 'GET', {}, (response) => {
             this.setState({
                 dataSourceResourceAdd: response,
                 loadingChange: false,
