@@ -78,7 +78,7 @@ class PlanningRisk extends Component {
               let {esr_Codigo, rfc_Codigo} = text;
               return (
                 <span>
-                      <a href="javascript:;" onClick={() => {this._updateRiskPlaning(rfc_Codigo, esr_Codigo);}}> Ver </a>
+                      <a href="javascript:;" onClick={() => {this._updateRiskPlaning(rfc_Codigo, esr_Codigo, false);}}> Ver </a>
                     </span>
               )
             },
@@ -101,11 +101,12 @@ class PlanningRisk extends Component {
         FormPlanningRisk: null
     };
 
-    _updateRiskPlaning(rfc_Codigo, esr_Codigo){
+    _updateRiskPlaning(rfc_Codigo, esr_Codigo, footer = true){
         import('../../components/formPlanningRisk/formPlanningRisk').then(FormPlanningRisk => {
             this.setState({
                 FormPlanningRisk: FormPlanningRisk.default,
                 visibleModal: true,
+                footer,
                 rfc_Codigo,
                 esr_Codigo
             });
@@ -172,7 +173,7 @@ class PlanningRisk extends Component {
     }
 
     render() {
-        let {rfc_Codigo, esr_Codigo, visibleModal, dataRiskPending, dataRiskAttended, loading, FormPlanningRisk} = this.state;
+        let {rfc_Codigo, esr_Codigo, visibleModal, dataRiskPending, dataRiskAttended, loading, FormPlanningRisk, footer} = this.state;
         return (
             <div className="flow-requirement component">
                 <this.title />
@@ -203,6 +204,7 @@ class PlanningRisk extends Component {
                         rfc_Codigo={rfc_Codigo}
                         esr_Codigo={esr_Codigo}
                         visible={visibleModal}
+                        footer={footer}
                         onOk={this.onOk}
                         onCancel={this.closeRequest}/>
                     : null }

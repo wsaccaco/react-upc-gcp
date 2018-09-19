@@ -242,7 +242,7 @@ class FormPlanningRisk extends Component {
     }
 
     render() {
-        let {rfc_Codigo, visible, onOk, onCancel, form} = this.props;
+        let {rfc_Codigo, visible, onOk, onCancel, form, footer} = this.props;
         let {
             dataSource,
             loading,
@@ -263,14 +263,22 @@ class FormPlanningRisk extends Component {
 
         const {getFieldDecorator} = form;
 
+        let defaultProps = {
+          title: 'Evaluación de Riesgo',
+          visible,
+          onOk: this.onCreate,
+          okText: 'Guardar',
+          onCancel: onCancel,
+          width: 1200,
+        };
+
+        if(!footer){
+          defaultProps.footer = null
+        }
+
         return(
             <Modal
-                title={"Evaluación de Riesgo"}
-                visible={visible}
-                onOk={this.onCreate}
-                okText="Guardar"
-                onCancel={onCancel}
-                width={1200}
+              {...defaultProps}
                 // okButtonProps={{disabled: hasErrors(getFieldsError())}}
             >
                 <Row className="gutter-row" gutter={16}>
