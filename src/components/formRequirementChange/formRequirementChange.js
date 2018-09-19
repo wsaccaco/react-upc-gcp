@@ -224,8 +224,8 @@ class FormRequirementChange extends Component {
               <FormItem
                 label={'¿Es requerimiento funcional?'}
                 labelCol={{span: 12, offset: 12}}
-                help={this.validateInput('lir_EsFuncional') || ''}>
-                {getFieldDecorator('lir_EsFuncional', {
+                help={this.validateInput('isFunctional') || ''}>
+                {getFieldDecorator('isFunctional', {
                   valuePropName: 'checked',
                   initialValue: lir_EsFuncional || false,
                   rules: [],
@@ -237,8 +237,8 @@ class FormRequirementChange extends Component {
               <FormItem
                 label={'¿Requiere documentar?'}
                 labelCol={{span: 12, offset: 12}}
-                help={this.validateInput('lir_RequiereDocumentar') || ''}>
-                {getFieldDecorator('lir_RequiereDocumentar', {
+                help={this.validateInput('requireDocumentation') || ''}>
+                {getFieldDecorator('requireDocumentation', {
                   valuePropName: 'checked',
                   initialValue: lir_RequiereDocumentar || false,
                   rules: [],
