@@ -116,7 +116,7 @@ class FormRequirementChange extends Component {
 
   render() {
 
-    let {visible, onOk, onCancel, form} = this.props;
+    let {visible, onOk, onCancel, form, updateRequirement} = this.props;
     let {requirementSource} = this.state;
     const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = form;
 
@@ -129,13 +129,21 @@ class FormRequirementChange extends Component {
       lir_RequiereDocumentar, lir_FechaEntrega, lir_Codigo} = requirementSource || {};
 
     let {TitleModal} = this;
+    let _modalProps = {
+      okText:"Crear"
+    }
+    if (updateRequirement) {
+      _modalProps = {
+        okText:"Actualizar"
+      }
+    }
 
     return (
       <Modal
         title={<TitleModal/>}
         visible={visible}
         onOk={this.onCreate}
-        okText="Crear"
+        {..._modalProps}
         onCancel={onCancel}
         okButtonProps={{disabled: hasErrors(getFieldsError())}}
       >
