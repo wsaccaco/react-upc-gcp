@@ -31,8 +31,6 @@ class FormRequirementDetail extends Component {
   }
 
   state = {
-    OptionPortafalio: [],
-    OptionResponsable: [],
     projectDisabled: true,
   };
 

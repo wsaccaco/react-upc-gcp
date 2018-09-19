@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {Modal, Form, Input, Icon, Select, DatePicker, Col, InputNumber} from 'antd';
 import http from '../../service/http';
+
 import moment from "moment";
 
 let FormItem = Form.Item;
 let Option = Select.Option;
-let TextArea = Input.TextArea;
 
 const formItemLayout = {
     labelCol: {
@@ -31,25 +31,24 @@ class FormRRHH extends Component {
     }
 
     state = {
-        OptionPortafalio: [],
-        OptionResponsable: [],
-        projectDisabled: true
+        projectDisabled: true,
+        dataRRHH: this.props.dataRRHH,
+        dataUpdate:this.props.dataUpdate,
     };
 
     handleSubmit = (e) => {
         e.preventDefault();
-        let {form, onOk} = this.props;
+        let {form, onOk, dataUpdate} = this.props;
 
         form.validateFields((err, form) => {
             if (!err) {
-                console.log(form);
+                //console.log(this.props.dataUpdate);
                 // let pathName = this.isNew ? 'C0001S0003' : 'C0001S0004';
                 this.http('C0001S0003', 'POST', form, (response) => {
                     if (response === 'OK') {
                         onOk(response);
                     }
                 });
-
             }
         });
     };
@@ -62,9 +61,8 @@ class FormRRHH extends Component {
         validateFields((err, form) => {
             if (!err) {
 
-                // let pathName = this.isNew ? 'C0001S0003' : 'C0001S0004';
-                console.log(form);
-                http('rrhh', 'POST', form, (response) => {
+                let pathName = this.props.dataUpdate ? 'rrhh/update' : 'rrhh';
+                http(pathName, 'POST', form, (response) => {
                     if (response) {
                         onOk(response);
                         resetFields();
@@ -87,20 +85,15 @@ class FormRRHH extends Component {
 
     render() {
 
-        let {visible, onOk, onCancel, form,rfc_Codigo} = this.props;
-        let {
-            OptionPortafalio, OptionProject,
-            projectDisabled, OptionApplicant,
-            OptionResponsable
-        } = this.state;
-        const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = form;
-
-        const folderError = isFieldTouched('folder') && getFieldError('folder');
-        const dateError = isFieldTouched('date') && getFieldError('date');
+        let { visible, onOk, onCancel, form, rfc_Codigo, dataRRHH } = this.props;
+        const {getFieldDecorator, getFieldsError} = form;
+        let {rrhh_Codigo,rrhh_Identificador,tip_Codigo, rrhh_Cantidad, niv_Codigo,
+            rrhh_Esfuerzo, rrhh_FecInicio,
+            rrhh_FechaTermino, rrhh_Presupuesto } = dataRRHH || {};
 
         return (
             <Modal
-                title="Detallar requerimiento"
+                title="Registro de RRHH"
                 visible={visible}
                 onOk={this.onCreate}
                 okText="Aceptar"
@@ -113,9 +106,16 @@ class FormRRHH extends Component {
                             initialValue: rfc_Codigo
                         })(
                             <Input type={'hidden'}
-                                min={0} disabled={false}/>
+                                   min={0} disabled={false}/>
+                        )}
+                        {getFieldDecorator('rrhh_Codigo', {
+                            initialValue: rrhh_Codigo
+                        })(
+                            <Input type={'hidden'}
+                                   min={0} disabled={false}/>
                         )}
                         {getFieldDecorator('rrhh_Identificador', {
+                            initialValue: rrhh_Identificador,
                             rules: [
                                 {
                                     required: true,
@@ -128,6 +128,7 @@ class FormRRHH extends Component {
                     </FormItem>
                     <FormItem label={'Perfil'} {...formItemLayout}>
                         {getFieldDecorator('tip_Codigo', {
+                            initialValue: `${tip_Codigo || 2}`,
                             rules: [
                                 {
                                     required: true,
@@ -145,6 +146,7 @@ class FormRRHH extends Component {
                     </FormItem>
                     <FormItem label={'Cantidad:'} {...formItemLayout}>
                         {getFieldDecorator('rrhh_Cantidad', {
+                            initialValue: rrhh_Cantidad,
                             rules: [
                                 {
                                     required: true,
@@ -157,6 +159,7 @@ class FormRRHH extends Component {
                     </FormItem>
                     <FormItem label={'Nivel'} {...formItemLayout}>
                         {getFieldDecorator('niv_Codigo', {
+                            initialValue: `${niv_Codigo || 2}`,
                             rules: [
                                 {
                                     required: true,
@@ -173,6 +176,7 @@ class FormRRHH extends Component {
                     </FormItem>
                     <FormItem label={'Esfuerzo:'} {...formItemLayout}>
                         {getFieldDecorator('rrhh_Esfuerzo', {
+                            initialValue: rrhh_Esfuerzo,
                             rules: [
                                 {
                                     required: true,
@@ -187,6 +191,7 @@ class FormRRHH extends Component {
                     </FormItem>
                     <FormItem label={'Inicio:'} {...formItemLayout} >
                         {getFieldDecorator('rrhh_FecInicio', {
+                            initialValue: rrhh_FecInicio ? moment(rrhh_FecInicio, 'DD-MM-YYYY') : null ,
                             rules: [
                                 {
                                     required: true,
@@ -200,6 +205,7 @@ class FormRRHH extends Component {
                     </FormItem>
                     <FormItem label={'Termino:'} {...formItemLayout} >
                         {getFieldDecorator('rrhh_FechaTermino', {
+                            initialValue: rrhh_FechaTermino ? moment(rrhh_FechaTermino, 'DD-MM-YYYY') : null ,
                             rules: [
                                 {
                                     required: true,
@@ -213,6 +219,7 @@ class FormRRHH extends Component {
                     </FormItem>
                     <FormItem label={'Presupuesto:'} {...formItemLayout}>
                         {getFieldDecorator('rrhh_Presupuesto', {
+                            initialValue: rrhh_Presupuesto,
                             rules: [
                                 {
                                     required: true,
@@ -222,7 +229,6 @@ class FormRRHH extends Component {
                             <InputNumber
                                 min={0} disabled={false}/>
                         )}
-
                     </FormItem>
                 </Form>
             </Modal>

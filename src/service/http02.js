@@ -1,8 +1,8 @@
 const http02 = (
     pathName, method = 'GET', body = {}, callback,
     callbackError = () => {}) => {
-    //let _url = `http://25.3.69.136/${pathName}`;
-    let _url = `https://upctp3-des02.azurewebsites.net/${pathName}`;
+    //let _url = `https://upctp3-des02.azurewebsites.net/${pathName}`;
+    let _url = `http://upctp3-des02.azurewebsites.net/${pathName}`;
 
   if (method === 'GET') {
     _url = new URL(_url);
