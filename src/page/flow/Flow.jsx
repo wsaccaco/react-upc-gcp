@@ -31,7 +31,6 @@ export default class FlowPage extends Component {
 
   constructor(props) {
     super(props);
-    console.log(props);
   }
 
   makeLink(number){

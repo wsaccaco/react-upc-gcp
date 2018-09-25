@@ -18,6 +18,7 @@ class FormSendLeaderTechnical extends Component {
     super(props);
     this.state = {
       disabled: props.disabled,
+      disabledSend: true
     };
   }
 
@@ -53,6 +54,14 @@ class FormSendLeaderTechnical extends Component {
     };
   }
 
+  disabledSend(value){
+    if(value){
+      this.setState({
+        disabledSend: false
+      })
+    }
+  }
+
   render() {
     const {getFieldDecorator, getFieldsError, getFieldError, isFieldTouched} = this.props.form;
 
@@ -77,17 +86,18 @@ class FormSendLeaderTechnical extends Component {
                     )}
                 </FormItem>
 
-                <FormItem
-                  validateStatus={userNameError ? 'error' : ''}
-                  help={userNameError || ''}
-                >
+                <FormItem>
                   {getFieldDecorator('lit_Codigo', {
-                      rules: [{required: true,message: 'Seleccione Lider Tecnico',}],
-                      initialValue: lit_Codigo
+                      rules: [{
+                        required: true,
+                        message: 'Seleccione Lider Tecnico'
+                      }],
+                      initialValue: lit_Codigo ? lit_Codigo : null
                   })(
                     <Select
                       showSearch={true}
                       style={{width: '200px'}}
+                      onChange={this.disabledSend.bind(this)}
                       placeholder="Lider Tecnico"
                       disabled={!disabled}
                     >

@@ -133,7 +133,10 @@ class FlowCommittee extends Component {
             <Col span={12}>
               <FormItem label={`Descripción`} {...formItemLayout} >
                 {getFieldDecorator(`reu_Comentario`, {
-                  rules: [],
+                  rules: [{
+                    required: true,
+                    message: 'Ingresar descripción'
+                  }],
                 })(
                   <Input style={{width: '100%'}}/>
                 )}
