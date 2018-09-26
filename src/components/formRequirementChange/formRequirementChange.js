@@ -158,8 +158,8 @@ class FormRequirementChange extends Component {
 
           <FormItem
             label={'Titulo del requerimiento'}
-            validateStatus={folderError ? 'error' : ''}
-            help={folderError || ''}>
+            validateStatus={this.validateInput('title') ? 'error' : ''}
+            help={this.validateInput('title') || ''}>
             {getFieldDecorator('title', {
               initialValue: lir_Nombre,
               rules: [
