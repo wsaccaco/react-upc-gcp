@@ -12,7 +12,7 @@ export default class Main extends Component {
       modules : [
       {
         urlImage: url,
-        title: 'Gestión def Portafolio',
+        title: 'Solicitud de Cambio',
         rfc_Asunto: 'Es el modulo que permite la gestion eficaz del prortafolio de proyectos mediante monitoreo',
         link : ''
       },
@@ -42,7 +42,7 @@ export default class Main extends Component {
       return (<Col span={6} key={index}>
           <Card title= {module.title}>
               <p>{module.rfc_Asunto}</p>
-              <NavLink to="modules">Ingresar</NavLink>
+              <NavLink to="change/main">{module.title}</NavLink>
           </Card>
 
       </Col>)
