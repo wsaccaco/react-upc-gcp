@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Col,Card} from 'antd';
+import { Row, Col,Card, Button} from 'antd';
 import './main.css';
-
+import { NavLink } from 'react-router-dom'
 
 export default class Main extends Component {
 
@@ -40,10 +40,9 @@ export default class Main extends Component {
     let {modules} = this.state;
     return modules.map((module, index) => {
       return (<Col span={6} key={index}>
-
           <Card title= {module.title}>
               <p>{module.rfc_Asunto}</p>
-
+              <NavLink to="modules">Ingresar</NavLink>
           </Card>
 
       </Col>)
@@ -61,8 +60,8 @@ export default class Main extends Component {
 
 
           <Row>
-            <Col span={12}>col-12</Col>
-            <Col span={12}>col-12</Col>
+            <Col span={12}> </Col>
+            <Col span={12}> </Col>
           </Row>
           <Row gutter={16}>
             {this.cards()}
